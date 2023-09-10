@@ -30,15 +30,29 @@ export default {
     };
   },
   props: ['socket', 'state'],
+  watch: {
+    'state.login'(el) {
+      if (el) this.$router.push('/loby');
+    },
+  },
   methods: {
     login() {
-      this.socket.emit('login', 'dfdsfd');
-
+      if (this.userName === '') alert('this.userName');
+      this.socket.emit('login', this.userName);
       // if (this.state.login) this.$router.push(`?user=${this.state.socketId}`);
     },
     connecting() {
-      this.socket.emit('set_ids', 'dfdsfd');
+      if (this.userName === '') alert('this.userName');
+      else this.socket.emit('setId', this.userName);
     },
+  },
+  mounted() {
+    this.socket.on('reSetId', function (data) {
+      console.log(data);
+    });
   },
 };
 </script>
+<style scoped>
+@import '@/scss/login.scss';
+</style>

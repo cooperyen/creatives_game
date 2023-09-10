@@ -1,0 +1,61 @@
+body {
+  background-image: url('http://198.211.33.236:88/pic/loginback.jpg');
+  background-size: 100% 100%;
+  /* 使背景图像宽度和高度都100% */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /* 使背景图像固定不滚动 */
+  margin: 0;
+  /* 取消默认的页面边距 */
+  padding: 0;
+  /* 取消默认的页面内边距 */
+}
+
+.container {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  .title h1 {
+    color: white;
+    font-size: 3rem;
+  }
+  .content {
+    /* margin-top: 60px; */
+    background-color: #0d172b29;
+    padding: 60px 15px;
+    border-radius: 12px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+
+    .login.btn button {
+      width: 250px;
+      background-color: #ffc515;
+      padding: 10px 5px;
+      border: unset;
+      border-radius: 6px;
+      margin-top: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .input-box {
+      font-size: 1.2rem;
+      border-radius: 8px;
+      width: 250px;
+      margin: 0 auto;
+      input {
+        font-size: 1.2rem;
+        padding: 8px 10px;
+        border-radius: 6px;
+        width: 100%;
+        border: unset;
+        letter-spacing: 1px;
+        outline: none;
+        box-sizing: border-box;
+        &:focus {
+          border: unset;
+        }
+      }
+    }
+  }
+}

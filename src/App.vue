@@ -9,6 +9,7 @@
 
 <script>
 import { state, socket } from '@/../assets/socket';
+
 export default {
   data() {
     return {
@@ -28,3 +29,7 @@ export default {
   methods: {},
 };
 </script>
+
+<style lang="scss">
+@import '@/scss/main.scss';
+</style>

@@ -8,7 +8,9 @@ export const state = reactive({
   fooEvents: [],
   barEvents: [],
   login: false,
-  socketId: ''
+  socketId: '',
+  lobbyRooms: '',
+  userName: ''
 });
 
 const testURL = 'http://198.211.33.236:88'
@@ -20,6 +22,7 @@ const URL = process.env.NODE_ENV === "production" ? undefined : testURL;
 export const socket = io(URL);
 
 socket.on("connect", (el) => {
+  console.log('connect')
   state.connected = true;
   state.socketId = socket.id;
 });
@@ -39,8 +42,15 @@ socket.on('re_test', function (data) {
 });
 
 
-
 socket.on("disconnect", () => {
   state.connected = false;
 });
 
+socket.on('relobby', function (data) {
+  state.userName = data.userSids;
+  state.lobbyRooms = data.gameList;
+});
+
+socket.on('re_updatepage', function (data) {
+  console.log(data)
+});

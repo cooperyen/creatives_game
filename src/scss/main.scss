@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+img {
+  width: 100%;
+  display: block;
+}
+
+body {
+  background-image: url('@/image/pc.jpg');
+  // background-size: 100% 100%;
+  /* 使背景图像宽度和高度都100% */
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /* 使背景图像固定不滚动 */
+  margin: 0;
+  /* 取消默认的页面边距 */
+  padding: 0;
+  /* 取消默认的页面内边距 */
+  font-family: '微軟正黑體', sans-serif;
+  @media (max-width: 768px) {
+    background-image: url('@/image/mb.jpg');
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-2 {
+  // flex-basis: 50%;
+}
+
+.pd-side {
+  padding-left: 15px;
+  padding-right: 15px;
+}
