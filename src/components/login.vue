@@ -32,7 +32,7 @@ export default {
   props: ['socket', 'state'],
   watch: {
     'state.login'(el) {
-      if (el) this.$router.push('/loby');
+      if (el) this.$router.push('/game');
     },
   },
   methods: {

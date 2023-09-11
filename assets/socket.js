@@ -13,8 +13,8 @@ export const state = reactive({
   userName: null
 });
 
-const testURL = 'http://198.211.33.236:88'
-// const testURL = 'http://localhost:5088/'
+// const testURL = 'http://198.211.33.236:88'
+const testURL = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = process.env.NODE_ENV === "production" ? undefined : testURL;
@@ -84,13 +84,9 @@ socket.on('redirect', function (url) {
 
 socket.on('re_act', function (data) {
   if (data.way === 'login') {
-    localStorage.setItem('userData', JSON.stringify({ 'userName': data.id.id }))
+    localStorage.setItem('userData', JSON.stringify({ 'userName': data.id }))
     setTimeout(() => {
       state.login = true
     }, 500);
-  }
-
-  if (data.way === 'id_check') {
-    console.log(data);
   }
 });

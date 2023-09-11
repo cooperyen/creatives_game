@@ -32,10 +32,7 @@ export default {
   created() {
     const userName = this.$store.state.userStore.userName;
     const userRoom = this.$store.state.userStore.userRoom;
-    // socket.emit('inits', { userName });
     if (userName === null) this.$router.push('/');
-
-    console.log('id_check');
     socket.emit('id_check', { id: userName, room: userRoom });
   },
 };

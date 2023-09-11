@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import loby from '@/components/loby.vue';
+import game from '@/components/loby.vue';
 import NotFound from '@/components/404.vue';
 import gameRoom from '@/components/gameRoom.vue';
 import login from '@/components/login.vue';
+import waitingRoom from '@/components/waitingRoom.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,9 +22,22 @@ const router = createRouter({
       // ],
     },
     {
-      path: '/loby',
-      name: 'loby',
-      component: loby,
+      path: '/game',
+      name: 'game',
+      component: game,
+      children: [
+        {
+          // 当 /user/:id/profile 匹配成功
+          // UserProfile 将被渲染到 User 的 <router-view> 内部
+          path: '?waiting_room:user',
+          component: waitingRoom,
+        },
+      ],
+    },
+    {
+      path: '/waiting_room/:room',
+      name: 'waitingRoom',
+      component: waitingRoom,
     },
     {
       path: '/gameRoom',
@@ -45,5 +59,9 @@ const router = createRouter({
 //     else next();
 //   }
 // });
+
+router.beforeEach((to, from, next) => {
+  console.log(to, from, next)
+});
 
 export default router;

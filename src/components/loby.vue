@@ -87,6 +87,12 @@ export default {
   },
   mounted() {
     this.load();
+    const that = this;
+    this.socket.on('re_act', function (data) {
+      if (data.way != 'id_check') return;
+      console.log(data);
+      that.$router.push('game');
+    });
   },
 };
 </script>
