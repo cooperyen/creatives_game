@@ -1,6 +1,6 @@
 $mainBg: rgb(94 139 149);
 $light_yellow: rgb(234, 184, 56);
-$text: rgb(179 172 135);
+$text: rgb(198, 190, 149);
 
 .container {
   user-select: none;
@@ -13,6 +13,8 @@ $text: rgb(179 172 135);
   // flex-wrap: wrap;
   margin-top: 50px;
   .room {
+    box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
+    animation: boxShadow 3s ease infinite;
     max-width: calc(1400px / 4);
     width: 100%;
     cursor: pointer;
@@ -50,8 +52,6 @@ $text: rgb(179 172 135);
       animation: mover 3s ease infinite;
 
       .img-box {
-        box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
-        animation: boxShadow 3s ease infinite;
         img {
           border-radius: $imgborder;
           transition: 0.4s;
@@ -79,7 +79,8 @@ $text: rgb(179 172 135);
         }
         .title {
           font-weight: bold;
-          color: rgba(255, 255, 255, 0.9);
+          color: $text;
+          text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
           margin-bottom: 8px;
           font-size: 1.3rem;
           text-align: center;
