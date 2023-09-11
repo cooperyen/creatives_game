@@ -10,7 +10,7 @@ export const state = reactive({
   login: false,
   socketId: '',
   lobbyRooms: '',
-  userName: ''
+  userName: null
 });
 
 const testURL = 'http://198.211.33.236:88'
@@ -27,30 +27,70 @@ socket.on("connect", (el) => {
   state.socketId = socket.id;
 });
 
-
-socket.on('nononos', function (data) {
-  state.login = data
-});
-
 socket.on('re_login', function (data) {
-  console.log(data);
-  state.login = true
+  console.log(data.id);
+  // localStorage.setItem('userData', JSON.stringify({ 'userName': data.id }))
+  // setTimeout(() => {
+  //   state.login = true
+  // }, 500);
 });
-
-socket.on('re_test', function (data) {
-  console.log(data);
-});
-
 
 socket.on("disconnect", () => {
   state.connected = false;
 });
 
 socket.on('relobby', function (data) {
+  // console.log(data);
   state.userName = data.userSids;
   state.lobbyRooms = data.gameList;
 });
 
 socket.on('re_updatepage', function (data) {
-  console.log(data)
+  state.userName = data.id;
+});
+
+socket.on('reJoinGame', function (data) {
+  console.log(data);
+});
+
+
+socket.on('gotogame', function (data) {
+  console.log(data);
+});
+
+socket.on('add_id', function (addSid) {
+  console.log(addSid)
+});
+
+socket.on('remove_id', function (re_sid) {
+  console.log(re_sid);
+});
+
+socket.on('already_joined', function () {
+  alert("你在房間內了啊!!!!!!");
+});
+
+socket.on('full', function () {
+  alert("房間已滿");
+});
+
+socket.on('notcool', function () {
+  alert("一次一間");
+});
+
+socket.on('redirect', function (url) {
+  console.log(url);
+});
+
+socket.on('re_act', function (data) {
+  if (data.way === 'login') {
+    localStorage.setItem('userData', JSON.stringify({ 'userName': data.id.id }))
+    setTimeout(() => {
+      state.login = true
+    }, 500);
+  }
+
+  if (data.way === 'id_check') {
+    console.log(data);
+  }
 });

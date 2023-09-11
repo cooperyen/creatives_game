@@ -1,7 +1,8 @@
 <template>
-  <p>State: {{ connected }}</p>
+  <!-- <p>State: {{ connected }}</p>
   <p>socketId: {{ socketId }}</p>
-  <p>{{ $store.state.userStore.userData }}</p>
+  <p>{{ $store.state.userStore.userData }}</p> -->
+  <!-- {{ state.userName }} -->
   <RouterView :socket="socket" :state="state" />
 </template>
 
@@ -27,6 +28,16 @@ export default {
     },
   },
   methods: {},
+  mounted() {},
+  created() {
+    const userName = this.$store.state.userStore.userName;
+    const userRoom = this.$store.state.userStore.userRoom;
+    // socket.emit('inits', { userName });
+    if (userName === null) this.$router.push('/');
+
+    console.log('id_check');
+    socket.emit('id_check', { id: userName, room: userRoom });
+  },
 };
 </script>
 

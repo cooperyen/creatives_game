@@ -38,19 +38,11 @@ export default {
   methods: {
     login() {
       if (this.userName === '') alert('this.userName');
-      this.socket.emit('login', this.userName);
-      // if (this.state.login) this.$router.push(`?user=${this.state.socketId}`);
-    },
-    connecting() {
-      if (this.userName === '') alert('this.userName');
-      else this.socket.emit('setId', this.userName);
+      this.$store.state.userStore.userName = this.userName;
+      this.socket.emit('login', { id: this.userName });
     },
   },
-  mounted() {
-    this.socket.on('reSetId', function (data) {
-      console.log(data);
-    });
-  },
+  mounted() {},
 };
 </script>
 <style scoped>

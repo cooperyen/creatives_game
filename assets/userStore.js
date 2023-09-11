@@ -1,12 +1,18 @@
+const userData = JSON.parse(localStorage.getItem('userData'))
+const userName = userData != null ? userData.userName : null
+const userRoom = userData != null ? userData.userRoom : null
+
 const userStore = {
   state() {
     return {
-      userData: '123',
+      userName,
+      userRoom,
     };
   },
   mutations: {
-    increment(state, data) {
-      state.userData = data;
+    updateUserRoom(state, data) {
+      state.userRoom = data;
+      localStorage.setItem('userData', JSON.stringify(state))
     },
 
   },
