@@ -87,6 +87,7 @@ export default {
     },
     'state.lobbyPlayerList': {
       handler(el) {
+        console.log('el', el);
         this.lobbyPlayerList = Object.values(el).map((vl) => {
           if (vl.room != null) return;
           return vl.user_id;

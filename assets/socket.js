@@ -9,7 +9,8 @@ export const state = reactive({
   userName: null,
   goUrl: null,
   gameRooms: null,
-  lobbyPlayerList: null
+  lobbyPlayerList: null,
+  currentPlayers: null
 });
 
 // const testURL = 'http://198.211.33.236:88'
@@ -108,7 +109,16 @@ socket.on('re_act', function (data) {
 
     if (data.url === 'waiting_room')
       state.goUrl = `${data.url}/${data.user_room}`
+
+    // if (data.players != null || data.players != undefined) {
+    //   state.currentPlayers = data.players
+    // }
+
   };
 
 });
+
+socket.on('updata_lobby', function (data) {
+  state.currentPlayers = data.room_data
+})
 
