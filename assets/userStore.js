@@ -14,7 +14,12 @@ const userStore = {
       state.userRoom = data;
       localStorage.setItem('userData', JSON.stringify(state))
     },
-
+    clearUserRoom(state, data) {
+      const userData = JSON.parse(localStorage.getItem('userData'))
+      if (userData === null) return;
+      userData.userRoom = null
+      localStorage.setItem('userData', JSON.stringify(userData))
+    }
   },
 }
 

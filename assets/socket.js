@@ -5,12 +5,11 @@ import { userStore } from '@/../assets/userStore.js';
 
 export const state = reactive({
   connected: false,
-  fooEvents: [],
-  barEvents: [],
-  login: false,
   socketId: '',
-  lobbyRooms: '',
-  userName: null
+  userName: null,
+  goUrl: null,
+  gameRooms: null,
+  lobbyPlayerList: null
 });
 
 // const testURL = 'http://198.211.33.236:88'
@@ -39,11 +38,9 @@ socket.on("disconnect", () => {
   state.connected = false;
 });
 
-socket.on('relobby', function (data) {
-  // console.log(data);
-  state.userName = data.userSids;
-  state.lobbyRooms = data.gameList;
-});
+// socket.on('re_lobby', function (data) {
+//   state.lobbyRooms = data.gameList;
+// });
 
 socket.on('re_updatepage', function (data) {
   state.userName = data.id;
@@ -82,11 +79,36 @@ socket.on('redirect', function (url) {
   console.log(url);
 });
 
+// socket.on('re_act', function (data) {
+//   if (data.way === 'login') {
+//     localStorage.setItem('userData', JSON.stringify({ 'userName': data.id }))
+//     setTimeout(() => {
+//       state.login = true
+//     }, 500);
+//   }
+// });
+
+
 socket.on('re_act', function (data) {
-  if (data.way === 'login') {
-    localStorage.setItem('userData', JSON.stringify({ 'userName': data.id }))
-    setTimeout(() => {
-      state.login = true
-    }, 500);
-  }
+
+  console.log(data);
+
+  if (data.way === 'id_check') {
+
+    if (data.user_sids != null || data.user_sids != undefined)
+      state.lobbyPlayerList = data.user_sids;
+
+    // game rooms data.
+    if (data.game_list != null || data.game_list != undefined)
+      state.gameRooms = data.game_list;
+
+    // lobby escapes from load cycles.
+    if (data.url === 'lobby')
+      state.goUrl = data.url;
+
+    if (data.url === 'waiting_room')
+      state.goUrl = `${data.url}/${data.user_room}`
+  };
+
 });
+

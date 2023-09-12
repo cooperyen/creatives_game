@@ -22,31 +22,32 @@ $text: rgb(198, 190, 149);
     overflow: hidden;
     border-radius: 5px;
     transition: transform 0.2s;
-    &:nth-child(1) {
-      background-color: rgba(145, 127, 60, 0.833);
-    }
-    &:nth-child(2) {
-      background-color: rgba(60, 145, 128, 0.833);
-    }
-    &:nth-child(3) {
-      background-color: rgba(60, 86, 145, 0.833);
-    }
-    &:nth-child(4) {
-      background-color: rgba(145, 60, 103, 0.833);
-    }
+    // &:nth-child(1) {
+    //   background-color: rgba(145, 127, 60, 1);
+    // }
+    // &:nth-child(2) {
+    //   background-color: rgba(60, 145, 128, 1);
+    // }
+    // &:nth-child(3) {
+    //   background-color: rgba(60, 86, 145, 1);
+    // }
+    // &:nth-child(4) {
+    //   background-color: rgba(145, 60, 103, 1);
+    // }
     &:hover {
       transform: scale(1.05) translateY(-10px) rotate(1deg);
       transition: transform 0.2s;
     }
     $imgborder: 0px;
     .room-content {
+      position: relative;
       border-radius: $imgborder;
       border: 8px solid transparent; /*2*/
       border-image: linear-gradient(
           to right,
           rgb(5, 56, 97),
-          rgba(139, 112, 47, 0.8),
-          rgba(141, 43, 125, 0.8)
+          rgba(139, 112, 47, 1),
+          rgba(141, 43, 125, 1)
         )
         6;
       animation: mover 3s ease infinite;
@@ -55,28 +56,17 @@ $text: rgb(198, 190, 149);
         img {
           border-radius: $imgborder;
           transition: 0.4s;
+          opacity: 0.9;
           // padding: 5px;
         }
       }
       .content {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
         margin-top: 10px;
-        .room-btn {
-          margin: 0 auto;
-          text-align: end;
-          button {
-            width: 100%;
-            background: unset;
-            border: unset;
-            background-color: $mainBg;
-            padding: 5px 10px;
-            font-size: 1rem;
-            border-radius: 4px;
-            &:hover {
-              // color: black;
-              background-color: rgba($color: $light_yellow, $alpha: 0.8);
-            }
-          }
-        }
+
         .title {
           font-weight: bold;
           color: $text;
@@ -93,10 +83,17 @@ $text: rgb(198, 190, 149);
 
 .user-container {
   color: $text;
-  padding: 20px;
+  height: 50px;
+  // padding: 20px;
+  position: relative;
+  > .content {
+    right: 20px;
+    top: 20px;
+    position: absolute;
+  }
   // margin-right: 30px;
   // margin-top: 5px;
-  background-color: rgba(29, 39, 51, 0.8);
+  // background-color: rgba(29, 39, 51, 0.4);
 }
 
 .current-users {
@@ -107,7 +104,7 @@ $text: rgb(198, 190, 149);
   padding-left: 30px;
   .content {
     border-radius: 8px;
-    background-color: rgba($color: $mainBg, $alpha: 0.6);
+    background-color: rgba($color: $mainBg, $alpha: 0.7);
     padding: 20px 15px;
   }
   p {
@@ -115,6 +112,7 @@ $text: rgb(198, 190, 149);
     font-weight: bold;
   }
   ul {
+    list-style-type: none;
     margin-top: 5px;
     li {
       font-size: 1rem;
@@ -124,13 +122,13 @@ $text: rgb(198, 190, 149);
 
 @keyframes boxShadow {
   0% {
-    box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
+    box-shadow: 0px 0px 8px rgb(222, 237, 135);
   }
   50% {
     box-shadow: 0px 0px 8px rgba(69, 165, 233, 0.3);
   }
   100% {
-    box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
+    box-shadow: 0px 0px 8px rgba(208, 233, 69, 1);
   }
 }
 
@@ -139,17 +137,17 @@ $text: rgb(198, 190, 149);
     border-image: linear-gradient(
         to right,
         rgb(5, 56, 97),
-        rgba(139, 112, 47, 0.8),
-        rgba(43, 125, 141, 0.8)
+        rgba(139, 112, 47, 1),
+        rgba(43, 125, 141, 1)
       )
       6;
   }
   50% {
     border-image: linear-gradient(
         to right bottom,
-        rgba(139, 112, 47, 0.6),
-        rgba(43, 125, 141, 0.6),
-        rgba(5, 56, 97, 0.6)
+        rgba(139, 112, 47, 1),
+        rgba(43, 125, 141, 1),
+        rgba(5, 56, 97, 1)
       )
       6;
   }
@@ -157,8 +155,8 @@ $text: rgb(198, 190, 149);
     border-image: linear-gradient(
         to right,
         rgb(5, 56, 97),
-        rgba(139, 112, 47, 0.8),
-        rgba(43, 125, 141, 0.8)
+        rgba(139, 112, 47, 1),
+        rgba(43, 125, 141, 1)
       )
       6;
   }

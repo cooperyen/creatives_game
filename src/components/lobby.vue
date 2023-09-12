@@ -1,20 +1,19 @@
 <template>
   <div class="user-container">
-    <h2 id="userid" style="text-align: right">勇者 : {{ userName }}</h2>
+    <div class="content">
+      <h2 id="userid" style="text-align: right">勇者 : {{ userName }}</h2>
+    </div>
   </div>
   <div id="buttons" class="container pd-side room-box flex">
     <div
       class="room"
-      v-for="i in state.lobbyRooms"
+      v-for="i in state.gameRooms"
       :key="i"
       @click="joinRoom(i)"
     >
       <div class="room-content">
         <div class="img-box">
-          <img
-            :src="'http://198.211.33.236:88/pic/' + i + '.jpg'"
-            alt="{{ i }}"
-          />
+          <img :src="'./src/image/' + i + '.png'" :alt="i" />
         </div>
         <div class="content">
           <div class="title">
@@ -30,11 +29,13 @@
       <div class="title">
         <p>當前玩家</p>
       </div>
-      <!-- <ul class="pd-side">
-        {% for i in sid%}
-        <li>{{ i }}</li>
-        {% endfor %}
-      </ul> -->
+      <div>
+        <ul>
+          <li v-for="i in lobbyPlayerList" :key="i">
+            {{ i }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -48,26 +49,24 @@ export default {
     return {
       userName: null,
       userRoom: null,
-      gameRooms: '0',
+      gameRooms: null,
+      lobbyPlayerList: null,
     };
   },
   methods: {
+    checkRoom() {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      if (userData.userRoom === null || userData.userRoom === undefined) return;
+      if (userData.userRoom.indexOf('game') === -1) return;
+      this.$store.commit('clearUserRoom');
+    },
     load() {
       if (this.userName === null) return;
-      // this.socket.emit('id_check',{'id':this.userName,'room':XXX})
-      this.socket.emit('lobby', this.userName);
-      this.socket.emit('updatepage', {
-        message: 'lobby',
-        ownid: this.userName,
-      });
+      this.socket.emit('id_check', { id: this.userName, room: this.userRooms });
+      this.checkRoom();
     },
     joinRoom(roomId) {
       if (roomId) {
-        console.log({
-          room: roomId,
-          id: this.userName,
-        });
-
         this.socket.emit('join', {
           room: roomId,
           id: this.userName,
@@ -76,6 +75,23 @@ export default {
       } else {
         alert('未指定房間 ID');
       }
+    },
+  },
+  watch: {
+    'state.goUrl': {
+      handler(el) {
+        if (el === 'loby') return;
+        this.$router.push(el);
+      },
+      // deep: true,
+    },
+    'state.lobbyPlayerList': {
+      handler(el) {
+        this.lobbyPlayerList = Object.values(el).map((vl) => {
+          if (vl.room != null) return;
+          return vl.user_id;
+        });
+      },
     },
   },
   props: ['socket', 'state'],
@@ -87,12 +103,6 @@ export default {
   },
   mounted() {
     this.load();
-    const that = this;
-    this.socket.on('re_act', function (data) {
-      if (data.way != 'id_check') return;
-      console.log(data);
-      that.$router.push('game');
-    });
   },
 };
 </script>

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import game from '@/components/loby.vue';
+import lobby from '@/components/lobby.vue';
 import NotFound from '@/components/404.vue';
 import gameRoom from '@/components/gameRoom.vue';
 import login from '@/components/login.vue';
@@ -22,21 +22,13 @@ const router = createRouter({
       // ],
     },
     {
-      path: '/game',
-      name: 'game',
-      component: game,
-      children: [
-        {
-          // 当 /user/:id/profile 匹配成功
-          // UserProfile 将被渲染到 User 的 <router-view> 内部
-          path: '?waiting_room:user',
-          component: waitingRoom,
-        },
-      ],
+      path: '/lobby',
+      name: 'lobby',
+      component: lobby,
     },
     {
       path: '/waiting_room/:room',
-      name: 'waitingRoom',
+      name: 'waiting_room',
       component: waitingRoom,
     },
     {
@@ -60,8 +52,5 @@ const router = createRouter({
 //   }
 // });
 
-router.beforeEach((to, from, next) => {
-  console.log(to, from, next)
-});
 
 export default router;

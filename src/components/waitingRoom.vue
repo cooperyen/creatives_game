@@ -1,24 +1,37 @@
 <template>
-  <div>
-    <h1>Waiting room</h1>
-    {{}}
+  <div class="container">
+    <div>
+      <h2>目前的玩家</h2>
+      <div id="player_list">
+        <ul v-for="i in players" :key="i">
+          <li>{{ i }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="leader-container">
+      <h1>{{ leader }}</h1>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      players: [1, 2, 3],
+      leader: '',
+    };
   },
   props: ['socket', 'state'],
   methods: {},
   mounted() {
     const userName = this.$store.state.userStore.userName;
-    this.socket.emit('updatepage', { message: 'wait', ownid: userName });
+    const userRoom = this.$store.state.userStore.userRoom;
 
-    this.socket.on('re_updatepage', function (url) {
-      console.log(url);
-    });
+    this.leader = userName;
+    // console.log(userName, userRoom);
+
+    // this.socket.emit('id_check', { id: userName, room: userRoom });
   },
 };
 </script>

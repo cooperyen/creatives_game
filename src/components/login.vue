@@ -15,9 +15,6 @@
       <div class="login btn">
         <button @click.prevent="login()">登入</button>
       </div>
-      <div class="login btn">
-        <button @click.prevent="connecting()">登入</button>
-      </div>
     </div>
   </div>
 </template>
@@ -30,11 +27,6 @@ export default {
     };
   },
   props: ['socket', 'state'],
-  watch: {
-    'state.login'(el) {
-      if (el) this.$router.push('/game');
-    },
-  },
   methods: {
     login() {
       if (this.userName === '') alert('this.userName');
@@ -42,7 +34,21 @@ export default {
       this.socket.emit('login', { id: this.userName });
     },
   },
-  mounted() {},
+  created() {
+    this.$store.commit('clearUserRoom');
+  },
+  mounted() {
+    const that = this;
+
+    this.socket.on('re_act', function (data) {
+      if (data.way !== 'login') return;
+      localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
+      setTimeout(() => {
+        // state.login = true;
+        that.$router.push('/lobby');
+      }, 500);
+    });
+  },
 };
 </script>
 <style scoped>
