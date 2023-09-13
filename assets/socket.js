@@ -119,6 +119,7 @@ socket.on('re_act', function (data) {
 });
 
 socket.on('updata_lobby', function (data) {
+  console.log(data);
   state.currentPlayers = data.room_data
 })
 
