@@ -32,15 +32,15 @@ export default {
   created() {
     const userName = this.$store.state.userStore.userName;
     const userRoom = this.$store.state.userStore.userRoom;
-    if (userName === null) this.$router.push('/');
-    if (userRoom === null) this.$router.push('/lobby');
+    if (userName === null || userName === undefined) this.$router.push('/');
+    // if (userRoom === null) this.$router.push('/lobby');
     socket.emit('id_check', { id: userName, room: userRoom });
 
     const that = this;
 
-    window.addEventListener('beforeunload', function (event) {
-      that.$store.commit('clearUserRoom');
-    });
+    // window.addEventListener('beforeunload', function (event) {
+    //   that.$store.commit('clearUserRoom');
+    // });
   },
 };
 </script>

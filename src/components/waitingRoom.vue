@@ -75,10 +75,10 @@ export default {
       isReady: false,
     };
   },
-  props: ['socket', 'state'],
   watch: {
     readyList: {
       handler(e) {
+        console.log('sddda', e);
         const readyLength = e.length;
         readyLength >= 1 && readyLength === this.players.length
           ? (this.start = true)
@@ -90,17 +90,11 @@ export default {
     },
     'state.currentPlayers': {
       handler(el) {
-        if (el === undefined) return;
-        const userRoom = this.$store.state.userStore.userRoom;
-        const players = el[userRoom].player.filter((el) => {
-          return el != this.leader;
-        });
-        this.players = players;
-        this.currentPlayersNumber = 3 - players.length;
+        this.adsdd(el);
       },
-      deep: true,
     },
   },
+  props: ['socket', 'state'],
   methods: {
     ready(state, id) {
       if (state === 'ready' && this.readyList.indexOf(id) === -1) {
@@ -117,8 +111,21 @@ export default {
       // const data = { room: this.userRoom, id };
       // this.socket.emit('ready', data);
     },
+    adsdd(el) {
+      console.log('currentPlayerssdasd', el);
+      if (el === undefined) return;
+      const userRoom = this.$store.state.userStore.userRoom;
+      console.log(userRoom);
+      const players = el[userRoom].player.filter((el) => {
+        return el != this.leader;
+      });
+      console.log('players', el[userRoom].player);
+      this.players = players;
+      this.currentPlayersNumber = 3 - players.length;
+    },
   },
   mounted() {
+    // this.adsdd(this.state.currentPlayers);
     const userName = this.$store.state.userStore.userName;
     const userRoom = this.$store.state.userStore.userRoom;
 
@@ -126,10 +133,6 @@ export default {
     this.leader = userName;
 
     this.socket.emit('id_check', { id: userName, room: userRoom });
-
-    this.socket.on('re_ready', function (data) {
-      console.log(data);
-    });
   },
 };
 </script>
