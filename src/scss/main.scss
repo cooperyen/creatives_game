@@ -8,6 +8,10 @@ img {
   display: block;
 }
 
+a {
+  text-decoration: none;
+}
+
 body {
   background-image: url('@/image/pc.jpg');
   // background-size: 100% 100%;

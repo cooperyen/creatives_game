@@ -1,4 +1,17 @@
 <template>
+  <div class="back-container">
+    <div class="back-btn">
+      <router-link to="/lobby" class="flex">
+        <font-awesome-icon icon="fa-solid fa-chevron-left" />
+        <p>to looby</p>
+      </router-link>
+    </div>
+    <div class="room-box">
+      <h2>
+        {{ userRoom }}
+      </h2>
+    </div>
+  </div>
   <div class="container">
     <!-- otherPlayers -->
     <div class="flex player-container">
@@ -42,17 +55,15 @@
     </div>
 
     <!-- buttons -->
-    <div>
-      <div>
-        <button id="ready" v-if="!isReady" @click="ready('ready', selfPlayer)">
-          準備
-        </button>
-        <button id="ready" v-else @click="ready('unready', selfPlayer)">
-          取消
-        </button>
+    <div class="active-container">
+      <div class="ready">
+        <p id="ready" v-if="!isReady" @click="ready('ready', selfPlayer)">
+          ready
+        </p>
+        <p id="ready" v-else @click="ready('unready', selfPlayer)">cancel</p>
       </div>
 
-      <button id="start" v-show="start">出發囉!!</button>
+      <p id="start" v-show="start">出發囉!!</p>
     </div>
   </div>
 </template>
