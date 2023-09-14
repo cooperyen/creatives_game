@@ -37,17 +37,49 @@ export default {
   created() {
     this.$store.commit('clearUserRoom');
   },
+  watch: {
+    'state.goUrl': {
+      handler(el) {
+        console.log(el);
+        if (el === null) return;
+        this.$router.push(el);
+        // this.state.goUrl = null;
+      },
+      deep: true,
+    },
+    'state.loginError': {
+      handler(el) {
+        if (el === null) return;
+        alert(el);
+      },
+      deep: true,
+    },
+  },
+  created() {
+    localStorage.setItem('userData', JSON.stringify({ userName: null }));
+  },
+  beforeUnmount() {
+    console.log('beforeUnmount');
+    localStorage.removeItem('reloaded');
+  },
   mounted() {
     const that = this;
+    const xx = JSON.parse(localStorage.getItem('userData'));
 
-    this.socket.on('re_act', function (data) {
-      if (data.way !== 'login') return;
-      localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
-      setTimeout(() => {
-        // state.login = true;
-        that.$router.push('/lobby');
-      }, 500);
-    });
+    // this.socket.emit('clearUserId', { id: xx.userName });
+
+    // setTimeout(() => {
+
+    // }, 1000);
+
+    // this.socket.on('re_act', function (data) {
+    //   if (data.way !== 'login' && data.loginError) return;
+    //   localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
+    //   setTimeout(() => {
+    //     // state.login = true;
+    //     that.$router.push('/lobby');
+    //   }, 500);
+    // });
   },
 };
 </script>

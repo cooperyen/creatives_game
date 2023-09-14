@@ -6,7 +6,7 @@ import login from '@/components/login.vue';
 import waitingRoom from '@/components/waitingRoom.vue';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
@@ -40,17 +40,14 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   const isLogin = JSON.parse(localStorage.getItem('user'));
-//   if (isLogin !== null) {
-//     if (to.path === '/') next(`/user/${isLogin.member}/`);
-//     else next();
-//   } else {
-//     if (to.path === '/callback') next();
-//     if (to.path !== '/login') next('/login');
-//     else next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
 
+  const reloaded = window.localStorage.getItem('reloaded') || '';
+  if (reloaded === '' && to.name === 'login') {
+    window.location.reload();
+    window.localStorage.setItem('reloaded', 'yes');
+  }
+  next()
+})
 
 export default router;

@@ -28,12 +28,18 @@ export default {
     },
   },
   methods: {},
-  mounted() {},
+  mounted() {
+    // history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
+  },
   created() {
     const userName = this.$store.state.userStore.userName;
     const userRoom = this.$store.state.userStore.userRoom;
     if (userName === null || userName === undefined) this.$router.push('/');
     // if (userRoom === null) this.$router.push('/lobby');
+    if (this.$route.path === '/') return;
     socket.emit('id_check', { id: userName, room: userRoom });
 
     const that = this;

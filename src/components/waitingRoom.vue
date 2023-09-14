@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <!-- players -->
+    <!-- otherPlayers -->
     <div class="flex player-container">
       <!-- player -->
       <div class="player-box">
-        <div class="player-item" v-for="i in players" :key="i">
+        <div class="player-item" v-for="i in otherPlayers" :key="i">
           <div class="layout"></div>
           <div class="layout-inner flex">
             <!-- icon -->
@@ -20,11 +20,7 @@
           </div>
         </div>
         <!-- empty -->
-        <div
-          class="player-item empty"
-          v-for="i in currentPlayersNumber"
-          :key="i"
-        >
+        <div class="player-item empty" v-for="i in otherPlayerSetroom" :key="i">
           <div class="layout empty"></div>
         </div>
       </div>
@@ -37,7 +33,7 @@
           </div>
           <div class="name-box">
             <p>
-              {{ leader }}
+              {{ selfPlayer }}
             </p>
           </div>
           <readyIcon v-show="isReady"></readyIcon>
@@ -48,10 +44,10 @@
     <!-- buttons -->
     <div>
       <div>
-        <button id="ready" v-if="!isReady" @click="ready('ready', leader)">
+        <button id="ready" v-if="!isReady" @click="ready('ready', selfPlayer)">
           準備
         </button>
-        <button id="ready" v-else @click="ready('unready', leader)">
+        <button id="ready" v-else @click="ready('unready', selfPlayer)">
           取消
         </button>
       </div>
@@ -66,9 +62,9 @@ export default {
   data() {
     return {
       oneself: null,
-      players: null,
-      currentPlayersNumber: null,
-      leader: null,
+      otherPlayers: null,
+      otherPlayerSetroom: 3,
+      selfPlayer: null,
       userRoom: null,
       start: false,
       readyList: [],
@@ -80,11 +76,11 @@ export default {
       handler(e) {
         console.log('sddda', e);
         const readyLength = e.length;
-        readyLength >= 1 && readyLength === this.players.length
+        readyLength >= 1 && readyLength === this.otherPlayers.length
           ? (this.start = true)
           : (this.start = false);
 
-        console.log(this.players);
+        console.log(this.otherPlayers);
       },
       deep: true,
     },
@@ -116,21 +112,26 @@ export default {
       if (el === undefined) return;
       const userRoom = this.$store.state.userStore.userRoom;
       console.log(userRoom);
-      const players = el[userRoom].player.filter((el) => {
-        return el != this.leader;
+      const otherPlayers = el[userRoom].player.filter((el) => {
+        return el != this.selfPlayer;
       });
-      console.log('players', el[userRoom].player);
-      this.players = players;
-      this.currentPlayersNumber = 3 - players.length;
+      console.log('otherPlayers', el[userRoom].player);
+      this.otherPlayers = otherPlayers;
+      this.otherPlayerSetroom = 3 - otherPlayers.length;
     },
   },
   mounted() {
     // this.adsdd(this.state.currentPlayers);
-    const userName = this.$store.state.userStore.userName;
-    const userRoom = this.$store.state.userStore.userRoom;
+    const LocalStorageData = JSON.parse(localStorage.getItem('userData'));
+    const userName = LocalStorageData.userName;
+    const userRoom = LocalStorageData.userRoom;
+
+    if (userRoom === null || userRoom === undefined)
+      this.$router.push('/lobby');
+    console.log(userRoom);
 
     this.userRoom = userRoom;
-    this.leader = userName;
+    this.selfPlayer = userName;
 
     this.socket.emit('id_check', { id: userName, room: userRoom });
   },
