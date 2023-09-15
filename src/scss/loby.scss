@@ -90,6 +90,10 @@ $text: rgb(198, 190, 149);
     right: 20px;
     top: 20px;
     position: absolute;
+    a {
+      color: $text;
+      float: right;
+    }
   }
   // margin-right: 30px;
   // margin-top: 5px;

@@ -2,6 +2,7 @@
   <div class="user-container">
     <div class="content">
       <h2 id="userid" style="text-align: right">勇者 : {{ userName }}</h2>
+      <router-link to="/">change ID</router-link>
     </div>
   </div>
   <div id="buttons" class="container pd-side room-box flex">
