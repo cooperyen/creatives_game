@@ -13,6 +13,10 @@ export const state = reactive({
   currentPlayers: null,
   router: null,
   loginError: null,
+  activeGameRoom: null,
+  gameDataFirstLoad: null,
+  gameDataUpdate: null,
+  currentCard: null
 });
 
 // const testURL = 'http://198.211.33.236:88'
@@ -65,6 +69,16 @@ socket.on('re_act', function (data) {
         state.loginError = data.message;
       break;
 
+
+    case 'lunch_mind':
+      if (data.url != null || data.url != undefined) {
+        state.goUrl = data.url;
+        state.activeGameRoom = data.url.substring(data.url.indexOf('/') + 1)
+
+      }
+
+      state.gameDataFirstLoad = data
+      console.log(state.gameDataFirstLoad)
   }
 
 
@@ -90,5 +104,15 @@ socket.on('update_lobby', function (data) {
   if (data.page != null || data.page != undefined)
     state.currentPlayers = data.page;
 })
+socket.on('updata_ready', function (data) {
+  console.log(data)
+})
 
+socket.on('update_game', function (data) {
+  console.log(data)
+  state.gameDataUpdate = data
+})
 
+socket.on('re_flash', function (data) {
+  state.gameDataUpdate = data
+})

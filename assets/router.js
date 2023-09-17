@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import lobby from '@/components/lobby.vue';
 import NotFound from '@/components/404.vue';
-import gameRoom from '@/components/gameRoom.vue';
+import game from '@/components/game.vue';
 import login from '@/components/login.vue';
 import waitingRoom from '@/components/waitingRoom.vue';
 
@@ -32,9 +32,9 @@ const router = createRouter({
       component: waitingRoom,
     },
     {
-      path: '/gameRoom',
-      name: 'gameRoom',
-      component: gameRoom,
+      path: '/game/:room',
+      name: 'game',
+      component: game,
     },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
   ],

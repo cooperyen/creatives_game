@@ -13,9 +13,9 @@
     </div>
   </div>
   <div class="container">
-    <!-- otherPlayers -->
+    <!-- player's content -->
     <div class="flex player-container">
-      <!-- player -->
+      <!-- otherPlayers -->
       <div class="player-box">
         <div class="player-item" v-for="i in otherPlayers" :key="i">
           <div class="layout"></div>
@@ -38,7 +38,7 @@
         </div>
       </div>
 
-      <!-- leader -->
+      <!-- self -->
       <div class="leader-box">
         <div class="leader-item">
           <div class="icon-box">
@@ -63,7 +63,7 @@
         <p id="ready" v-else @click="ready('unready', selfPlayer)">cancel</p>
       </div>
 
-      <p id="start" v-show="start">出發囉!!</p>
+      <button id="start" @click="startGame()">出發囉!!</button>
     </div>
   </div>
 </template>
@@ -97,32 +97,44 @@ export default {
     },
     'state.currentPlayers': {
       handler(el) {
-        this.adsdd(el);
+        this.currentPlayers(el);
       },
+    },
+    'state.goUrl': {
+      handler(el) {
+        console.log('el'.el);
+        this.$router.replace(`/${el}`);
+      },
+      deep: true,
     },
   },
   props: ['socket', 'state'],
   methods: {
+    startGame() {
+      this.socket.emit('lunch_mind', this.userRoom);
+    },
     ready(state, id) {
-      if (state === 'ready' && this.readyList.indexOf(id) === -1) {
-        this.readyList.push(id);
+      if (state === 'ready') {
+        const who_is_ready = { room: this.userRoom, id, state };
+        this.socket.emit('ready', who_is_ready);
+        // this.readyList.push(id);
         this.isReady = true;
       }
 
       if (state === 'unready') {
-        this.readyList.splice(this.readyList.indexOf(id));
+        // this.readyList.splice(this.readyList.indexOf(id));
+        const who_is_ready = { room: this.userRoom, id, state };
+        this.socket.emit('ready', who_is_ready);
         this.isReady = false;
       }
 
-      // console.log(this.readyList);
+      console.log(this.state.currentPlayers[this.userRoom].ready);
       // const data = { room: this.userRoom, id };
       // this.socket.emit('ready', data);
     },
-    adsdd(el) {
-      console.log('currentPlayerssdasd', el);
+    currentPlayers(el) {
       if (el === undefined) return;
       const userRoom = this.$store.state.userStore.userRoom;
-      console.log(userRoom);
       const otherPlayers = el[userRoom].player.filter((el) => {
         return el != this.selfPlayer;
       });

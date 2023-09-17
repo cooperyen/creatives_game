@@ -1,0 +1,9 @@
+#hand-card {
+  position: relative;
+  .card-box {
+    position: absolute;
+    .card-bg {
+      max-width: 150px;
+    }
+  }
+}
