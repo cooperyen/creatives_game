@@ -16,7 +16,8 @@ export const state = reactive({
   activeGameRoom: null,
   gameDataFirstLoad: null,
   gameDataUpdate: null,
-  currentCard: null
+  currentCard: null,
+  drawVote: null,
 });
 
 // const testURL = 'http://198.211.33.236:88'
@@ -111,8 +112,20 @@ socket.on('updata_ready', function (data) {
 socket.on('update_game', function (data) {
   console.log(data)
   state.gameDataUpdate = data
+  state.drawVote = null
 })
 
 socket.on('re_flash', function (data) {
   state.gameDataUpdate = data
 })
+
+socket.on('re_draw', function (data) {
+  state.drawVote = null;
+  if (data.message === 'draw') state.drawVote = true;
+  if (data.message === 'play') state.drawVote = false;
+
+
+})
+
+
+// socketio.emit('re_draw',{'message':'draw'},room=user_room)#回傳資料把玩家都轉去投票

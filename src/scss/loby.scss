@@ -81,25 +81,6 @@ $text: rgb(198, 190, 149);
   }
 }
 
-.user-container {
-  color: $text;
-  height: 50px;
-  // padding: 20px;
-  position: relative;
-  > .content {
-    right: 20px;
-    top: 20px;
-    position: absolute;
-    a {
-      color: $text;
-      float: right;
-    }
-  }
-  // margin-right: 30px;
-  // margin-top: 5px;
-  // background-color: rgba(29, 39, 51, 0.4);
-}
-
 .current-users {
   margin-top: 20px;
   color: black;

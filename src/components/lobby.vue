@@ -1,10 +1,7 @@
 <template>
-  <div class="user-container">
-    <div class="content">
-      <h2 id="userid" style="text-align: right">勇者 : {{ userName }}</h2>
-      <router-link to="/">change ID</router-link>
-    </div>
-  </div>
+  <userNameBox :userName="userName">
+    <router-link to="/">change ID</router-link>
+  </userNameBox>
   <div id="buttons" class="container pd-side room-box flex">
     <div
       class="room"
@@ -45,6 +42,7 @@
 </style>
 
 <script>
+import userNameBox from '@/../src/components/layout/userNameBox.vue';
 export default {
   data() {
     return {
@@ -54,6 +52,7 @@ export default {
       lobbyPlayerList: null,
     };
   },
+  components: { userNameBox },
   methods: {
     checkRoom() {
       const userData = JSON.parse(localStorage.getItem('userData'));

@@ -12,6 +12,11 @@ a {
   text-decoration: none;
 }
 
+html,
+body {
+  user-select: none;
+}
+
 body {
   background-image: url('@/image/pc.jpg');
   // background-size: 100% 100%;
