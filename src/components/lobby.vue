@@ -57,7 +57,7 @@ export default {
     checkRoom() {
       const userData = JSON.parse(localStorage.getItem('userData'));
       if (userData.userRoom === null || userData.userRoom === undefined) return;
-      if (userData.userRoom.indexOf('game') === -1) return;
+      if (userData.userRoom.indexOf('mind') === -1) return;
       this.$store.commit('clearUserRoom');
     },
     load() {

@@ -12,14 +12,6 @@ const router = createRouter({
       path: '/',
       name: 'login',
       component: login,
-      // children: [
-      //   {
-      //     // 当 /user/:id/profile 匹配成功
-      //     // UserProfile 将被渲染到 User 的 <router-view> 内部
-      //     path: ':user',
-      //     component: loby,
-      //   },
-      // ],
     },
     {
       path: '/lobby',
@@ -32,7 +24,7 @@ const router = createRouter({
       component: waitingRoom,
     },
     {
-      path: '/game/:room',
+      path: '/mind/:room',
       name: 'game',
       component: game,
     },

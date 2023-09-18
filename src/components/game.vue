@@ -1,6 +1,20 @@
 <template>
   <userNameBox :userName="player" class="name"></userNameBox>
-  <div class="game-container">
+  <div id="transition" v-show="passNotice != false">
+    <!-- <div id="transition"> -->
+    <div class="t-container">
+      <div class="msg-box">
+        <h2>{{ passNotice.msg }}</h2>
+      </div>
+      <div class="countDown flex">
+        <div class="title">即將進入下一關</div>
+        <div class="time">
+          {{ time }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-show="!passNotice" class="game-container">
     <div id="in_play">
       <div v-if="gameData === null"></div>
       <div class="game-info" v-else>
@@ -49,10 +63,11 @@
         </div>
       </div>
       <div class="card-play">
-        <button @click="playcard()">我覺得應該輪到我</button>
-        <button @click="start_draw()">丟飛鏢</button>
-        <div id="draw" v-if="drawVote">
-          {{ drawVote }}
+        <div id="play" v-show="!drawVote">
+          <button @click="playcard()">我覺得應該輪到我</button>
+          <button @click="start_draw()" :disabled="dart === 0">丟飛鏢</button>
+        </div>
+        <div id="draw" v-show="drawVote">
           <button @click="draw('yes')">同意</button>
           <button @click="draw('no')">不要咧</button>
         </div>
@@ -76,11 +91,19 @@ export default {
       currentCard: [],
       num: 10,
       drawVote: false,
+      passNotice: false,
+      time: 5,
     };
   },
   components: { userNameBox },
   props: ['socket', 'state'],
   watch: {
+    passNotice(el) {
+      if (el.msg != null && el.states === 'msg') {
+        this.time = 5;
+        this.showTime();
+      }
+    },
     'state.drawVote': {
       handler(el) {
         if (el === true) this.drawVote = el;
@@ -96,7 +119,6 @@ export default {
     },
     'state.gameDataFirstLoad': {
       handler(el) {
-        console.log(el);
         this.gameData = true;
         this.hp = el.hp;
         this.dart = el.dart;
@@ -112,7 +134,7 @@ export default {
         if (!isNaN(el.card)) {
           if (this.currentCard.length >= 5) this.currentCard.shift();
           this.currentCard.push(el.card);
-        } else alert(el.card);
+        } else this.passNotice = { msg: el.card, states: 'msg' };
 
         if (tureFalse('hp')) this.hp = el.hp;
         if (tureFalse('dart')) this.dart = el.dart;
@@ -134,6 +156,19 @@ export default {
     },
   },
   methods: {
+    showTime() {
+      console.log('this.time', this.time);
+      this.time -= 1;
+
+      if (this.time <= 0) {
+        this.passNotice = false;
+      }
+      if (this.time != 0) {
+        setTimeout(() => {
+          this.showTime();
+        }, 1000);
+      }
+    },
     playcard() {
       const data = { player: this.player, room: this.state.activeGameRoom };
       this.socket.emit('play', data);

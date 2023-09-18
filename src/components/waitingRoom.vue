@@ -26,7 +26,7 @@
             </div>
             <!-- name -->
             <div class="name-box flex">
-              <p>{{ i + 'fsdfdsfdsfdsfdsfdsfdsfddssfsdfsd' }}</p>
+              <p>{{ i }}</p>
             </div>
             <!-- ready icon -->
             <readyIcon v-show="isReady"></readyIcon>

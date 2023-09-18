@@ -20,8 +20,8 @@ export const state = reactive({
   drawVote: null,
 });
 
-// const testURL = 'http://198.211.33.236:88'
-const testURL = 'http://127.0.0.1:5000/'
+const testURL = 'http://198.211.33.236:88'
+// const testURL = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = process.env.NODE_ENV === "production" ? undefined : testURL;
@@ -44,6 +44,7 @@ socket.on('re_act', function (data) {
 
   switch (data.way) {
     case 'id_check':
+      console.log(data.url)
       if (data.game_list != null || data.game_list != undefined)
         state.gameRooms = data.game_list;
 
@@ -52,8 +53,8 @@ socket.on('re_act', function (data) {
         state.goUrl = data.url;
       }
 
-      if (data.url === 'waiting_room')
-        state.goUrl = `${data.url}/${data.user_room}`
+      if (data.go === 'waiting_room')
+        state.goUrl = `waiting_room/${data.url}`
 
       break;
 
@@ -74,8 +75,12 @@ socket.on('re_act', function (data) {
     case 'lunch_mind':
       if (data.url != null || data.url != undefined) {
         state.goUrl = data.url;
-        state.activeGameRoom = data.url.substring(data.url.indexOf('/') + 1)
+        const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
+        state.activeGameRoom = gameRoom
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        userData.userRoom = gameRoom
 
+        localStorage.setItem('userData', JSON.stringify(userData));
       }
 
       state.gameDataFirstLoad = data
@@ -105,6 +110,7 @@ socket.on('update_lobby', function (data) {
   if (data.page != null || data.page != undefined)
     state.currentPlayers = data.page;
 })
+
 socket.on('updata_ready', function (data) {
   console.log(data)
 })

@@ -30,8 +30,10 @@ export default {
   methods: {
     login() {
       if (this.userName === '') alert('this.userName');
-      this.$store.state.userStore.userName = this.userName;
-      this.socket.emit('login', { id: this.userName });
+      if (this.userName != '') {
+        this.$store.state.userStore.userName = this.userName;
+        this.socket.emit('login', { id: this.userName });
+      }
     },
   },
   created() {
