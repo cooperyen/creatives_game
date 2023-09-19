@@ -11,7 +11,9 @@
     >
       <div class="room-content">
         <div class="img-box">
-          <img :src="'./src/image/' + i + '.png'" :alt="i" />
+          <!-- <img src="./../../image/game01.png" :alt="i" /> -->
+          <!-- <img :src="getImageUrl(i)" :alt="i" /> -->
+          <img :src="'./../../image/' + i + '.png'" :alt="i" />
         </div>
         <div class="content">
           <div class="title">
@@ -54,6 +56,12 @@ export default {
   },
   components: { userNameBox },
   methods: {
+    // getImageUrl(name) {
+    //   // const path = new URL(`@/image/`, import.meta.url).href;
+    //   // return `${path}/${name}.png`;
+    //   const path = `${name}.png`;
+    //   return new URL(`@/image/${path}`, import.meta.url).href;
+    // },
     checkRoom() {
       const userData = JSON.parse(localStorage.getItem('userData'));
       if (userData.userRoom === null || userData.userRoom === undefined) return;
@@ -80,7 +88,8 @@ export default {
   watch: {
     'state.goUrl': {
       handler(el) {
-        if (el === 'loby') return;
+        if (el === null || el.indexOf('waiting_room') === -1) return;
+        console.log(el);
         this.$router.push(el);
       },
       // deep: true,

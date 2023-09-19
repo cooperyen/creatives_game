@@ -24,7 +24,7 @@ const testURL = 'http://198.211.33.236:88'
 // const testURL = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.NODE_ENV === "production" ? undefined : testURL;
+const URL = testURL;
 
 export const socket = io(URL);
 
@@ -41,6 +41,7 @@ socket.on("disconnect", () => {
 
 socket.on('re_act', function (data) {
 
+  state.goUrl = null;
 
   switch (data.way) {
     case 'id_check':
@@ -60,7 +61,6 @@ socket.on('re_act', function (data) {
 
     case 'login':
       localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
-      state.goUrl = null;
       state.loginError = null;
 
       if (data.url != null || data.url != undefined) {

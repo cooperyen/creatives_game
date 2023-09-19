@@ -102,7 +102,7 @@ export default {
     },
     'state.goUrl': {
       handler(el) {
-        console.log('el'.el);
+        if (el === null) return;
         this.$router.replace(`/${el}`);
       },
       deep: true,

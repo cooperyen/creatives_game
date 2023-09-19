@@ -5,7 +5,7 @@
   height: 100vh;
   .game-info {
     width: 200px;
-    color: wheat;
+    color: $text;
     position: absolute;
     top: 30px;
     left: 30px;
@@ -14,7 +14,7 @@
   .current-card {
     position: absolute;
     top: 20%;
-    color: wheat;
+    color: $text;
     width: 100%;
     max-width: 600px;
     left: 50%;
@@ -79,6 +79,12 @@
       font-weight: bold;
       margin: 0 15px;
     }
+    #draw {
+      h2 {
+        color: $text;
+        margin-bottom: 20px;
+      }
+    }
   }
 }
 
@@ -107,16 +113,15 @@
     }
   }
 }
-
-.name:deep {
+.name {
   position: fixed;
   right: 20px;
-  top: 20px;
+  bottom: 20px;
+  top: unset;
   > .content {
     position: unset;
   }
 }
-
 #transition {
   background-color: rgba($color: $mainColor, $alpha: 0.2);
   width: 100%;
@@ -163,5 +168,15 @@
       }
       margin: 15px 0;
     }
+  }
+}
+
+.game_info {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: $text;
+  img {
+    max-width: 40px;
   }
 }

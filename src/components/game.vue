@@ -21,13 +21,6 @@
         <p>
           Level:<span>{{ level }}</span>
         </p>
-        <p id="hp">
-          生命值 : <span>{{ hp }}</span>
-        </p>
-        <p id="dart">
-          飛鏢 : <span>{{ dart }}</span>
-        </p>
-        <!-- <button onclick="start_draw()">丟飛鏢</button> -->
       </div>
     </div>
 
@@ -65,11 +58,39 @@
       <div class="card-play">
         <div id="play" v-show="!drawVote">
           <button @click="playcard()">我覺得應該輪到我</button>
-          <button @click="start_draw()" :disabled="dart === 0">丟飛鏢</button>
+          <button @click="start_draw()" :disabled="dart === 0 || dart === null">
+            丟炸彈
+          </button>
         </div>
         <div id="draw" v-show="drawVote">
+          <h2>
+            有人現在要使用炸彈, 同意使用嗎?
+            <img src="./../image/ui/gem_die.svg" />
+          </h2>
           <button @click="draw('yes')">同意</button>
           <button @click="draw('no')">不要咧</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="game_info">
+      <div class="flex">
+        <!-- <p>生命值</p> -->
+        <div v-for="i in hp" :key="i">
+          <img src="./../image/ui/hp.svg" />
+        </div>
+        <div v-for="i in dieHp - hp" :key="i">
+          <img src="./../image/ui/hp_die.svg" />
+        </div>
+      </div>
+
+      <div class="flex">
+        <!-- <p>生命值</p> -->
+        <div v-for="i in dart" :key="i">
+          <img src="./../image/ui/gem.svg" />
+        </div>
+        <div v-for="i in dieDart - dart" :key="i">
+          <img src="./../image/ui/gem_die.svg" />
         </div>
       </div>
     </div>
@@ -85,7 +106,9 @@ export default {
       gameData: false,
       handCard: null,
       hp: null,
+      dieHp: 4,
       dart: null,
+      dieDart: 4,
       remain: null,
       level: null,
       currentCard: [],
@@ -136,7 +159,10 @@ export default {
           this.currentCard.push(el.card);
         } else this.passNotice = { msg: el.card, states: 'msg' };
 
-        if (tureFalse('hp')) this.hp = el.hp;
+        if (tureFalse('hp')) {
+          if (this.hp < el.hp) console.log('fail');
+          this.hp = el.hp;
+        }
         if (tureFalse('dart')) this.dart = el.dart;
         if (tureFalse('remain')) this.remain = el.remain;
         if (tureFalse('hand')) this.handCard = el.hand;
@@ -148,6 +174,14 @@ export default {
       },
       deep: true,
     },
+    'state.goUrl': {
+      handler(el) {
+        console.log('gogo', el);
+        if (el === null || el != 'lobby') return;
+        alert('lose');
+        this.$router.replace('/lobby');
+      },
+    },
     handCard(el) {
       console.log('handCard', this.handCard);
       this.$nextTick(() => {
@@ -157,7 +191,6 @@ export default {
   },
   methods: {
     showTime() {
-      console.log('this.time', this.time);
       this.time -= 1;
 
       if (this.time <= 0) {

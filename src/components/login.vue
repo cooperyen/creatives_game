@@ -31,6 +31,7 @@ export default {
     login() {
       if (this.userName === '') alert('this.userName');
       if (this.userName != '') {
+        console.log('click Login');
         this.$store.state.userStore.userName = this.userName;
         this.socket.emit('login', { id: this.userName });
       }
@@ -64,25 +65,7 @@ export default {
     console.log('beforeUnmount');
     localStorage.removeItem('reloaded');
   },
-  mounted() {
-    const that = this;
-    const xx = JSON.parse(localStorage.getItem('userData'));
-
-    // this.socket.emit('clearUserId', { id: xx.userName });
-
-    // setTimeout(() => {
-
-    // }, 1000);
-
-    // this.socket.on('re_act', function (data) {
-    //   if (data.way !== 'login' && data.loginError) return;
-    //   localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
-    //   setTimeout(() => {
-    //     // state.login = true;
-    //     that.$router.push('/lobby');
-    //   }, 500);
-    // });
-  },
+  mounted() {},
 };
 </script>
 <style scoped>
