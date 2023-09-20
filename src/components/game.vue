@@ -1,12 +1,14 @@
 <template>
   <userNameBox :userName="player" class="name"></userNameBox>
-  <div id="transition" v-show="passNotice != false">
+  <div class="transition" v-show="passNotice != false">
     <!-- <div id="transition"> -->
-    <div class="t-container">
+    <div class="next-container">
       <div class="msg-box">
-        <h2>{{ passNotice.msg }}</h2>
+        <h2>
+          {{ passNotice.msg }}
+        </h2>
       </div>
-      <div class="countDown flex">
+      <div class="countDown">
         <div class="title">即將進入下一關</div>
         <div class="time">
           {{ time }}
@@ -14,6 +16,75 @@
       </div>
     </div>
   </div>
+  <div class="transition" v-if="drawVote">
+    <div id="dart">
+      <div class="title">
+        <h2>有人現在要使用飛鏢, 同意使用嗎?</h2>
+      </div>
+      <img src="./../image/ui/gem_large.png" />
+      <div class="click-btn">
+        {{ isDrawVote }}
+        <button
+          class="agree"
+          :class="{ disabled: isDrawVote === 'no' }"
+          :disabled="isDrawVote === 'no'"
+          @click="voiteDart('yes')"
+        >
+          <p>&nbsp;&nbsp;同意&nbsp;&nbsp;</p>
+        </button>
+        <button
+          class="reject"
+          :class="{ disabled: isDrawVote === 'yes' }"
+          @click="voiteDart('no')"
+          :disabled="isDrawVote === 'yes'"
+        >
+          不要咧
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- GAME OVER -->
+  <div class="transition" v-if="gameOver">
+    <div id="gameover">
+      <!-- title -->
+      <div class="title">
+        <h2>game over</h2>
+      </div>
+      <div class="container">
+        <!-- options -->
+        <div class="options">
+          <!-- level -->
+          <div class="item-box">
+            <div class="item-title">Last level</div>
+            <div class="item-content">{{ level }}</div>
+          </div>
+          <!-- dart -->
+          <div class="item-box">
+            <div class="item-title">darts remaining</div>
+            <div class="flex" v-if="dart != 0">
+              <div v-for="i in dart" :key="i">
+                <img src="./../image/ui/gem.png" />
+              </div>
+            </div>
+            <div class="item-content" v-else>
+              <p>0</p>
+            </div>
+          </div>
+          <!-- plaeyr -->
+          <div class="item-box">
+            <div class="item-title">game plaeyrs</div>
+            <div class="item-content" v-for="i in player" :key="i">
+              {{ i }}
+            </div>
+          </div>
+        </div>
+        <div class="click-btn">
+          <button @click="$router.replace('/lobby')">leave</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div v-show="!passNotice" class="game-container">
     <div id="in_play">
       <div v-if="gameData === null"></div>
@@ -55,20 +126,12 @@
           </div>
         </div>
       </div>
-      <div class="card-play">
-        <div id="play" v-show="!drawVote">
+      <div class="card-play" v-if="!drawVote">
+        <div id="play" class="click-btn">
           <button @click="playcard()">我覺得應該輪到我</button>
-          <button @click="start_draw()" :disabled="dart === 0 || dart === null">
-            丟炸彈
+          <button @click="start_dart()" :disabled="dart === 0 || dart === null">
+            丟飛鏢
           </button>
-        </div>
-        <div id="draw" v-show="drawVote">
-          <h2>
-            有人現在要使用炸彈, 同意使用嗎?
-            <img src="./../image/ui/gem_die.svg" />
-          </h2>
-          <button @click="draw('yes')">同意</button>
-          <button @click="draw('no')">不要咧</button>
         </div>
       </div>
     </div>
@@ -84,13 +147,13 @@
         </div>
       </div>
 
-      <div class="flex">
+      <div class="flex dart">
         <!-- <p>生命值</p> -->
         <div v-for="i in dart" :key="i">
-          <img src="./../image/ui/gem.svg" />
+          <img src="./../image/ui/gem.png" />
         </div>
         <div v-for="i in dieDart - dart" :key="i">
-          <img src="./../image/ui/gem_die.svg" />
+          <img src="./../image/ui/gem_die.png" />
         </div>
       </div>
     </div>
@@ -114,8 +177,11 @@ export default {
       currentCard: [],
       num: 10,
       drawVote: false,
+      isDrawVote: null,
       passNotice: false,
       time: 5,
+      gameOver: null,
+      players: null,
     };
   },
   components: { userNameBox },
@@ -137,6 +203,7 @@ export default {
         if (el === null) {
           this.drawVote = false;
         }
+        this.isDrawVote = null;
       },
       deep: true,
     },
@@ -174,12 +241,16 @@ export default {
       },
       deep: true,
     },
-    'state.goUrl': {
+    'state.gameOne.gameOver': {
       handler(el) {
         console.log('gogo', el);
-        if (el === null || el != 'lobby') return;
-        alert('lose');
-        this.$router.replace('/lobby');
+        if (el.url === null && el.url != 'lobby') return;
+        this.gameOver = true;
+        this.dart = el.dart;
+        this.hp = el.hp;
+        this.level = el.level;
+        this.player = el.player;
+        // this.$router.replace('/lobby');
       },
     },
     handCard(el) {
@@ -239,7 +310,7 @@ export default {
         }
       }
     },
-    start_draw() {
+    start_dart() {
       console.log(this.dart);
       if (this.dart > 0) {
         this.socket.emit('draw', {
@@ -250,16 +321,22 @@ export default {
         alert('沒飛鏢啊!!按屁按逆!!');
       }
     },
-    draw(data) {
-      this.socket.emit('draw', {
-        message: data,
-        room: this.state.activeGameRoom,
-      });
+    voiteDart(data) {
+      if (data === 'yes') {
+        this.socket.emit('draw', {
+          message: data,
+          room: this.state.activeGameRoom,
+        });
+      }
+      if (data === 'no') {
+        this.drawVote = false;
+      }
+      this.isDrawVote = data;
     },
   },
   mounted() {
+    if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
     this.cardAnimate();
-    // console.log(this.state);
     this.player = this.$store.state.userStore.userName;
     this.socket.emit('game_room', this.state.activeGameRoom);
   },

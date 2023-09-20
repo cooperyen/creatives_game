@@ -68,17 +68,6 @@
   .card-play {
     margin-bottom: 50px;
     text-align: center;
-    button {
-      cursor: pointer;
-      // background-color: unset;
-      background-color: rgb(224, 216, 204);
-      padding: 15px;
-      border-radius: 4px;
-      border: unset;
-      font-size: 1rem;
-      font-weight: bold;
-      margin: 0 15px;
-    }
     #draw {
       h2 {
         color: $text;
@@ -122,51 +111,190 @@
     position: unset;
   }
 }
-#transition {
-  background-color: rgba($color: $mainColor, $alpha: 0.2);
+
+.transition {
+  // background-color: rgba($color: $mainColor, $alpha: 0.8);
+  background-color: rgba(12, 41, 85, 0.8);
   width: 100%;
   height: 100vh;
   position: fixed;
   z-index: 999;
-  .t-container {
-    border-radius: 8px;
-    background-color: rgb(222, 222, 222);
-    width: calc(100% - 60px);
-    padding: 15px 30px;
-    max-width: 1200px;
-    position: absolute;
-    left: 50%;
-    top: 30%;
-    transform: translate(-50%, -50%);
-    .msg-box {
-      text-align: center;
-      font-size: 1.4rem;
-      word-wrap: break-word;
-      margin: 15px 0 40px 0;
+  .title {
+    h2 {
+      font-size: 1.8rem;
+      color: $text;
     }
-    .countDown {
-      position: relative;
-      .title {
-        font-size: 1.2rem;
-        flex: 5;
-        display: flex;
-        align-items: center;
-        justify-content: end;
-        padding-right: 15px;
+  }
+}
+
+.next-container {
+  border-radius: 8px;
+  // background-color: rgb(222, 222, 222);
+  width: calc(100% - 60px);
+  padding: 15px 30px;
+  max-width: 1200px;
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: $text;
+  .msg-box {
+    word-wrap: break-word;
+    margin: 15px 0 40px 0;
+    text-shadow: 3px 3px 3px rgba(255, 213, 151, 0.2);
+  }
+  .countDown {
+    position: relative;
+    .title {
+      font-size: 1.4rem;
+      flex: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .time {
+      // background-color: blue;
+      width: 50px;
+      height: 50px;
+      border-radius: 100%;
+      font-size: 3rem;
+      margin: 20px auto 0 auto;
+      // margin: 0 auto;
+      color: rgb(55, 247, 180);
+      font-weight: bold;
+      text-shadow: 10px 3px 8px rgba(0, 0, 0, 0.4),
+        4px 4px 2px rgba(0, 0, 0, 0.2);
+    }
+    margin: 15px 0;
+  }
+}
+
+#dart {
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  img {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 15px;
+  }
+  .title {
+    margin-bottom: 20px;
+    color: $text;
+    font-size: 1.5rem;
+  }
+  .click-btn {
+    margin-top: 35px;
+  }
+}
+
+#gameover {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+
+  div.flex {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .title {
+    text-align: center;
+    text-transform: uppercase;
+    h2 {
+      font-size: 4rem;
+    }
+  }
+  .container {
+    color: $text;
+    width: 100%;
+    background-color: rgb(56, 85, 112);
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 50px;
+  }
+  .options {
+    .item-box {
+      margin-bottom: 20px;
+      .item-title {
+        font-size: 1.5rem;
+        text-transform: uppercase;
       }
-      .time {
-        // background-color: blue;
-        width: 50px;
-        height: 50px;
-        border-radius: 100%;
+      .item-content {
         font-size: 2rem;
-        text-align: center;
-        // margin: 0 auto;
-        color: rgb(180, 90, 78);
         font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
       }
-      margin: 15px 0;
+    }
+  }
+  img {
+    width: 100%;
+    max-width: 50px;
+  }
+  .click-btn button {
+    margin: 50px 0 0 0;
+    max-width: 300px;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 1.5rem;
+  }
+}
+
+.click-btn button {
+  cursor: pointer;
+  // background-color: unset;
+  background-color: rgb(224, 216, 204);
+  padding: 10px 15px;
+  border-radius: 4px;
+  border: unset;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 15px;
+  box-shadow: 4px 4px 8px rgba($color: $shadowcolor, $alpha: 0.4);
+  &.agree,
+  &.reject {
+    position: relative;
+    &::before,
+    &::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -5;
+      animation: moving 1.2s infinite;
+      border-radius: 4px;
+    }
+    &::before {
+      animation-delay: 0.2s;
+    }
+    &.disabled {
+      background-color: rgb(124, 124, 124);
+    }
+  }
+  &.reject {
+    background-color: rgb(182, 87, 87);
+    &::before,
+    &::after {
+      background-color: rgb(182, 87, 87);
+    }
+  }
+  &.agree {
+    background-color: $agree;
+    &::before,
+    &::after {
+      background-color: $agree;
     }
   }
 }
@@ -178,5 +306,26 @@
   color: $text;
   img {
     max-width: 40px;
+  }
+  .dart {
+    margin-top: 5px;
+  }
+}
+
+@keyframes moving {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
   }
 }
