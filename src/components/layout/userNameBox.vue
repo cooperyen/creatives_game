@@ -19,7 +19,8 @@ export default {
   color: $text;
   height: 50px;
   position: relative;
-  > .content:deep {
+  width: 100%;
+  > :deep(.content) {
     right: 20px;
     top: 20px;
     position: absolute;

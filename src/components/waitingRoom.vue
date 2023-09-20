@@ -29,7 +29,7 @@
               <p>{{ i }}</p>
             </div>
             <!-- ready icon -->
-            <readyIcon v-show="isReady"></readyIcon>
+            <readyIcon v-show="readyList[i]"></readyIcon>
           </div>
         </div>
         <!-- empty -->
@@ -49,7 +49,8 @@
               {{ selfPlayer }}
             </p>
           </div>
-          <readyIcon v-show="isReady"></readyIcon>
+          {{ readyList.fdsfd }}
+          <readyIcon v-show="readyList[selfPlayer]"></readyIcon>
         </div>
       </div>
     </div>
@@ -57,13 +58,18 @@
     <!-- buttons -->
     <div class="active-container">
       <div class="ready">
-        <p id="ready" v-if="!isReady" @click="ready('ready', selfPlayer)">
+        <p
+          id="ready"
+          v-if="!readyList[selfPlayer]"
+          @click="ready('ready', selfPlayer)"
+        >
           ready
         </p>
         <p id="ready" v-else @click="ready('unready', selfPlayer)">cancel</p>
       </div>
 
       <button id="start" @click="startGame()">出發囉!!</button>
+      {{ time }}
     </div>
   </div>
 </template>
@@ -80,21 +86,12 @@ export default {
       start: false,
       readyList: [],
       isReady: false,
+      time: 5,
+      isCountDown: false,
+      countDownFun: null,
     };
   },
   watch: {
-    readyList: {
-      handler(e) {
-        console.log('sddda', e);
-        const readyLength = e.length;
-        readyLength >= 1 && readyLength === this.otherPlayers.length
-          ? (this.start = true)
-          : (this.start = false);
-
-        console.log(this.otherPlayers);
-      },
-      deep: true,
-    },
     'state.currentPlayers': {
       handler(el) {
         this.currentPlayers(el);
@@ -102,10 +99,23 @@ export default {
     },
     'state.goUrl': {
       handler(el) {
-        console.log('el'.el);
+        if (el === null) return;
         this.$router.replace(`/${el}`);
       },
       deep: true,
+    },
+    'state.gameOne.readyList': {
+      handler(el) {
+        console.log(el);
+        this.readyList = el;
+      },
+    },
+    isCountDown(el) {
+      if (el) this.countDown();
+      else {
+        clearTimeout(this.countDownFun);
+        this.time = 5;
+      }
     },
   },
   props: ['socket', 'state'],
@@ -117,20 +127,12 @@ export default {
       if (state === 'ready') {
         const who_is_ready = { room: this.userRoom, id, state };
         this.socket.emit('ready', who_is_ready);
-        // this.readyList.push(id);
-        this.isReady = true;
       }
 
       if (state === 'unready') {
-        // this.readyList.splice(this.readyList.indexOf(id));
         const who_is_ready = { room: this.userRoom, id, state };
         this.socket.emit('ready', who_is_ready);
-        this.isReady = false;
       }
-
-      console.log(this.state.currentPlayers[this.userRoom].ready);
-      // const data = { room: this.userRoom, id };
-      // this.socket.emit('ready', data);
     },
     currentPlayers(el) {
       if (el === undefined) return;
@@ -138,9 +140,24 @@ export default {
       const otherPlayers = el[userRoom].player.filter((el) => {
         return el != this.selfPlayer;
       });
-      console.log('otherPlayers', el[userRoom].player);
+
+      if (el[userRoom].player.length > 1) this.isCountDown = true;
+      else this.isCountDown = false;
       this.otherPlayers = otherPlayers;
       this.otherPlayerSetroom = 3 - otherPlayers.length;
+    },
+
+    countDown() {
+      this.time -= 1;
+      console.log(this.time);
+      if (this.time <= 0) {
+        this.$router.replace('/lobby');
+      }
+      if (this.time != 0) {
+        this.countDownFun = setTimeout(() => {
+          this.countDown();
+        }, 1000);
+      }
     },
   },
   mounted() {
@@ -151,12 +168,16 @@ export default {
 
     if (userRoom === null || userRoom === undefined)
       this.$router.push('/lobby');
-    console.log(userRoom);
 
     this.userRoom = userRoom;
     this.selfPlayer = userName;
 
     this.socket.emit('id_check', { id: userName, room: userRoom });
+  },
+  onBeforeRouteLeave(to, from, next) {
+    console.log(to, from, next);
+    clearTimeout(this.countDownFun);
+    this.$store.commit('clearUserRoom');
   },
 };
 </script>

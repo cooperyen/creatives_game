@@ -18,10 +18,14 @@ export const state = reactive({
   gameDataUpdate: null,
   currentCard: null,
   drawVote: null,
+  gameOne: {
+    readyList: null,
+    gameOver: null,
+  }
 });
 
-const testURL = 'http://198.211.33.236:88'
-// const testURL = 'http://127.0.0.1:5000/'
+// const testURL = 'http://198.211.33.236:88'
+const testURL = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = testURL;
@@ -41,6 +45,7 @@ socket.on("disconnect", () => {
 
 socket.on('re_act', function (data) {
 
+  state.goUrl = null;
 
   switch (data.way) {
     case 'id_check':
@@ -50,7 +55,8 @@ socket.on('re_act', function (data) {
 
       // lobby escapes from load cycles.
       if (data.url === 'lobby') {
-        state.goUrl = data.url;
+        console.log(data);
+        state.gameOne.gameOver = data;
       }
 
       if (data.go === 'waiting_room')
@@ -60,7 +66,6 @@ socket.on('re_act', function (data) {
 
     case 'login':
       localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
-      state.goUrl = null;
       state.loginError = null;
 
       if (data.url != null || data.url != undefined) {
@@ -112,7 +117,11 @@ socket.on('update_lobby', function (data) {
 })
 
 socket.on('updata_ready', function (data) {
-  console.log(data)
+  console.log(data);
+  state.gameOne.readyList = data.reduce((a, b, c) => {
+    a[b] = b
+    return a
+  }, {})
 })
 
 socket.on('update_game', function (data) {
