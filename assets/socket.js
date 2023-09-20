@@ -125,7 +125,7 @@ socket.on('updata_ready', function (data) {
 })
 
 socket.on('update_game', function (data) {
-  console.log(data)
+  console.log('update_game', data)
   state.gameDataUpdate = data
   state.drawVote = null
 })
@@ -135,6 +135,7 @@ socket.on('re_flash', function (data) {
 })
 
 socket.on('re_draw', function (data) {
+  console.log(data)
   state.drawVote = null;
   if (data.message === 'draw') state.drawVote = true;
   if (data.message === 'play') state.drawVote = false;

@@ -2,6 +2,25 @@
   <userNameBox :userName="userName">
     <router-link to="/">change ID</router-link>
   </userNameBox>
+  <swiper-container
+    :slides-per-view="3"
+    :space-between="spaceBetween"
+    :centered-slides="true"
+    :pagination="{
+      hideOnClick: true,
+    }"
+    :breakpoints="{
+      768: {
+        slidesPerView: 3,
+      },
+    }"
+    @progress="onProgress"
+    @slidechange="onSlideChange"
+  >
+    <swiper-slide>Slide 1</swiper-slide>
+    <swiper-slide>Slide 2</swiper-slide>
+    <swiper-slide>Slide 3</swiper-slide>
+  </swiper-container>
   <div id="buttons" class="container pd-side room-box flex">
     <div
       class="room"
@@ -45,7 +64,25 @@
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
+import { register } from 'swiper/element/bundle';
+register();
 export default {
+  setup() {
+    const spaceBetween = 10;
+    const onProgress = (e) => {
+      const [swiper, progress] = e.detail;
+    };
+
+    const onSlideChange = (e) => {
+      console.log('slide changed');
+    };
+
+    return {
+      spaceBetween,
+      onProgress,
+      onSlideChange,
+    };
+  },
   data() {
     return {
       userName: null,

@@ -86,7 +86,7 @@ export default {
       start: false,
       readyList: [],
       isReady: false,
-      time: 5,
+      time: 30,
       isCountDown: false,
       countDownFun: null,
     };
@@ -100,6 +100,7 @@ export default {
     'state.goUrl': {
       handler(el) {
         if (el === null) return;
+        clearTimeout(this.countDownFun);
         this.$router.replace(`/${el}`);
       },
       deep: true,
@@ -114,7 +115,7 @@ export default {
       if (el) this.countDown();
       else {
         clearTimeout(this.countDownFun);
-        this.time = 5;
+        this.time = 30;
       }
     },
   },

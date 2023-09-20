@@ -322,12 +322,17 @@ export default {
       }
     },
     voiteDart(data) {
-      if (data === 'yes') {
-        this.socket.emit('draw', {
-          message: data,
-          room: this.state.activeGameRoom,
-        });
-      }
+      console.log(data);
+      this.socket.emit('draw', {
+        message: data,
+        room: this.state.activeGameRoom,
+      });
+      // if (data === 'yes') {
+      //   this.socket.emit('draw', {
+      //     message: data,
+      //     room: this.state.activeGameRoom,
+      //   });
+      // }
       if (data === 'no') {
         this.drawVote = false;
       }
