@@ -55,7 +55,7 @@
     </div>
 
     <!-- buttons -->
-    <div class="active-container">
+    <div class="active-container" v-if="!readyToGo">
       <div class="count-down" v-show="isShowCountDown">
         請準備遊戲，{{ time }} 秒後反回大廳
       </div>
@@ -79,9 +79,12 @@
       </div>
     </div>
 
-    <div class="start-game">
+    <div class="start-game" v-if="readyToGo">
       <div class="start-layout">
-        <button v-if="readyToGo" @click="startGame()">出發囉!!</button>
+        <div class="content">
+          <h2>開始遊戲，{{ time }} 秒後返回遊戲廳</h2>
+          <button @click="startGame()">出發囉!!</button>
+        </div>
       </div>
     </div>
   </div>
@@ -99,7 +102,7 @@ export default {
       start: false,
       readyList: [],
       isReady: false,
-      time: 30,
+      time: 60,
       isCountDown: false,
       countDownFun: null,
       isShowCountDown: false,
@@ -143,8 +146,14 @@ export default {
       if (el) this.countDown();
       else {
         clearTimeout(this.countDownFun);
-        this.time = 30;
+        this.time = 60;
       }
+    },
+    readyToGo(el) {
+      if (el === true) this.countDownStart();
+      if (el != false) return;
+      clearTimeout(this.countDownFun);
+      this.time = 60;
     },
   },
   props: ['socket', 'state'],
@@ -190,6 +199,20 @@ export default {
         }, 1000);
       }
     },
+
+    countDownStart() {
+      console.log('countDownStart', this.time);
+      this.time -= 1;
+      if (this.time <= 0) {
+        this.readyToGo = false;
+        this.ready('unready', this.selfPlayer);
+      }
+      if (this.time != 0) {
+        this.countDownFun = setTimeout(() => {
+          this.countDownStart();
+        }, 1000);
+      }
+    },
   },
   mounted() {
     // this.$store.commit('clearUserRoom');
@@ -207,6 +230,7 @@ export default {
   },
   unmount() {
     clearTimeout(this.countDownFun);
+    clearTimeout(this.countDownStart);
     this.$store.commit('clearUserRoom');
   },
 };
