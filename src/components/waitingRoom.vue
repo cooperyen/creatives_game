@@ -49,7 +49,6 @@
               {{ selfPlayer }}
             </p>
           </div>
-          {{ readyList.fdsfd }}
           <readyIcon v-show="readyList[selfPlayer]"></readyIcon>
         </div>
       </div>
@@ -57,19 +56,33 @@
 
     <!-- buttons -->
     <div class="active-container">
-      <div class="ready">
-        <p
-          id="ready"
-          v-if="!readyList[selfPlayer]"
-          @click="ready('ready', selfPlayer)"
-        >
-          ready
-        </p>
-        <p id="ready" v-else @click="ready('unready', selfPlayer)">cancel</p>
+      <div class="count-down" v-show="isShowCountDown">
+        請準備遊戲，{{ time }} 秒後反回大廳
       </div>
+      <div class="ready-box">
+        <div class="ready-content">
+          <div
+            class="ready-btn"
+            :class="{ ready: !readyList[selfPlayer] }"
+            v-if="!readyList[selfPlayer]"
+          >
+            <p @click="ready('ready', selfPlayer)">ready</p>
+          </div>
+          <div
+            v-else
+            class="ready-btn"
+            :class="{ cancel: readyList[selfPlayer] }"
+          >
+            <p @click="ready('unready', selfPlayer)">cancel</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <button id="start" @click="startGame()">出發囉!!</button>
-      {{ time }}
+    <div class="start-game">
+      <div class="start-layout">
+        <button v-if="readyToGo" @click="startGame()">出發囉!!</button>
+      </div>
     </div>
   </div>
 </template>
@@ -89,6 +102,8 @@ export default {
       time: 30,
       isCountDown: false,
       countDownFun: null,
+      isShowCountDown: false,
+      readyToGo: false,
     };
   },
   watch: {
@@ -105,9 +120,22 @@ export default {
       },
       deep: true,
     },
+    'state.gameOne.readyToGo': {
+      handler(el) {
+        if (typeof el != 'boolean') return;
+        this.readyToGo = el;
+      },
+      deep: true,
+    },
     'state.gameOne.readyList': {
       handler(el) {
-        console.log(el);
+        if (el[this.selfPlayer] != undefined || el[this.selfPlayer] != null) {
+          this.isShowCountDown = false;
+          this.isCountDown = false;
+        } else {
+          this.isShowCountDown = true;
+          this.isCountDown = true;
+        }
         this.readyList = el;
       },
     },
@@ -125,6 +153,7 @@ export default {
       this.socket.emit('lunch_mind', this.userRoom);
     },
     ready(state, id) {
+      this.readyToGo = false;
       if (state === 'ready') {
         const who_is_ready = { room: this.userRoom, id, state };
         this.socket.emit('ready', who_is_ready);
@@ -142,15 +171,16 @@ export default {
         return el != this.selfPlayer;
       });
 
-      if (el[userRoom].player.length > 1) this.isCountDown = true;
-      else this.isCountDown = false;
+      if (el[userRoom].player.length > 1) {
+        this.isCountDown = true;
+        this.isShowCountDown = true;
+      } else this.isCountDown = false;
       this.otherPlayers = otherPlayers;
       this.otherPlayerSetroom = 3 - otherPlayers.length;
     },
 
     countDown() {
       this.time -= 1;
-      console.log(this.time);
       if (this.time <= 0) {
         this.$router.replace('/lobby');
       }
@@ -162,7 +192,7 @@ export default {
     },
   },
   mounted() {
-    // this.adsdd(this.state.currentPlayers);
+    // this.$store.commit('clearUserRoom');
     const LocalStorageData = JSON.parse(localStorage.getItem('userData'));
     const userName = LocalStorageData.userName;
     const userRoom = LocalStorageData.userRoom;
@@ -175,8 +205,7 @@ export default {
 
     this.socket.emit('id_check', { id: userName, room: userRoom });
   },
-  onBeforeRouteLeave(to, from, next) {
-    console.log(to, from, next);
+  unmount() {
     clearTimeout(this.countDownFun);
     this.$store.commit('clearUserRoom');
   },

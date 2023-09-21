@@ -31,7 +31,6 @@ export default {
     login() {
       if (this.userName === '') alert('this.userName');
       if (this.userName != '') {
-        console.log('click Login');
         this.$store.state.userStore.userName = this.userName;
         this.socket.emit('login', { id: this.userName });
       }
@@ -43,7 +42,6 @@ export default {
   watch: {
     'state.goUrl': {
       handler(el) {
-        console.log(el);
         if (el === null) return;
         this.$router.push(el);
         // this.state.goUrl = null;
@@ -62,7 +60,6 @@ export default {
     localStorage.setItem('userData', JSON.stringify({ userName: null }));
   },
   beforeUnmount() {
-    console.log('beforeUnmount');
     localStorage.removeItem('reloaded');
   },
   mounted() {},

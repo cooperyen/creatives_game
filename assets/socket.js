@@ -21,6 +21,7 @@ export const state = reactive({
   gameOne: {
     readyList: null,
     gameOver: null,
+    readyToGo: false
   }
 });
 
@@ -49,13 +50,11 @@ socket.on('re_act', function (data) {
 
   switch (data.way) {
     case 'id_check':
-      console.log(data.url)
       if (data.game_list != null || data.game_list != undefined)
         state.gameRooms = data.game_list;
 
       // lobby escapes from load cycles.
       if (data.url === 'lobby') {
-        console.log(data);
         state.gameOne.gameOver = data;
       }
 
@@ -89,26 +88,19 @@ socket.on('re_act', function (data) {
       }
 
       state.gameDataFirstLoad = data
-      console.log(state.gameDataFirstLoad)
   }
 
 
 });
 
-socket.on('re_clearUserId', function (data) {
-  console.log('re_clearUserId', data)
-
-})
 
 socket.on('updata_lobby', function (data) {
-  console.log('updata_lobby', data)
   state.currentPlayers = data.room_data
 
 })
 
 
 socket.on('update_lobby', function (data) {
-  console.log('update_lobby', data)
   if (data.user_sids != null || data.user_sids != undefined)
     state.lobbyPlayerList = data.user_sids;
 
@@ -117,15 +109,14 @@ socket.on('update_lobby', function (data) {
 })
 
 socket.on('updata_ready', function (data) {
-  console.log(data);
-  state.gameOne.readyList = data.reduce((a, b, c) => {
-    a[b] = b
-    return a
+  state.gameOne.readyToGo = false;
+  state.gameOne.readyList = data.reduce((key, val, index) => {
+    key[val] = val
+    return key
   }, {})
 })
 
 socket.on('update_game', function (data) {
-  console.log('update_game', data)
   state.gameDataUpdate = data
   state.drawVote = null
 })
@@ -135,13 +126,17 @@ socket.on('re_flash', function (data) {
 })
 
 socket.on('re_draw', function (data) {
-  console.log(data)
   state.drawVote = null;
-  if (data.message === 'draw') state.drawVote = true;
-  if (data.message === 'play') state.drawVote = false;
+  if (data.message === 'draw') state.drawVote = { isPass: true }
+  if (data.message === 'play') state.drawVote = { isPass: false, card: data.card };
 
 
 })
 
+socket.on('re_lunch', function (data) {
+  state.gameOne.readyToGo = false;
+  if (data.isReady != null || data.isReady != undefined) {
+    state.gameOne.readyToGo = data.isReady;
+  }
+})
 
-// socketio.emit('re_draw',{'message':'draw'},room=user_room)#回傳資料把玩家都轉去投票

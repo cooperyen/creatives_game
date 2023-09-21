@@ -9,7 +9,8 @@
         </h2>
       </div>
       <div class="countDown">
-        <div class="title">即將進入下一關</div>
+        <div class="title" v-show="!voteFail">即將進入下一關</div>
+        <div class="title" v-show="voteFail">返回遊戲</div>
         <div class="time">
           {{ time }}
         </div>
@@ -22,8 +23,7 @@
         <h2>有人現在要使用飛鏢, 同意使用嗎?</h2>
       </div>
       <img src="./../image/ui/gem_large.png" />
-      <div class="click-btn">
-        {{ isDrawVote }}
+      <div class="click-btn" v-if="isDrawVote === null">
         <button
           class="agree"
           :class="{ disabled: isDrawVote === 'no' }"
@@ -39,6 +39,17 @@
           :disabled="isDrawVote === 'yes'"
         >
           不要咧
+        </button>
+      </div>
+      <div v-else class="click-btn">
+        <p>你已投票, 等待其他玩家中</p>
+        <button
+          :class="{
+            agree: this.isDrawVote === 'yes',
+            reject: this.isDrawVote === 'no',
+          }"
+        >
+          {{ this.isDrawVote }}
         </button>
       </div>
     </div>
@@ -79,7 +90,7 @@
           </div>
         </div>
         <div class="click-btn">
-          <button @click="$router.replace('/lobby')">leave</button>
+          <button @click="gameOverToLobby()">leave</button>
         </div>
       </div>
     </div>
@@ -182,23 +193,28 @@ export default {
       time: 5,
       gameOver: null,
       players: null,
+      voteFail: false,
     };
   },
   components: { userNameBox },
   props: ['socket', 'state'],
   watch: {
     passNotice(el) {
+      console.log(el);
       if (el.msg != null && el.states === 'msg') {
         this.time = 5;
-        this.showTime();
+        this.countDown();
       }
     },
     'state.drawVote': {
       handler(el) {
-        if (el === true) this.drawVote = el;
-        if (el === false) {
+        console.log(el);
+        if (el != null && el.isPass) this.drawVote = el;
+        if (el != null && !el.isPass) {
           this.drawVote = false;
-          alert('Not pass game yet, Continue playing games');
+          this.passNotice = { msg: el.card, states: 'msg' };
+          this.voteFail = true;
+          // alert('Not pass game yet, Continue playing games');
         }
         if (el === null) {
           this.drawVote = false;
@@ -259,17 +275,20 @@ export default {
         this.cardAnimate();
       });
     },
+    time(el) {
+      console.log(el);
+      if (el === 0) this.time = 5;
+    },
   },
   methods: {
-    showTime() {
+    countDown() {
       this.time -= 1;
-
       if (this.time <= 0) {
         this.passNotice = false;
       }
       if (this.time != 0) {
-        setTimeout(() => {
-          this.showTime();
+        this.countDownFun = setTimeout(() => {
+          this.countDown();
         }, 1000);
       }
     },
@@ -322,21 +341,20 @@ export default {
       }
     },
     voiteDart(data) {
-      console.log(data);
+      if (this.isDrawVote != null) return;
+
       this.socket.emit('draw', {
         message: data,
         room: this.state.activeGameRoom,
       });
-      // if (data === 'yes') {
-      //   this.socket.emit('draw', {
-      //     message: data,
-      //     room: this.state.activeGameRoom,
-      //   });
-      // }
-      if (data === 'no') {
-        this.drawVote = false;
-      }
+
+      // if (data === 'no') this.drawVote = false;
+
       this.isDrawVote = data;
+    },
+    gameOverToLobby() {
+      this.$store.commit('clearUserRoom');
+      this.$router.replace('/lobby');
     },
   },
   mounted() {

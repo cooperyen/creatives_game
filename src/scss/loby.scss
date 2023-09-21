@@ -13,32 +13,27 @@ $text: rgb(198, 190, 149);
   // flex-wrap: wrap;
   margin-top: 50px;
   .room {
-    box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
-    animation: boxShadow 3s ease infinite;
-    max-width: calc(1400px / 4);
-    width: 100%;
+    padding: 50px 25px;
+    // padding-top: 25px;
+
+    // max-width: calc(1400px / 4);
+    // width: 100%;
     cursor: pointer;
-    margin: 15px;
-    overflow: hidden;
+    // margin: 15px;
+    // overflow: hidden;
     border-radius: 5px;
     transition: transform 0.2s;
-    // &:nth-child(1) {
-    //   background-color: rgba(145, 127, 60, 1);
-    // }
-    // &:nth-child(2) {
-    //   background-color: rgba(60, 145, 128, 1);
-    // }
-    // &:nth-child(3) {
-    //   background-color: rgba(60, 86, 145, 1);
-    // }
-    // &:nth-child(4) {
-    //   background-color: rgba(145, 60, 103, 1);
-    // }
+
     &:hover {
       transform: scale(1.05) translateY(-10px) rotate(1deg);
       transition: transform 0.2s;
     }
     $imgborder: 0px;
+    .room-layout {
+      box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
+      animation: boxShadow 3s ease infinite;
+    }
+
     .room-content {
       position: relative;
       border-radius: $imgborder;

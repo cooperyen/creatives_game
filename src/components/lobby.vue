@@ -2,45 +2,44 @@
   <userNameBox :userName="userName">
     <router-link to="/">change ID</router-link>
   </userNameBox>
-  <swiper-container
-    :slides-per-view="3"
-    :space-between="spaceBetween"
-    :centered-slides="true"
-    :pagination="{
-      hideOnClick: true,
-    }"
-    :breakpoints="{
-      768: {
-        slidesPerView: 3,
-      },
-    }"
-    @progress="onProgress"
-    @slidechange="onSlideChange"
-  >
-    <swiper-slide>Slide 1</swiper-slide>
-    <swiper-slide>Slide 2</swiper-slide>
-    <swiper-slide>Slide 3</swiper-slide>
-  </swiper-container>
-  <div id="buttons" class="container pd-side room-box flex">
-    <div
-      class="room"
-      v-for="i in state.gameRooms"
-      :key="i"
-      @click="joinRoom(i)"
+  <div class="container pd-side room-box">
+    <swiper-container
+      :slides-per-view="2"
+      :space-between="25"
+      :pagination="{
+        hideOnClick: true,
+      }"
+      :breakpoints="{
+        768: {
+          slidesPerView: 3,
+        },
+        1200: {
+          slidesPerView: 4,
+        },
+      }"
+      @progress="onProgress"
+      @slidechange="onSlideChange"
     >
-      <div class="room-content">
-        <div class="img-box">
-          <!-- <img src="./../../image/game01.png" :alt="i" /> -->
-          <!-- <img :src="getImageUrl(i)" :alt="i" /> -->
-          <img :src="'./../../image/' + i + '.png'" :alt="i" />
-        </div>
-        <div class="content">
-          <div class="title">
-            <p>{{ i }}</p>
+      <swiper-slide
+        class="room"
+        v-for="i in state.gameRooms"
+        :key="i"
+        @click="joinRoom(i)"
+      >
+        <div class="room-layout">
+          <div class="room-content">
+            <div class="img-box">
+              <img :src="'./../../image/' + i + '.png'" :alt="i" />
+            </div>
+            <div class="content">
+              <div class="title">
+                <p>{{ i }}</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </swiper-slide>
+    </swiper-container>
   </div>
 
   <div id="user" class="container pd-side current-users">
@@ -126,7 +125,6 @@ export default {
     'state.goUrl': {
       handler(el) {
         if (el === null || el.indexOf('waiting_room') === -1) return;
-        console.log(el);
         this.$router.push(el);
       },
       // deep: true,
