@@ -1,0 +1,109 @@
+.move-out-enter-active,
+.move-out-leave-active {
+  transition: opacity 1s;
+  .user-container .content {
+    transition: transform 3s;
+  }
+}
+
+.move-out-enter-from,
+.move-out-leave-to {
+  opacity: 0;
+
+  .user-container .content {
+    transform: translateX(50px);
+  }
+}
+
+// connect
+.connect-enter-active,
+.connect-leave-active {
+  transition: 2s ease;
+
+  .loading-box {
+    transition: 1s ease;
+  }
+}
+
+.connect-enter-from,
+.connect-leave-to {
+  opacity: 0;
+  &#connect {
+    .loading-box {
+      opacity: 0;
+      transform: translate(-50%, -100px);
+    }
+  }
+}
+// connect end
+
+// login
+.login-enter-active,
+.login-leave-active {
+  transition: opacity 4s ease;
+
+  .content {
+    transition: 2s ease;
+  }
+}
+
+.login-enter-from,
+.login-leave-to {
+  opacity: 0;
+  .content {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+}
+.login-enter-to,
+.login-leave-from {
+  opacity: 1;
+  .content {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+// login end
+
+// lobby name
+.lobby-enter-active,
+.lobby-leave-active {
+  transition: opacity 4s ease;
+  .content {
+    transition: transform 1s ease;
+  }
+}
+
+.lobby-enter-from,
+.lobby-leave-to {
+  opacity: 0;
+  .content {
+    transform: translateX(50px);
+  }
+}
+.lobby-enter-to,
+.lobby-leave-from {
+  opacity: 1;
+  .content {
+    transform: translateX(0px);
+  }
+}
+// lobby name end
+
+// content-ready
+.content-ready-enter-active,
+.content-ready-leave-active {
+  transition: 2s ease;
+  transition-delay: 1s;
+}
+.content-ready-enter-from,
+.content-ready-leave-to {
+  opacity: 0;
+  transform: translateY(50px);
+}
+.content-ready-enter-to,
+.content-ready-leave-from {
+  opacity: 1;
+  transform: translateY(0px);
+}
+// content-ready end

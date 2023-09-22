@@ -12,11 +12,13 @@ const router = createRouter({
       path: '/',
       name: 'login',
       component: login,
+      meta: { transition: 'move-out' },
     },
     {
       path: '/lobby',
       name: 'lobby',
       component: lobby,
+
     },
     {
       path: '/waiting_room/:room',

@@ -1,3 +1,6 @@
+@import './color.scss';
+@import './transition.scss';
+
 * {
   margin: 0;
   padding: 0;
@@ -47,4 +50,40 @@ body {
 .pd-side {
   padding-left: 15px;
   padding-right: 15px;
+}
+
+#connect {
+  width: 100vw;
+  height: 100vh;
+  background-color: $mainColor;
+  position: fixed;
+  z-index: 99999999999999999;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  .loading-box {
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, -50%);
+    h2 {
+      color: white;
+      font-size: 3rem;
+    }
+    span {
+      color: white;
+      font-size: 3rem;
+
+      width: 100%;
+      display: block;
+      animation: ttt 1s infinite ease-in-out;
+      overflow: hidden;
+    }
+  }
+}
+
+@keyframes ttt {
+  from {
+    width: 0;
+  }
 }

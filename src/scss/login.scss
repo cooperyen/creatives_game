@@ -12,6 +12,8 @@ body {
 }
 
 .container {
+  width: 100%;
+  max-width: 500px;
   position: fixed;
   top: 40%;
   left: 50%;
@@ -22,14 +24,16 @@ body {
     font-size: 3rem;
   }
   .content {
-    /* margin-top: 60px; */
+    margin-top: 20px;
     background-color: #0d172b29;
-    padding: 60px 15px;
+    padding: 50px 15px 50px 15px;
     border-radius: 12px;
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    font-size: 3rem;
+    animation: flashing 5s infinite;
 
     .login.btn button {
-      width: 250px;
+      width: 90%;
       background-color: #ffc515;
       padding: 10px 5px;
       border: unset;
@@ -41,7 +45,7 @@ body {
     .input-box {
       font-size: 1.2rem;
       border-radius: 8px;
-      width: 250px;
+      width: 90%;
       margin: 0 auto;
       input {
         font-size: 1.2rem;
@@ -57,5 +61,23 @@ body {
         }
       }
     }
+  }
+}
+
+@keyframes flashing {
+  0% {
+    box-shadow: 0 0 20px 4px rgba(250, 73, 217, 0.5);
+  }
+  25% {
+    box-shadow: 0 0 1px rgba(243, 180, 78, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(243, 78, 78, 0.5);
+  }
+  75% {
+    box-shadow: 0 0 1px rgba(130, 243, 78, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 20px 4px rgba(250, 73, 217, 0.5);
   }
 }

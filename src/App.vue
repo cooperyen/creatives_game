@@ -1,9 +1,20 @@
 <template>
-  <!-- <p>State: {{ connected }}</p>
-  <p>socketId: {{ socketId }}</p>
-  <p>{{ $store.state.userStore.userData }}</p> -->
-  <!-- {{ state.userName }} -->
-  <RouterView :socket="socket" :state="state" />
+  <transition name="connect">
+    <div id="connect" v-show="!loading">
+      <div class="loading-box flex">
+        <h2>Connecting</h2>
+        <span>......</span>
+      </div>
+    </div>
+  </transition>
+
+  <router-view :socket="socket" :state="state" v-slot="{ Component }">
+    <transition :name="$route.meta.transition || 'fade'">
+      <div :key="$route.name">
+        <component :is="Component" />
+      </div>
+    </transition>
+  </router-view>
 </template>
 
 <script setup></script>
@@ -16,6 +27,7 @@ export default {
     return {
       socket,
       state,
+      loading: false,
     };
   },
 
@@ -27,26 +39,36 @@ export default {
       return state.socketId;
     },
   },
-  methods: {},
+  watch: {
+    'state.connected': {
+      handler(el) {
+        this.connectedCheck();
+      },
+    },
+  },
+  methods: {
+    connectedCheck() {
+      const connected = this.state.connected;
+      if (connected === undefined) return;
+
+      setTimeout(() => {
+        connected ? (this.loading = true) : (this.loading = false);
+      }, 1000);
+    },
+  },
   mounted() {
     // history.pushState(null, null, location.href);
     window.onpopstate = function () {
       history.go(1);
     };
+    this.connectedCheck();
   },
   created() {
     const userName = this.$store.state.userStore.userName;
     const userRoom = this.$store.state.userStore.userRoom;
     if (userName === null || userName === undefined) this.$router.push('/');
-    // if (userRoom === null) this.$router.push('/lobby');
     if (this.$route.path === '/') return;
     socket.emit('id_check', { id: userName, room: userRoom });
-
-    const that = this;
-
-    // window.addEventListener('beforeunload', function (event) {
-    //   that.$store.commit('clearUserRoom');
-    // });
   },
 };
 </script>

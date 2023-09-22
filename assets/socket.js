@@ -5,6 +5,7 @@ import { userStore } from '@/../assets/userStore.js';
 
 export const state = reactive({
   connected: false,
+  loading: false,
   socketId: '',
   userName: null,
   goUrl: null,
@@ -26,7 +27,7 @@ export const state = reactive({
 });
 
 const testURL = 'http://198.211.33.236:88'
-// const testURL = 'http://127.0.0.1:5000/'
+const testURL2 = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = testURL;
@@ -35,6 +36,7 @@ export const socket = io(URL);
 
 socket.on("connect", (el) => {
   console.log('connect')
+  state.connected = null
   state.connected = true;
   state.socketId = socket.id;
 });

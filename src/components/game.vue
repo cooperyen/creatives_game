@@ -17,6 +17,7 @@
       </div>
     </div>
   </div>
+  <!-- dart vote -->
   <div class="transition" v-if="drawVote">
     <div id="dart">
       <div class="title">
@@ -128,7 +129,7 @@
       <div class="card-container">
         <div class="card-box card-style" v-for="i in handCard" :key="i">
           <div class="card-num">
-            <p>
+            <p :class="{ large: String(i).length >= 3 }">
               <span>{{ i }}</span>
             </p>
           </div>
@@ -281,6 +282,10 @@ export default {
     },
   },
   methods: {
+    large(el) {
+      console.log(String(el).length);
+      return el.length >= 2 ? true : false;
+    },
     countDown() {
       this.time -= 1;
       if (this.time <= 0) {
