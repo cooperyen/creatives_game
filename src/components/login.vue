@@ -2,7 +2,10 @@
   <transition name="login">
     <div class="container" v-show="loading">
       <div class="title">
-        <h1>幫自己取個名字吧</h1>
+        <h1>
+          幫自己取個名字吧
+          <p>.</p>
+        </h1>
       </div>
       <div class="content">
         <div class="input-box">

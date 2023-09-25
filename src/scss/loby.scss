@@ -10,16 +10,20 @@ $text: rgb(198, 190, 149);
   margin: 0 auto;
 }
 
+.swiper-wrapper {
+  padding-bottom: 50px;
+}
+
 .room-box {
   margin-top: 50px;
-  @include m {
+  @include med {
     margin-top: 15px;
   }
   .room {
     border-radius: 5px;
     transition: transform 0.2s;
 
-    @include min-m {
+    @include min-med {
       margin-top: 50px;
       &:hover {
         transform: scale(1.05) translateY(-10px) rotate(1deg);
@@ -28,8 +32,10 @@ $text: rgb(198, 190, 149);
     }
     $imgborder: 0px;
     .room-layout {
-      margin-right: 25px;
-      margin-left: 25px;
+      margin: 0 25px;
+      @include xs {
+        margin: 0 12px;
+      }
       box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
       animation: boxShadow 3s ease infinite;
       // margin: 50px;
@@ -82,7 +88,8 @@ $text: rgb(198, 190, 149);
   color: black;
 
   // margin-left: 30px;
-  padding-left: 30px;
+  // padding-left: 3。0px;
+  padding: 0 30px;
   .content {
     border-radius: 8px;
     background-color: rgba($color: $mainBg, $alpha: 0.7);

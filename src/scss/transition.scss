@@ -41,9 +41,11 @@
 .login-enter-active,
 .login-leave-active {
   transition: opacity 4s ease;
+  transition-delay: 2s;
 
   .content {
     transition: 2s ease;
+    transition-delay: 2s;
   }
 }
 

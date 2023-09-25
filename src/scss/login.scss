@@ -1,36 +1,40 @@
-body {
-  background-image: url('http://198.211.33.236:88/pic/loginback.jpg');
-  background-size: 100% 100%;
-  /* 使背景图像宽度和高度都100% */
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  /* 使背景图像固定不滚动 */
-  margin: 0;
-  /* 取消默认的页面边距 */
-  padding: 0;
-  /* 取消默认的页面内边距 */
-}
+@import './rwd.scss';
+@import './color.scss';
 
 .container {
-  width: 100%;
+  width: calc(100% - 40px);
+  margin: 0 auto;
   max-width: 500px;
   position: fixed;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  text-align: center;
-  .title h1 {
-    color: white;
-    font-size: 3rem;
+
+  .title {
+    h1 {
+      color: white;
+      font-size: 3rem;
+      @include sm {
+        text-align: justify;
+      }
+      p {
+        color: $titlColor;
+        animation: slash 1s infinite steps(20, end);
+        font-size: 5rem;
+        display: initial;
+        line-height: 0;
+      }
+    }
   }
   .content {
-    margin-top: 20px;
+    margin-top: 40px;
     background-color: #0d172b29;
-    padding: 50px 15px 50px 15px;
+    padding: 35px 15px 35px 15px;
     border-radius: 12px;
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
     font-size: 3rem;
     animation: flashing 5s infinite;
+    text-align: center;
 
     .login.btn button {
       width: 90%;
@@ -40,6 +44,7 @@ body {
       border-radius: 6px;
       margin-top: 30px;
       font-weight: bold;
+
       cursor: pointer;
     }
     .input-box {
@@ -79,5 +84,13 @@ body {
   }
   100% {
     box-shadow: 0 0 20px 4px rgba(250, 73, 217, 0.5);
+  }
+}
+@keyframes slash {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

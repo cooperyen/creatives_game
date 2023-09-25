@@ -19,5 +19,8 @@ export default defineConfig({
     },
 
   },
-
+  base: './', // added this line
+  server: {
+    https: false
+  }
 })

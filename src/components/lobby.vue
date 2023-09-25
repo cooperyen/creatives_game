@@ -8,12 +8,12 @@
       <div class="container pd-side room-box">
         <swiper-container
           :slides-per-view="1"
-          :space-between="25"
+          :space-between="0"
           :pagination="{
             hideOnClick: true,
           }"
           :breakpoints="{
-            576: {
+            399: {
               slidesPerView: 2,
             },
             768: {
@@ -26,14 +26,9 @@
           @progress="onProgress"
           @slidechange="onSlideChange"
         >
-          <swiper-slide
-            class="room"
-            v-for="i in state.gameRooms"
-            :key="i"
-            @click="joinRoom(i)"
-          >
+          <swiper-slide class="room" v-for="i in state.gameRooms" :key="i">
             <div class="room-layout">
-              <div class="room-content">
+              <div class="room-content" @click="joinRoom(i)">
                 <div class="img-box">
                   <img :src="'./../../image/' + i + '.png'" :alt="i" />
                 </div>

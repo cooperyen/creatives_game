@@ -1,22 +1,22 @@
-@mixin xxs {
+@mixin xs {
   @media (max-width: 399px) {
     @content;
   }
 }
 
-@mixin xs {
+@mixin sm {
   @media (max-width: 576px) {
     @content;
   }
 }
 
-@mixin m {
+@mixin med {
   @media (max-width: 769px) {
     @content;
   }
 }
 
-@mixin min-m {
+@mixin min-med {
   @media (min-width: 769px) {
     @content;
   }
