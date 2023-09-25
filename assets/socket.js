@@ -30,7 +30,7 @@ const testURL = 'http://198.211.33.236:88'
 const testURL2 = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = testURL;
+const URL = testURL2;
 
 export const socket = io(URL);
 

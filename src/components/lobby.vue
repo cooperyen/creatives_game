@@ -7,12 +7,15 @@
     <div v-show="showPage">
       <div class="container pd-side room-box">
         <swiper-container
-          :slides-per-view="2"
+          :slides-per-view="1"
           :space-between="25"
           :pagination="{
             hideOnClick: true,
           }"
           :breakpoints="{
+            576: {
+              slidesPerView: 2,
+            },
             768: {
               slidesPerView: 3,
             },

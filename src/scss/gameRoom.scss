@@ -192,6 +192,10 @@
   }
   .click-btn {
     margin-top: 35px;
+    > p {
+      margin-bottom: 15px;
+      color: $text;
+    }
   }
 }
 

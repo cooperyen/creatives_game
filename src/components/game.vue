@@ -142,7 +142,7 @@
         <div id="play" class="click-btn">
           <button @click="playcard()">我覺得應該輪到我</button>
           <button @click="start_dart()" :disabled="dart === 0 || dart === null">
-            丟飛鏢
+            {{ dart === 0 || dart === null ? '飛鏢不足' : '丟飛鏢' }}
           </button>
         </div>
       </div>
