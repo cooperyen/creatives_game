@@ -9,6 +9,11 @@
     @content;
   }
 }
+@mixin min-sm {
+  @media (min-width: 577px) {
+    @content;
+  }
+}
 
 @mixin med {
   @media (max-width: 769px) {

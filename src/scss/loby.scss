@@ -32,7 +32,7 @@ $text: rgb(198, 190, 149);
     }
     $imgborder: 0px;
     .room-layout {
-      margin: 0 25px;
+      margin: 5px 25px 0 25px;
       @include xs {
         margin: 0 12px;
       }
