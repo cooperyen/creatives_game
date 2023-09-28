@@ -7,30 +7,21 @@
     <div v-show="showPage">
       <div class="container pd-side room-box">
         <swiper-container
+          init="false"
           :slides-per-view="1"
-          :space-between="0"
-          :pagination="{
-            hideOnClick: true,
-          }"
-          :breakpoints="{
-            399: {
-              slidesPerView: 2,
-            },
-            768: {
-              slidesPerView: 3,
-            },
-            1200: {
-              slidesPerView: 4,
-            },
-          }"
-          @progress="onProgress"
-          @slidechange="onSlideChange"
+          :space-between="spaceBetween"
+          pagination="ture"
+          :breakpoints="breakpoints"
         >
           <swiper-slide class="room" v-for="i in state.gameRooms" :key="i">
             <div class="room-layout">
               <div class="room-content" @click="joinRoom(i)">
                 <div class="img-box">
-                  <img :src="'./../../image/' + i + '.png'" :alt="i" />
+                  <img
+                    :src="'./../../image/' + i + '.png'"
+                    :alt="i"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="content">
                   <div class="title">
@@ -60,29 +51,33 @@
     </div>
   </transition>
 </template>
-<style lang="scss" scoped>
-@import '@/scss/loby.scss';
-</style>
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 import { register } from 'swiper/element/bundle';
+// Import Swiper styles
+
 register();
+
 export default {
   setup() {
-    const spaceBetween = 10;
-    const onProgress = (e) => {
-      const [swiper, progress] = e.detail;
-    };
+    const spaceBetween = 0;
 
-    const onSlideChange = (e) => {
-      console.log('slide changed');
+    const breakpoints = {
+      399: {
+        slidesPerView: 2,
+      },
+      768: {
+        slidesPerView: 3,
+      },
+      1200: {
+        slidesPerView: 4,
+      },
     };
 
     return {
       spaceBetween,
-      onProgress,
-      onSlideChange,
+      breakpoints,
     };
   },
   data() {
@@ -96,6 +91,26 @@ export default {
   },
   components: { userNameBox },
   methods: {
+    swipierInit() {
+      const swiperEl = document.querySelector('swiper-container');
+      const params = {
+        // array with CSS styles
+        injectStyles: [
+          `
+          :host{
+              --swiper-theme-color: rgb(198, 190, 149);
+          }
+          `,
+        ],
+
+        // // array with CSS urls
+        // injectStylesUrls: ['path/to/one.css', 'path/to/two.css'],
+      };
+
+      Object.assign(swiperEl, params);
+
+      swiperEl.initialize();
+    },
     checkRoom() {
       const userData = JSON.parse(localStorage.getItem('userData'));
       if (userData.userRoom === null || userData.userRoom === undefined) return;
@@ -146,9 +161,15 @@ export default {
   mounted() {
     this.load();
     this.showPage = true;
+
+    this.swipierInit();
   },
   unmounted() {
     this.showPage = false;
   },
 };
 </script>
+
+<style lang="scss">
+@import '@/scss/loby.scss';
+</style>

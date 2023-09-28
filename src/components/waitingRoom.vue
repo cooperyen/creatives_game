@@ -18,7 +18,7 @@
       <!-- otherPlayers -->
       <div class="player-box">
         <div class="player-item" v-for="i in otherPlayers" :key="i">
-          <div class="layout"></div>
+          <!-- <div class="layout"></div> -->
           <div class="layout-inner flex">
             <!-- icon -->
             <div class="icon-box">
@@ -34,7 +34,7 @@
         </div>
         <!-- empty -->
         <div class="player-item empty" v-for="i in otherPlayerSetroom" :key="i">
-          <div class="layout empty"></div>
+          <!-- <div class="layout empty"></div> -->
         </div>
       </div>
 
