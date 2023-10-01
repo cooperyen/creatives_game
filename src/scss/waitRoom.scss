@@ -7,7 +7,13 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  // background-color: red;
+}
+
+.leader-box,
+.player-box {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 380px;
 }
 
 .player-container {
@@ -18,14 +24,16 @@
   }
   .player-box {
     .player-item {
-      margin-bottom: 10px;
       height: 120px;
       position: relative;
       background-image: url('./../image/player_bg.png');
       background-size: 100% 100%;
       background-repeat: no-repeat;
       @include sm {
-        background-image: url('./../image/player_mb.png');
+        // background-image: url('./../image/player_mb.png');
+      }
+      @include min-sm {
+        margin-bottom: 10px;
       }
       &.empty {
         background-image: url('./../image/waitBg.png');
@@ -35,17 +43,29 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
+
         .icon-box {
-          width: 100px;
+          img {
+            margin: 0 auto;
+          }
           flex: 1.5;
           @include min-sm {
-            width: 120px;
+            img {
+              width: 100px;
+            }
             transform: translate(-30px, -10px);
+          }
+          @include med {
+            transform: translate(0px, 0px);
+          }
+          @include min-med {
+            img {
+              width: 120px;
+            }
           }
           @include sm {
             img {
-              width: 100px;
-              margin: 0 auto;
+              width: 80px;
             }
           }
         }
@@ -57,7 +77,7 @@
           @include sm {
             font-size: 1rem;
           }
-          @include min-sm {
+          @include min-med {
             transform: translateX(-30px);
             width: calc(100% - 120px);
           }
@@ -97,10 +117,7 @@
           width: 100%;
           margin: 0 auto;
           @include sm {
-            width: 100px;
-          }
-          @include xs {
-            // width: 80px;
+            width: 80px;
           }
         }
         @include min-sm {
@@ -133,13 +150,6 @@
       }
     }
   }
-
-  .leader-box,
-  .player-box {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 380px;
-  }
 }
 
 .back-container {
@@ -151,7 +161,7 @@
   margin: 0 auto;
   position: relative;
   @include sm {
-    height: 180px;
+    height: 160px;
   }
   .back-btn {
     position: absolute;
@@ -185,6 +195,10 @@
     -webkit-text-stroke: 4px $titlColor;
     text-shadow: 5px 5px 0 $shadowcolor, -1px -1px 0 $shadowcolor,
       5px 7px 0 $shadowcolor, 8px 5px 0 $shadowcolor, 10px 10px 0 $shadowcolor;
+
+    @include sm {
+      font-size: 2rem;
+    }
   }
 }
 
@@ -193,6 +207,9 @@
   margin-top: 80px;
   width: 100%;
   height: 100%;
+  @include sm {
+    margin-top: 20px;
+  }
   .ready-box {
     filter: drop-shadow(0px 0px 6px rgb(255, 214, 34));
     animation: filterBgAni 2s infinite;

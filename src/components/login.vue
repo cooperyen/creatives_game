@@ -35,8 +35,10 @@ export default {
   props: ['socket', 'state'],
   methods: {
     login() {
-      if (this.userName === '') alert('this.userName');
-      if (this.userName != '') {
+      const nameLength = this.userName.length;
+
+      if (this.userName === '' || nameLength > 15) alert('this.userName');
+      if (this.userName != '' && nameLength <= 15) {
         this.$store.state.userStore.userName = this.userName;
         this.socket.emit('login', { id: this.userName });
       }

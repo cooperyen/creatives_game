@@ -94,7 +94,6 @@
 export default {
   data() {
     return {
-      oneself: null,
       otherPlayers: null,
       otherPlayerSetroom: 3,
       selfPlayer: null,
@@ -132,13 +131,24 @@ export default {
     },
     'state.gameOne.readyList': {
       handler(el) {
-        if (el[this.selfPlayer] != undefined || el[this.selfPlayer] != null) {
-          this.isShowCountDown = false;
-          this.isCountDown = false;
-        } else {
-          this.isShowCountDown = true;
-          this.isCountDown = true;
+        const selfPlayeReady =
+          el[this.selfPlayer] != undefined || el[this.selfPlayer] != null;
+
+        if (selfPlayeReady) this.readyGameUI(false);
+
+        if (!selfPlayeReady) {
+          // if (Object.keys(el).length > 1) {
+          //   this.readyGameUI(true);
+          // } else {
+
+          console.log(this.otherPlayers.length);
+          if (this.otherPlayers.length === 0) this.readyGameUI(false);
+          if (this.otherPlayers.length != 0) this.readyGameUI(true);
+          // this.readyGameUI(true);
+
+          // }
         }
+
         this.readyList = el;
       },
     },
@@ -146,6 +156,7 @@ export default {
       if (el) this.countDown();
       else {
         clearTimeout(this.countDownFun);
+        this.isShowCountDown = false;
         this.time = 60;
       }
     },
@@ -158,6 +169,17 @@ export default {
   },
   props: ['socket', 'state'],
   methods: {
+    readyGameUI(boolean) {
+      if (boolean) {
+        this.isShowCountDown = true;
+        this.isCountDown = true;
+      }
+
+      if (!boolean) {
+        this.isShowCountDown = false;
+        this.isCountDown = false;
+      }
+    },
     startGame() {
       this.socket.emit('lunch_mind', this.userRoom);
     },
@@ -181,9 +203,9 @@ export default {
       });
 
       if (el[userRoom].player.length > 1) {
-        this.isCountDown = true;
-        this.isShowCountDown = true;
-      } else this.isCountDown = false;
+        if (!this.readyList[this.selfPlayer]) this.readyGameUI(true);
+      } else this.readyGameUI(false);
+
       this.otherPlayers = otherPlayers;
       this.otherPlayerSetroom = 3 - otherPlayers.length;
     },
@@ -198,6 +220,7 @@ export default {
           this.countDown();
         }, 1000);
       }
+      console.log('countDown', this.time);
     },
 
     countDownStart() {
