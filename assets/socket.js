@@ -82,18 +82,18 @@ socket.on('re_act', function (data) {
     case 'lunch_bj':
     case 'lunch_mind':
 
-      if (data.url != null || data.url != undefined) {
-        console.log(data);
-        state.goUrl = data.url;
-        const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
-        state.activeGameRoom = gameRoom
-        const userData = JSON.parse(localStorage.getItem('userData'));
-        userData.userRoom = gameRoom
+      if (data.url === null || data.url === undefined) break;
+      console.log(data);
+      state.goUrl = data.url;
+      const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
+      state.activeGameRoom = gameRoom
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      userData.userRoom = gameRoom
 
-        localStorage.setItem('userData', JSON.stringify(userData));
-      }
+      localStorage.setItem('userData', JSON.stringify(userData));
 
       state.gameDataFirstLoad = data
+
       break;
   }
 
