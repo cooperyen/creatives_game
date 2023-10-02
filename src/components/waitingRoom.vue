@@ -53,38 +53,43 @@
         </div>
       </div>
     </div>
+  </div>
+  <!-- buttons -->
 
-    <!-- buttons -->
-    <div class="active-container" v-if="!readyToGo">
-      <div class="count-down" v-show="isShowCountDown">
-        請準備遊戲，{{ time }} 秒後反回大廳
-      </div>
+  <div class="active-container" v-show="!readyToGo">
+    <!-- <transition name="move-up"> -->
+    <div class="count-down" :class="{ visible: !isShowCountDown }">
+      請準備遊戲，<span>{{ time }}</span> 秒後反回大廳
+    </div>
+    <!-- </transition> -->
+    <div class="ready-container">
       <div class="ready-box">
         <div class="ready-content">
           <div
             class="ready-btn"
-            :class="{ ready: !readyList[selfPlayer] }"
-            v-if="!readyList[selfPlayer]"
+            :class="{
+              ready: !readyList[selfPlayer],
+              cancel: readyList[selfPlayer],
+            }"
           >
-            <p @click="ready('ready', selfPlayer)">ready</p>
-          </div>
-          <div
-            v-else
-            class="ready-btn"
-            :class="{ cancel: readyList[selfPlayer] }"
-          >
-            <p @click="ready('unready', selfPlayer)">cancel</p>
+            <p
+              @click="
+                ready(readyList[selfPlayer] ? 'ready' : 'unready', selfPlayer)
+              "
+            >
+              {{ readyList[selfPlayer] ? 'cancel' : 'ready' }}
+            </p>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="start-game" v-if="readyToGo">
-      <div class="start-layout">
-        <div class="content">
-          <h2>開始遊戲，{{ time }} 秒後返回遊戲廳</h2>
-          <button @click="startGame()">出發囉!!</button>
-        </div>
+  <div class="start-game" v-if="readyToGo">
+    <div class="start-layout">
+      <div class="content">
+        <h2>開始遊戲，{{ time }} 秒後返回遊戲廳</h2>
+        <button @click="startGame()">出發囉!!</button>
       </div>
     </div>
   </div>
@@ -137,16 +142,8 @@ export default {
         if (selfPlayeReady) this.readyGameUI(false);
 
         if (!selfPlayeReady) {
-          // if (Object.keys(el).length > 1) {
-          //   this.readyGameUI(true);
-          // } else {
-
-          console.log(this.otherPlayers.length);
           if (this.otherPlayers.length === 0) this.readyGameUI(false);
           if (this.otherPlayers.length != 0) this.readyGameUI(true);
-          // this.readyGameUI(true);
-
-          // }
         }
 
         this.readyList = el;
@@ -181,7 +178,21 @@ export default {
       }
     },
     startGame() {
-      this.socket.emit('lunch_mind', this.userRoom);
+      const that = this;
+      switch (this.userRoom) {
+        case 'game01':
+          toGame('lunch_mind');
+          break;
+        case 'game02':
+          toGame('lunch_bj');
+          break;
+        default:
+          alert('no game');
+      }
+
+      function toGame(game) {
+        that.socket.emit(game, that.userRoom);
+      }
     },
     ready(state, id) {
       this.readyToGo = false;
@@ -220,11 +231,9 @@ export default {
           this.countDown();
         }, 1000);
       }
-      console.log('countDown', this.time);
     },
 
     countDownStart() {
-      console.log('countDownStart', this.time);
       this.time -= 1;
       if (this.time <= 0) {
         this.readyToGo = false;
@@ -238,7 +247,6 @@ export default {
     },
   },
   mounted() {
-    // this.$store.commit('clearUserRoom');
     const LocalStorageData = JSON.parse(localStorage.getItem('userData'));
     const userName = LocalStorageData.userName;
     const userRoom = LocalStorageData.userRoom;

@@ -49,8 +49,10 @@ socket.on("disconnect", () => {
 socket.on('re_act', function (data) {
 
   state.goUrl = null;
+  state.gameDataFirstLoad = null;
 
   switch (data.way) {
+
     case 'id_check':
       if (data.game_list != null || data.game_list != undefined)
         state.gameRooms = data.game_list;
@@ -77,9 +79,11 @@ socket.on('re_act', function (data) {
         state.loginError = data.message;
       break;
 
-
+    case 'lunch_bj':
     case 'lunch_mind':
+
       if (data.url != null || data.url != undefined) {
+        console.log(data);
         state.goUrl = data.url;
         const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
         state.activeGameRoom = gameRoom
@@ -90,6 +94,7 @@ socket.on('re_act', function (data) {
       }
 
       state.gameDataFirstLoad = data
+      break;
   }
 
 

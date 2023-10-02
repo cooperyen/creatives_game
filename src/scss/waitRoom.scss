@@ -3,10 +3,14 @@
 .container {
   max-width: 1200px;
   width: 100%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  margin-top: 50px;
+  @include sm {
+    margin-top: 10px;
+  }
+  // position: absolute;
+  // left: 50%;
+  // top: 50%;
+  // transform: translate(-50%, -50%);
 }
 
 .leader-box,
@@ -22,6 +26,7 @@
   @include sm {
     flex-wrap: wrap;
   }
+
   .player-box {
     .player-item {
       height: 120px;
@@ -251,9 +256,17 @@
       }
     }
   }
+
   .count-down {
     color: white;
     margin-bottom: 20px;
+    &.visible {
+      visibility: hidden;
+    }
+    span {
+      color: #f57d7d;
+      font-weight: bold;
+    }
   }
 }
 

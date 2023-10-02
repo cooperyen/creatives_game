@@ -226,6 +226,7 @@ export default {
     },
     'state.gameDataFirstLoad': {
       handler(el) {
+        console.log(el);
         this.gameData = true;
         this.hp = el.hp;
         this.dart = el.dart;

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import lobby from '@/components/lobby.vue';
 import NotFound from '@/components/404.vue';
 import game from '@/components/game.vue';
+import blackJack from '@/components/blackJack.vue';
 import login from '@/components/login.vue';
 import waitingRoom from '@/components/waitingRoom.vue';
 
@@ -29,6 +30,11 @@ const router = createRouter({
       path: '/mind/:room',
       name: 'game',
       component: game,
+    },
+    {
+      path: '/blackjack/:room',
+      name: 'blackJack',
+      component: blackJack,
     },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
   ],

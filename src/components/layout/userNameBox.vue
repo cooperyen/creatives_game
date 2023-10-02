@@ -20,7 +20,6 @@ export default {
   watch: {
     $route: {
       handler(to, from) {
-        console.log(to, from);
         this.ani = false;
       },
     },

@@ -25,7 +25,7 @@
                 </div>
                 <div class="content">
                   <div class="title">
-                    <p>{{ i }}</p>
+                    <p>{{ chGameName[i] ? chGameName[i] : i }}</p>
                   </div>
                 </div>
               </div>
@@ -87,6 +87,7 @@ export default {
       gameRooms: null,
       lobbyPlayerList: null,
       showPage: false,
+      chGameName: { game01: '心靈同步', game02: '21點' },
     };
   },
   components: { userNameBox },
