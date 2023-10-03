@@ -23,6 +23,9 @@ export const state = reactive({
     readyList: null,
     gameOver: null,
     readyToGo: false
+  },
+  blackJack: {
+    banker: null
   }
 });
 
@@ -83,12 +86,13 @@ socket.on('re_act', function (data) {
     case 'lunch_mind':
 
       if (data.url === null || data.url === undefined) break;
-      console.log(data);
-      state.goUrl = data.url;
+
       const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
       state.activeGameRoom = gameRoom
       const userData = JSON.parse(localStorage.getItem('userData'));
       userData.userRoom = gameRoom
+
+      state.goUrl = data.url;
 
       localStorage.setItem('userData', JSON.stringify(userData));
 
@@ -147,3 +151,11 @@ socket.on('re_lunch', function (data) {
   }
 })
 
+
+socket.on('re_bj', function (data) {
+  state.blackJack.banker = null;
+  if (data === null || data === undefined) return;
+  console.log(data);
+
+  state.blackJack.banker = data.page.bank
+})

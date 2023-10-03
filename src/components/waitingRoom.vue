@@ -123,6 +123,10 @@ export default {
       handler(el) {
         if (el === null) return;
         clearTimeout(this.countDownFun);
+
+        if (this.state.activeGameRoom != null)
+          this.$store.commit('updateUserRoom', this.state.activeGameRoom);
+
         this.$router.replace(`/${el}`);
       },
       deep: true,
