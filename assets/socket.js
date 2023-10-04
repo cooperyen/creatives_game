@@ -24,9 +24,7 @@ export const state = reactive({
     gameOver: null,
     readyToGo: false
   },
-  blackJack: {
-    banker: null
-  }
+  blackJack: null
 });
 
 const testURL = 'http://198.211.33.236:88'
@@ -53,7 +51,7 @@ socket.on('re_act', function (data) {
 
   state.goUrl = null;
   state.gameDataFirstLoad = null;
-
+  console.log(data.way);
   switch (data.way) {
 
     case 'id_check':
@@ -153,9 +151,17 @@ socket.on('re_lunch', function (data) {
 
 
 socket.on('re_bj', function (data) {
-  state.blackJack.banker = null;
-  if (data === null || data === undefined) return;
   console.log(data);
+  state.blackJack = null;
+  if (data === null || data === undefined) return;
 
-  state.blackJack.banker = data.page.bank
+  state.blackJack = data.page
 })
+
+socket.on('re_no_game', function (data) {
+  console.log('re_no_game', data);
+  state.goUrl = null;
+  if (data.noRoom === null || data.noRoom === undefined) return;
+  state.goUrl = 'lobby';
+})
+

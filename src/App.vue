@@ -68,7 +68,7 @@ export default {
     const userRoom = this.$store.state.userStore.userRoom;
     if (userName === null || userName === undefined) this.$router.push('/');
     if (this.$route.path === '/') return;
-    socket.emit('id_check', { id: userName, room: userRoom });
+    this.socket.emit('id_check', { id: userName, room: userRoom });
   },
 };
 </script>
