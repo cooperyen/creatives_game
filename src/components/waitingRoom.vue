@@ -211,6 +211,7 @@ export default {
       }
     },
     currentPlayers(el) {
+      console.log(el);
       if (el === undefined) return;
       const userRoom = this.$store.state.userStore.userRoom;
       const otherPlayers = el[userRoom].player.filter((el) => {

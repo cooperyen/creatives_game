@@ -1,44 +1,47 @@
 <template>
-  <div class="container">
-    <h1>{{ game }}</h1>
-    <div>
+  <div class="bg">
+    <userNameBox :userName="player" class="name"></userNameBox>
+    <div class="container">
+      <!-- <h1>{{ game }}</h1> -->
+      <!-- <div>
       {{ state.blackJack }}
-    </div>
-    <!-- snatch bank  -->
-    <div v-if="!game.bank">
-      <button @click="snatchBank()">bank</button>
-    </div>
-    <!-- bank set max bet -->
-    <div v-if="!bet.isBankSetBetMax && game.bank === player">
-      <button @click="setBetMax(30)">betMax</button>
-    </div>
-    <!-- card -->
-    <div></div>
-    <!-- player -->
-    <div v-if="!bet.isPlayerBet && game.bank != player">
-      <button @click="playerBet(30)">bet</button>
-    </div>
-    <!-- players -->
-    <div>
-      <div v-for="i in game.players" :key="i">
-        {{ i }}
+    </div> -->
+      <!-- snatch bank  -->
+      <div v-if="!game.bank">
+        <button @click="snatchBank()">bank</button>
       </div>
-    </div>
-    <!-- hit card player-->
-    <div v-if="bet.isAllBet && game.bank != player && game.isHit">
-      <button @click="playerHitCard()">hit card</button>
-      <button @click="playerStopCard()">stop card</button>
-    </div>
+      <!-- bank set max bet -->
+      <div v-if="!bet.isBankSetBetMax && game.bank === player">
+        <button @click="setBetMax(30)">betMax</button>
+      </div>
+      <!-- card -->
+      <div></div>
+      <!-- player -->
+      <div v-if="!bet.isPlayerBet && game.bank != player">
+        <button @click="playerBet(30)">bet</button>
+      </div>
+      <!-- players -->
+      <blackJackPlayerHandler :players="game.players"></blackJackPlayerHandler>
+      <blackJackPlayerHandler :self="game.self"></blackJackPlayerHandler>
 
-    <!-- hit card bank-->
-    <div v-if="bet.isAllBet && game.bank === player">
-      <button @click="playerHitCard()">hit card</button>
-      <button @click="playerStopCard()">stop card</button>
+      <!-- hit card player-->
+      <div v-if="bet.isAllBet && game.bank != player">
+        <button @click="playerHitCard()">hit card</button>
+        <button @click="playerStopCard()">stop card</button>
+      </div>
+
+      <!-- hit card bank-->
+      <div v-if="bet.isAllBet && game.bank === player">
+        <button @click="playerHitCard()">hit card</button>
+        <button @click="playerStopCard()">stop card</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import userNameBox from '@/../src/components/layout/userNameBox.vue';
+import blackJackPlayerHandler from '@/../src/components/layout/blackJackPlayerHandler.vue';
 export default {
   data() {
     return {
@@ -54,12 +57,14 @@ export default {
         bank: null,
         betMax: null,
         players: null,
+        self: null,
         isHit: false,
         cardCount: null,
         endGame: false,
       },
     };
   },
+  components: { userNameBox, blackJackPlayerHandler },
   props: ['socket', 'state'],
   watch: {
     'state.goUrl': {
@@ -78,9 +83,21 @@ export default {
           this.game.bank = el.bank;
           this.game.betMax = el.max;
           this.game.handCard = el[this.player].handCard;
-          this.game.players = el.players.map((p) => {
-            return { [p]: el[p] };
-          });
+          this.game.players = el.players
+            .filter((player) => player != this.player)
+            .map((player) => {
+              el[player].name = player;
+              return el[player];
+            });
+
+          this.game.self = el.players
+            .filter((player) => player === this.player)
+            .map((player) => {
+              el[player].name = player;
+              return el[player];
+            })[0];
+
+          console.log(this.game.self);
 
           this.game.cardCount = el[this.player].cardCount;
           this.game.isHit = this.game.cardCount > 21 ? false : true;
@@ -130,9 +147,26 @@ export default {
       this.socket.emit('bj', data);
     },
     playerBet(el) {
-      const data = this.sendEmitData();
-      data.bet = el;
-      this.socket.emit('bj', data);
+      // bet not integer and number. do....
+      if (!Number.isInteger(el) && isNaN(el)) return;
+
+      const betMax = this.game.betMax;
+      // betMax not set. do....
+      if (betMax === null || betMax === undefined)
+        console.log('bet max not set yet.');
+
+      // betMax setted.
+      if (betMax != null || betMax != undefined) {
+        // bet over then betMax.
+        if (el > betMax) console.log('no');
+
+        // bet small then betMax.
+        if (el <= betMax) {
+          const data = this.sendEmitData();
+          data.bet = el;
+          this.socket.emit('bj', data);
+        }
+      }
     },
     playerHitCard() {
       const data = this.sendEmitData();
@@ -150,14 +184,30 @@ export default {
         room: `blackjack/${this.gameRoom}`,
       };
     },
-  },
-  mounted() {
-    if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
+    windowSizeListener() {
+      const mediaQuery = '(max-width: 700px)';
+      const mediaQueryList = window.matchMedia(mediaQuery);
 
+      mediaQueryList.addEventListener('change', (event) => {
+        console.log(window.innerWidth);
+        if (event.matches) {
+          console.log('The window is now 700px or under');
+        } else {
+          console.log('The window is now over 700px');
+        }
+      });
+    },
+  },
+  created() {
     this.player = this.$store.state.userStore.userName;
     this.gameRoom = this.$store.state.userStore.userRoom;
-    // this.snatchBank();
-    // console.log(object);
+  },
+  mounted() {
+    // this.windowSizeListener();
+    // window.addEventListener('resize', this.windowSizeListener());
+
+    if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
+
     const data = { id: this.player, room: this.gameRoom };
 
     console.log(data);

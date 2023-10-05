@@ -55,8 +55,11 @@ socket.on('re_act', function (data) {
   switch (data.way) {
 
     case 'id_check':
-      if (data.game_list != null || data.game_list != undefined)
+      if (data.game_list != null || data.game_list != undefined) {
+        state.gameRooms = null;
         state.gameRooms = data.game_list;
+      }
+
 
       // lobby escapes from load cycles.
       if (data.url === 'lobby') {

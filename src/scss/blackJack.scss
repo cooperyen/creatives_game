@@ -1,3 +1,67 @@
-div {
-  color: white;
+@import './color.scss';
+@import './rwd.scss';
+
+.bg {
+  // background-image: url('./../image/poker/blackjack.jpeg');
+  background-color: rgb(50, 78, 50);
+  height: 100vh;
+  width: 100%;
+  background-repeat: no-repeat;
+  // background-size: 100%;
+  background-position: center center;
+  // background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+}
+
+:deep(.hand-card-box) {
+  &.self-box {
+    // width: 100%;
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    .flex {
+      justify-content: center;
+    }
+  }
+
+  &.players {
+    // width: 150px;
+    position: fixed;
+    // top: 50%;
+    // left: 100px;
+    // transform: translateY(-50%);
+    &:nth-child(1) {
+      top: 50%;
+      left: 100px;
+      transform: translateY(-50%);
+    }
+    &:nth-child(2) {
+      top: 150px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    &:nth-child(3) {
+      top: 50%;
+      right: 100px;
+      transform: translateY(-50%);
+    }
+    .flex {
+      justify-content: center;
+    }
+  }
+
+  .hand-card {
+    margin-left: 5px;
+    &.self {
+      img {
+        min-width: 150px;
+      }
+    }
+    img {
+      min-width: 90px;
+      max-width: 90px;
+    }
+  }
 }
