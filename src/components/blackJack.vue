@@ -74,7 +74,7 @@
             <div class="info">
               <div class="title">MAX BET</div>
               <div class="num">
-                {{ game.betMax === 0 ? bet.bankMaxBet : game.betMax }}
+                {{ game.betMax === 0 ? bet.bankSetMaxBet : game.betMax }}
               </div>
             </div>
             <div class="info" v-if="game.bank != player">
@@ -90,8 +90,6 @@
               class="coin-box"
               v-if="game.bank != player && game.betMax != null"
             >
-              {{ bet.playerBeted }}
-              {{ game.self.bet }}
               <button
                 :class="{ undo: undo() }"
                 @click="
@@ -104,25 +102,34 @@
 
             <!-- bank set max bet -->
             <div
+              v-if="game.bank === player"
               class="coin-box"
-              v-if="!bet.isBankSetBetMax && game.bank === player"
+              :class="{ undo: bet.isBankSetBetMax && game.bank === player }"
             >
-              <button @click="setBetMax()">betMax</button>
+              <button
+                @click="
+                  bet.isBankSetBetMax && game.bank === player ? '' : setBetMax()
+                "
+              >
+                betMax
+              </button>
             </div>
             <!-- coins -->
             <div
               class="coin-box"
-              :class="{ undo: game.bank === player ? false : undo() }"
+              :class="{ undo: isPlayer() ? bankUndo() : undo() }"
               v-for="i in game.coins"
               :key="i"
-              @click="game.bank === player ? maxCoin(i.coin) : bitCoin(i.coin)"
+              @click="isPlayer() ? maxCoin(i.coin) : bitCoin(i.coin)"
             >
               <img :src="'/src/image/poker/' + i.img + '.png'" />
             </div>
             <div
               class="coin-box"
-              :class="{ undo: undo() }"
-              @click="bet.playerBeted = 0"
+              :class="{ undo: isPlayer() ? bankUndo() : undo() }"
+              @click="
+                isPlayer() ? (bet.bankSetMaxBet = 0) : (bet.playerBeted = 0)
+              "
             >
               reset
             </div>
@@ -148,7 +155,7 @@ export default {
       bet: {
         isPlayerBet: false,
         playerBeted: 0,
-        bankMaxBet: 0,
+        bankSetMaxBet: 0,
         isAllBet: false,
         isBankSetBetMax: false,
       },
@@ -185,18 +192,26 @@ export default {
           this.game.endGame = false;
           this.isBankHit = false;
 
-          // bank.
+          // new game with no bank.
           if (data.bank === null || !data.bank) {
             this.bet.playerBeted = 0;
             this.bet.isBankSetBetMax = false;
             this.hit.isPlayerStand = false;
           }
+
+          if (!data.bank && data.max === null) this.bet.bankSetMaxBet = 0;
+
+          // bank play time.
           if (
             this.player === data.bank &&
             data[this.player].handCard.filter((el) => el != 'card_back')
               .length >= 2
           )
             this.isBankHit = true;
+
+          // show hide bank set buttom.
+          if (this.player === data.bank && data.max != null)
+            this.bet.isBankSetBetMax = true;
 
           if (msg != null && msg === `${this.player}停牌`)
             this.hit.isPlayerStand = true;
@@ -265,8 +280,7 @@ export default {
     setBetMax() {
       if (this.bet.maxCoin <= 0) return;
       const data = this.sendEmitData();
-      data.max = this.bet.bankMaxBet;
-      this.bet.isBankSetBetMax = true;
+      data.max = this.bet.bankSetMaxBet;
       this.socket.emit('bj', data);
     },
     playerBet() {
@@ -303,28 +317,32 @@ export default {
       this.socket.emit('bj', data);
     },
     bitCoin(coin) {
-      console.log('object');
       let x = this.bet.playerBeted;
-      console.log(x + coin);
-
-      if (x + coin < this.game.betMax) this.bet.playerBeted += coin;
+      if (x + coin <= this.game.betMax) this.bet.playerBeted += coin;
     },
     maxCoin(coin) {
-      let x = this.bet.bankMaxBet;
+      let x = this.bet.bankSetMaxBet;
 
-      if (x + coin < 500) this.bet.bankMaxBet += coin;
-      else this.bet.bankMaxBet = 500;
+      if (x + coin < 150) this.bet.bankSetMaxBet += coin;
+      else this.bet.bankSetMaxBet = 150;
     },
     undo() {
       if (this.player === this.game.bank) return true;
 
       return !this.game.betMax || this.bet.isPlayerBet;
     },
+    bankUndo() {
+      if (this.game.betMax === 0) return false;
+      if (this.game.betMax != null) return true;
+    },
     sendEmitData() {
       return {
         id: this.player,
         room: `blackjack/${this.gameRoom}`,
       };
+    },
+    isPlayer() {
+      return this.game.bank === this.player ? true : false;
     },
     windowSizeListener() {
       const mediaQuery = '(max-width: 700px)';
