@@ -155,10 +155,10 @@ socket.on('re_lunch', function (data) {
 
 socket.on('re_bj', function (data) {
   console.log(data);
-  state.blackJack = null;
   if (data === null || data === undefined) return;
+  state.blackJack = null;
 
-  state.blackJack = data.page
+  state.blackJack = data
 })
 
 socket.on('re_no_game', function (data) {

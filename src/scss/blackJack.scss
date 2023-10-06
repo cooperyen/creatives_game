@@ -14,11 +14,15 @@
   padding: 0;
 }
 
+button {
+  cursor: pointer;
+}
+
 :deep(.hand-card-box) {
   &.self-box {
     // width: 100%;
     position: fixed;
-    bottom: 80px;
+    bottom: 150px;
     left: 50%;
     transform: translateX(-50%);
     .flex {
@@ -54,7 +58,13 @@
 
   .hand-card {
     margin-left: 5px;
+
     &.self {
+      $cox: 10;
+      transition: transform 0.2s;
+      // opacity: 0;
+      // @for $i from  through  {
+      // }
       img {
         min-width: 150px;
       }
@@ -64,4 +74,78 @@
       max-width: 90px;
     }
   }
+  .hand-cards {
+    transition: transform 0.4s;
+  }
+}
+
+.game-ctrl {
+  width: 100%;
+  position: absolute;
+  // right: 0;
+  left: 0;
+  bottom: 0px;
+  padding: 10px 0 30px 0;
+  // transform: translate(-50%, -50%);
+  // background-color: rgba(14, 20, 47, 0.2);
+  .content {
+    flex: 1;
+  }
+  .flex {
+    justify-content: center;
+  }
+  .hit.content {
+    width: 100%;
+    button {
+      margin: 0 5px;
+      width: 50px;
+      height: 50px;
+      border-radius: 100%;
+      &.hit {
+        background-color: rgb(176, 247, 183);
+      }
+      &.stand {
+        background-color: red;
+      }
+
+      border: 0;
+    }
+    .flex {
+      height: 100%;
+      align-items: center;
+    }
+  }
+  .coin.content {
+    .coin-box {
+      cursor: pointer;
+      margin: 0 5px;
+      img {
+        max-width: 50px;
+      }
+    }
+    .info-box {
+      width: 100%;
+      margin: 0 auto 15px auto;
+    }
+    .info {
+      text-align: center;
+      flex: 1;
+      margin: 0 2px;
+      .title {
+        padding: 2px 5px;
+        background-color: black;
+        color: white;
+        font-size: 0.5rem;
+      }
+      .num {
+        margin-top: 5px;
+        color: $text;
+      }
+    }
+  }
+}
+
+.undo {
+  cursor: not-allowed !important;
+  opacity: 0.5;
 }
