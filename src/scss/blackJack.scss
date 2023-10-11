@@ -2,16 +2,19 @@
 @import './rwd.scss';
 
 .bg {
-  // background-image: url('./../image/poker/blackjack.jpeg');
-  background-color: rgb(50, 78, 50);
+  margin: 0 auto;
+  max-width: 1920px;
+  position: relative;
+  background-image: url('./../image/poker/bg.jpg');
+  // background-color: rgb(71, 55, 67);
   height: 100vh;
   width: 100%;
   background-repeat: no-repeat;
-  // background-size: 100%;
+  background-size: 100% 100%;
   background-position: center center;
   // background-attachment: fixed;
-  margin: 0;
   padding: 0;
+  // opacity: 0.8;
 }
 
 button {
@@ -21,7 +24,7 @@ button {
 :deep(.hand-card-box) {
   &.self-box {
     // width: 100%;
-    position: fixed;
+    position: absolute;
     bottom: 150px;
     left: 50%;
     transform: translateX(-50%);
@@ -32,7 +35,7 @@ button {
 
   &.players {
     // width: 150px;
-    position: fixed;
+    position: absolute;
     // top: 50%;
     // left: 100px;
     // transform: translateY(-50%);
@@ -79,48 +82,83 @@ button {
   }
 }
 
-.game-ctrl {
+:deep(.game-ctrl) {
   width: 100%;
   position: absolute;
   // right: 0;
   left: 0;
   bottom: 0px;
-  padding: 10px 0 30px 0;
+  padding: 0px 0 15px 0;
   // transform: translate(-50%, -50%);
-  // background-color: rgba(14, 20, 47, 0.2);
+  background-color: rgb(44 9 77);
+  animation: card-shdow 5s infinite;
   .content {
     flex: 1;
   }
   .flex {
     justify-content: center;
   }
-  .hit.content {
-    width: 100%;
-    button {
-      margin: 0 5px;
-      width: 50px;
-      height: 50px;
-      border-radius: 100%;
-      &.hit {
-        background-color: rgb(176, 247, 183);
-      }
-      &.stand {
-        background-color: red;
-      }
+  .hit {
+    &.content {
+      width: 100%;
+      flex: 2;
+      button {
+        margin: 0 10px;
+        min-width: 100px;
+        // height: 25px;
+        // border-radius: 100%;
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 1.2rem;
+        animation: hit-shdow 10s infinite;
 
-      border: 0;
-    }
-    .flex {
-      height: 100%;
-      align-items: center;
+        &.hit {
+          background-color: rgb(212, 192, 64);
+        }
+        &.stand {
+          background-color: rgb(152 138 188);
+        }
+
+        border: 0;
+      }
+      .flex {
+        height: 100%;
+        align-items: center;
+      }
     }
   }
   .coin.content {
     .coin-box {
       cursor: pointer;
       margin: 0 5px;
+      display: flex;
+
       img {
         max-width: 50px;
+      }
+      button {
+        min-width: 60px;
+        text-align: center;
+        // display: flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        border: none;
+        &.reset {
+          background-color: rgb(145, 112, 215);
+          color: white;
+        }
+        &.bet {
+          font-size: 1rem;
+        }
+        &.bet-max {
+          font-size: 0.9rem;
+        }
+        &.bet,
+        &.bet-max {
+          background-color: rgb(215, 220, 170);
+          font-weight: bold;
+        }
       }
     }
     .info-box {
@@ -130,10 +168,15 @@ button {
     .info {
       text-align: center;
       flex: 1;
-      margin: 0 2px;
+      // margin: 0 2px;
+      &:nth-child(2) {
+        .title {
+          border-left: 1px solid rgb(144, 144, 144);
+        }
+      }
       .title {
         padding: 2px 5px;
-        background-color: black;
+        background-color: rgb(130, 91, 165);
         color: white;
         font-size: 0.5rem;
       }
@@ -148,4 +191,45 @@ button {
 .undo {
   cursor: not-allowed !important;
   opacity: 0.5;
+}
+:deep(.card-shdow) {
+  overflow: hidden;
+  animation: card-shdow 5s infinite;
+  border-radius: 0.3rem;
+}
+
+@keyframes card-shdow {
+  0% {
+    box-shadow: 0px 0px 8px rgb(222, 237, 135);
+  }
+  25% {
+    box-shadow: 0px 0px 8px rgba(192, 248, 142, 0.4);
+  }
+  50% {
+    box-shadow: 0px 0px 8px rgb(69, 165, 233);
+  }
+  75% {
+    box-shadow: 0px 0px 8px rgba(102, 69, 233, 0.4);
+  }
+  100% {
+    box-shadow: 0px 0px 8px rgb(208, 233, 69);
+  }
+}
+
+@keyframes hit-shdow {
+  0% {
+    box-shadow: 0px 0px 6px rgb(237, 135, 135);
+  }
+  25% {
+    box-shadow: 0px 0px 6px rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0px 0px 6px rgb(233, 69, 124);
+  }
+  75% {
+    box-shadow: 0px 0px 6px rgba(94, 233, 69, 0.4);
+  }
+  100% {
+    box-shadow: 0px 0px 6px rgb(237, 135, 135);
+  }
 }

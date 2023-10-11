@@ -2,10 +2,6 @@
   <div class="bg">
     <userNameBox :userName="player" class="name"></userNameBox>
     <div class="container">
-      <!-- <h1>{{ game }}</h1> -->
-      <!-- <div>
-      {{ state.blackJack }}
-    </div> -->
       <!-- snatch bank  -->
       <div v-if="!game.bank">
         <button @click="snatchBank()">bank</button>
@@ -21,9 +17,9 @@
       <!-- self option -->
       <div class="game-ctrl flex">
         <!-- info -->
-        <div class="info content">
+        <!-- <div class="info content">
           <div>COIN {{ game.self.chips }}</div>
-        </div>
+        </div> -->
 
         <!-- hit -->
         <div class="hit content">
@@ -77,11 +73,17 @@
                 {{ game.betMax === 0 ? bet.bankSetMaxBet : game.betMax }}
               </div>
             </div>
+            <!-- player -->
             <div class="info" v-if="game.bank != player">
               <div class="title">BET</div>
               <div class="num">
                 {{ game.self.bet != 0 ? game.self.bet : bet.playerBeted }}
               </div>
+            </div>
+            <!-- bank -->
+            <div class="info" v-if="game.bank === player">
+              <div class="title">LIMIT</div>
+              <div class="num">150</div>
             </div>
           </div>
           <div class="flex">
@@ -91,12 +93,13 @@
               v-if="game.bank != player && game.betMax != null"
             >
               <button
+                class="bet"
                 :class="{ undo: undo() }"
                 @click="
                   bet.playerBeted != 0 && game.self.bet === 0 ? playerBet() : ''
                 "
               >
-                bet
+                BET
               </button>
             </div>
 
@@ -104,14 +107,18 @@
             <div
               v-if="game.bank === player"
               class="coin-box"
-              :class="{ undo: bet.isBankSetBetMax && game.bank === player }"
+              :class="{
+                undo: bankSetMaxBetBTN(),
+              }"
             >
               <button
+                class="bet-max"
                 @click="
                   bet.isBankSetBetMax && game.bank === player ? '' : setBetMax()
                 "
               >
-                betMax
+                BET<br />
+                MAX
               </button>
             </div>
             <!-- coins -->
@@ -131,7 +138,7 @@
                 isPlayer() ? (bet.bankSetMaxBet = 0) : (bet.playerBeted = 0)
               "
             >
-              reset
+              <button class="reset">RESET</button>
             </div>
           </div>
         </div>
@@ -143,6 +150,7 @@
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 import blackJackPlayerHandler from '@/../src/components/layout/blackJackPlayerHandler.vue';
+import blackJackHitHandler from '@/../src/components/layout/blackJackHitHandler.vue';
 export default {
   data() {
     return {
@@ -179,7 +187,7 @@ export default {
       },
     };
   },
-  components: { userNameBox, blackJackPlayerHandler },
+  components: { userNameBox, blackJackPlayerHandler, blackJackHitHandler },
   props: ['socket', 'state'],
   watch: {
     'state.blackJack': {
@@ -210,47 +218,15 @@ export default {
             this.isBankHit = true;
 
           // show hide bank set buttom.
-          if (this.player === data.bank && data.max != null)
+          if (this.player === data.bank && data.max != null) {
             this.bet.isBankSetBetMax = true;
+            this.bet.bankSetMaxBet = 0;
+          }
 
           if (msg != null && msg === `${this.player}停牌`)
             this.hit.isPlayerStand = true;
 
-          // game
-          this.game.bank = data.bank;
-          this.game.betMax = !data.max ? 0 : data.max;
-          this.game.handCard = data[this.player].handCard;
-          this.game.players = data.players
-            .filter((player) => player != this.player)
-            .map((player) => {
-              data[player].name = player;
-              return data[player];
-            });
-
-          this.game.self = data.players
-            .filter((player) => player === this.player)
-            .map((player) => {
-              data[player].name = player;
-              return data[player];
-            })[0];
-
-          this.game.cardCount = data[this.player].cardCount;
-          this.game.isHit = this.game.cardCount > 21 ? false : true;
-
-          // bet
-          this.bet.isPlayerBet = data[this.player].bet != 0 ? true : false;
-          this.bet.isAllBet =
-            data.players
-              .map((p) => {
-                let re;
-                if (data[this.game.bank]) return true;
-                if (data[p].bet != 0) re = true;
-                if (data[p].bet === 0) re = false;
-                return re;
-              })
-              .indexOf(false) === -1
-              ? true
-              : false;
+          this.dataSeting(data);
         }
 
         // end game.
@@ -269,6 +245,43 @@ export default {
     },
   },
   methods: {
+    dataSeting(data) {
+      // game
+      this.game.bank = data.bank;
+      this.game.betMax = !data.max ? 0 : data.max;
+      this.game.handCard = data[this.player].handCard;
+      this.game.players = data.players
+        .filter((player) => player != this.player)
+        .map((player) => {
+          data[player].name = player;
+          return data[player];
+        });
+
+      this.game.self = data.players
+        .filter((player) => player === this.player)
+        .map((player) => {
+          data[player].name = player;
+          return data[player];
+        })[0];
+
+      this.game.cardCount = data[this.player].cardCount;
+      this.game.isHit = this.game.cardCount > 21 ? false : true;
+
+      // bet
+      this.bet.isPlayerBet = data[this.player].bet != 0 ? true : false;
+      this.bet.isAllBet =
+        data.players
+          .map((p) => {
+            let re;
+            if (data[this.game.bank]) return true;
+            if (data[p].bet != 0) re = true;
+            if (data[p].bet === 0) re = false;
+            return re;
+          })
+          .indexOf(false) === -1
+          ? true
+          : false;
+    },
     snatchBank() {
       const data = {
         id: this.player,
@@ -321,6 +334,7 @@ export default {
       if (x + coin <= this.game.betMax) this.bet.playerBeted += coin;
     },
     maxCoin(coin) {
+      if (this.bet.isBankSetBetMax) return;
       let x = this.bet.bankSetMaxBet;
 
       if (x + coin < 150) this.bet.bankSetMaxBet += coin;
@@ -333,13 +347,18 @@ export default {
     },
     bankUndo() {
       if (this.game.betMax === 0) return false;
-      if (this.game.betMax != null) return true;
+      if (this.game.betMax != 0 || this.game.betMax != null) return true;
     },
     sendEmitData() {
       return {
         id: this.player,
         room: `blackjack/${this.gameRoom}`,
       };
+    },
+    bankSetMaxBetBTN() {
+      if (this.game.bank != this.player) return false;
+      if (this.bet.bankSetMaxBet === 0) return true;
+      if (this.bet.bankSetMaxBet != 0) return false;
     },
     isPlayer() {
       return this.game.bank === this.player ? true : false;
