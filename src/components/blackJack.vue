@@ -38,7 +38,11 @@
                 <div class="title"><p>BET</p></div>
                 <div class="num">
                   <p>
-                    {{ game.self.bet != 0 ? game.self.bet : bet.playerBeted }}
+                    {{
+                      arySum(game.self.bet) != 0
+                        ? arySum(game.self.bet)
+                        : arySum(bet.playerBeted)
+                    }}
                   </p>
                 </div>
               </div>
@@ -56,7 +60,9 @@
               <!-- player -->
               <div
                 class="item"
-                :class="{ undo: bet.playerBeted === 0 || bet.isPlayerBet }"
+                :class="{
+                  undo: arySum(bet.playerBeted) === 0 || bet.isPlayerBet,
+                }"
                 v-if="!isPlayerBank() && game.betMax != null"
               >
                 <button
@@ -114,7 +120,7 @@
                   @click="
                     isPlayerBank()
                       ? (bet.bankSetMaxBet = 0)
-                      : (bet.playerBeted = 0)
+                      : (bet.playerBeted = [])
                   "
                 >
                   RESET
@@ -190,7 +196,7 @@ export default {
       },
       bet: {
         isPlayerBet: false,
-        playerBeted: 0,
+        playerBeted: [],
         bankSetMaxBet: 0,
         isAllBet: false,
         isBankSetBetMax: false,
@@ -222,6 +228,7 @@ export default {
   watch: {
     'state.blackJack': {
       handler(el) {
+        // console.log(el);
         const data = el.page;
         const msg = el.message;
         // gameing
@@ -232,7 +239,8 @@ export default {
 
           // new game with no bank.
           if (data.bank === null || !data.bank) {
-            this.bet.playerBeted = 0;
+            // this.bet.playerBeted = 0;
+            this.bet.playerBeted = [];
             this.bet.isBankSetBetMax = false;
             this.hit.isPlayerStand = false;
           }
@@ -339,7 +347,8 @@ export default {
       this.socket.emit('bj', data);
     },
     playerBetEmit() {
-      const bet = this.bet.playerBeted;
+      // const bet = this.bet.playerBeted;
+      const bet = this.arySum(this.bet.playerBeted);
       // bet not integer and number. do....
       if (!Number.isInteger(bet) && isNaN(bet)) return;
 
@@ -356,7 +365,7 @@ export default {
         // bet small then betMax.
         if (bet <= betMax) {
           const data = this.registerEmit();
-          data.bet = bet;
+          data.bet = this.bet.playerBeted;
           this.socket.emit('bj', data);
         }
       }
@@ -375,8 +384,10 @@ export default {
     // bet coin.
     playerBitCoinSet(coin) {
       if (this.bet.isPlayerBet) return;
-      let x = this.bet.playerBeted;
-      if (x + coin <= this.game.betMax) this.bet.playerBeted += coin;
+      // let x = this.bet.playerBeted;
+      // if (x + coin <= this.game.betMax) this.bet.playerBeted += coin;
+      let x = this.arySum(this.bet.playerBeted);
+      if (x + coin <= this.game.betMax) this.bet.playerBeted.push(coin);
     },
     bankMaxCoinSet(coin) {
       if (this.bet.isBankSetBetMax) return;
@@ -393,8 +404,13 @@ export default {
       if (this.bet.bankSetMaxBet != 0) return false;
     },
     restBetBTNHandler() {
+      // const player =
+      //   this.bet.playerBeted != 0 && !this.bet.isPlayerBet ? true : false;
       const player =
-        this.bet.playerBeted != 0 && !this.bet.isPlayerBet ? true : false;
+        this.arySum(this.bet.playerBeted) != 0 && !this.bet.isPlayerBet
+          ? true
+          : false;
+
       const bank = this.bet.bankSetMaxBet != 0 ? true : false;
 
       return this.isPlayerBank() ? bank : player;
@@ -411,6 +427,12 @@ export default {
       }
 
       return result;
+    },
+
+    arySum(arr) {
+      const reducer = (accumulator, curr) => accumulator + curr;
+      if (arr.length === 0 || arr === 0) return 0;
+      else return arr.reduce(reducer);
     },
 
     /**

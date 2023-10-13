@@ -23,7 +23,7 @@ button {
 
 :deep(.hand-card-box) {
   .count {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-left: 10px;
     align-items: center;
     padding: 0 10px;
@@ -32,18 +32,17 @@ button {
   }
   &.self-box {
     position: absolute;
-    bottom: 150px;
+    bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
-
-    // .flex {
-    //   justify-content: center;
-    // }
+    overflow: hidden;
+    .bank-box {
+      justify-content: center;
+    }
   }
 
   &.players {
     position: absolute;
-    // color: $text;
     text-wrap: nowrap;
     &:nth-child(1) {
       top: 50%;
@@ -61,10 +60,7 @@ button {
       right: 100px;
       transform: translateY(-50%);
     }
-    // .flex {
-    //   justify-content: center;
-    // }
-    .bank {
+    .bank-box {
       img {
         max-width: 20px;
       }
@@ -72,14 +68,35 @@ button {
         font-size: 1rem;
       }
     }
+    .info-box {
+      .name {
+        font-size: 1.2rem;
+        color: $text;
+        text-align: center;
+        font-weight: bold;
+        background-color: red;
+      }
+      .coin-box {
+        .item {
+          img {
+            max-width: 25px;
+          }
+        }
+      }
+    }
   }
 
   .hand-card {
-    margin-left: 5px;
+    // margin-left: 5px;
+    transition: transform 0.2s;
 
     &.self {
       $cox: 10;
-      transition: transform 0.2s;
+
+      // position: absolute;
+      // left: 50%;
+      // top: 50%;
+      // transform: translate(-50%, -50%);
       img {
         min-width: 150px;
       }
@@ -92,7 +109,7 @@ button {
   .hand-cards {
     transition: transform 0.4s;
   }
-  .bank {
+  .bank-box {
     margin-bottom: 10px;
     img {
       max-width: 30px;
