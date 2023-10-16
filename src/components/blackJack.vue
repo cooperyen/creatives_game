@@ -1,4 +1,5 @@
 <template>
+  <div :class="{ window: windowSize }"></div>
   <div class="bg">
     <userNameBox :userName="ownself" class="name"></userNameBox>
     <div class="container">
@@ -191,6 +192,7 @@ export default {
       ownself: null,
       gameRoom: null,
       isBankHit: false,
+      windowSize: false,
       hit: {
         isPlayerStand: false,
       },
@@ -454,14 +456,18 @@ export default {
         }
       });
     },
+    detectWindowWidth(e) {
+      if (window.innerWidth < 677) this.windowSize = true;
+      else this.windowSize = false;
+      console.log(this.windowSize);
+    },
   },
   created() {
     this.ownself = this.$store.state.userStore.userName;
     this.gameRoom = this.$store.state.userStore.userRoom;
   },
   mounted() {
-    // this.windowSizeListener();
-    // window.addEventListener('resize', this.windowSizeListener());
+    window.addEventListener('resize', this.detectWindowWidth);
 
     if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
 

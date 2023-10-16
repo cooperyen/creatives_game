@@ -1,3 +1,11 @@
+.window {
+  height: 100vh !important;
+  width: 100vw !important;
+  background-color: black !important;
+  position: fixed !important;
+  z-index: 99999999999999 !important;
+}
+
 .bg {
   margin: 0 auto;
   max-width: 1920px;
@@ -15,23 +23,27 @@ button {
   cursor: pointer;
 }
 
-:deep(.hand-card-box) .count {
-  font-size: 1.2rem;
-  margin-left: 10px;
-  align-items: center;
-  padding: 0 10px;
-  border-radius: 8px;
-  background-color: rgb(209, 136, 84);
-}
 :deep(.hand-card-box).self-box {
   position: absolute;
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
   overflow: hidden;
+  padding: 5px;
+  margin-bottom: 5px;
 }
 :deep(.hand-card-box).self-box .bank-box {
   justify-content: center;
+}
+:deep(.hand-card-box).self-box .count {
+  font-size: 1.2rem;
+  color: white;
+  align-items: center;
+  padding: 0px 10px;
+  border-radius: 8px;
+  background-color: rgb(62, 87, 146);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 2px 2px 4px rgba(38, 12, 99, 0.8);
 }
 :deep(.hand-card-box).players {
   position: absolute;
@@ -55,31 +67,54 @@ button {
 :deep(.hand-card-box).players .bank-box img {
   max-width: 20px;
 }
-:deep(.hand-card-box).players .bank-box .count {
-  font-size: 1rem;
+:deep(.hand-card-box).players .bank-box .icon {
+  margin-right: 10px;
+}
+:deep(.hand-card-box).players .info-box {
+  color: rgb(198, 190, 149);
 }
 :deep(.hand-card-box).players .info-box .name {
-  font-size: 1.2rem;
-  color: rgb(198, 190, 149);
-  text-align: center;
+  font-size: 1.4rem;
   font-weight: bold;
-  background-color: red;
+  max-width: 150px;
 }
-:deep(.hand-card-box).players .info-box .coin-box .item img {
+:deep(.hand-card-box).players .coin-box {
+  margin-bottom: 10px;
+}
+:deep(.hand-card-box).players .coin-box .item img {
   max-width: 25px;
 }
-:deep(.hand-card-box) .hand-card {
-  transition: transform 0.2s;
-}
-:deep(.hand-card-box) .hand-card.self img {
-  min-width: 150px;
-}
-:deep(.hand-card-box) .hand-card img {
-  min-width: 90px;
-  max-width: 90px;
+:deep(.hand-card-box).players .count {
+  font-size: 1.2rem;
+  color: white;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 100%;
+  background-color: rgb(62, 87, 146);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 2px 2px 4px rgba(38, 12, 99, 0.8);
 }
 :deep(.hand-card-box) .hand-cards {
   transition: transform 0.4s;
+  position: relative;
+}
+:deep(.hand-card-box) .hand-cards .hand-card {
+  margin-left: 10px;
+  transition: transform 0.2s;
+}
+:deep(.hand-card-box) .hand-cards .hand-card:first-child, :deep(.hand-card-box) .hand-cards .hand-card:nth-child(2) {
+  margin-left: unset;
+}
+:deep(.hand-card-box) .hand-cards .hand-card.self img {
+  min-width: 150px;
+}
+:deep(.hand-card-box) .hand-cards .hand-card img {
+  min-width: 90px;
+  max-width: 90px;
 }
 :deep(.hand-card-box) .bank-box {
   margin-bottom: 10px;
