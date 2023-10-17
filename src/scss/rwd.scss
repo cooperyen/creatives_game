@@ -16,13 +16,30 @@
 }
 
 @mixin med {
-  @media (max-width: 769px) {
+  @media (max-width: 768px) {
     @content;
   }
 }
 
 @mixin min-med {
   @media (min-width: 769px) {
+    @content;
+  }
+}
+
+@mixin L {
+  @media (max-width: 991px) {
+    @content;
+  }
+}
+@mixin min-L {
+  @media (min-width: 992px) {
+    @content;
+  }
+}
+
+@mixin min-xl {
+  @media (min-width: 1140px) {
     @content;
   }
 }

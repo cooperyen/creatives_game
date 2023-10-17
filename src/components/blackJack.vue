@@ -24,7 +24,7 @@
           <div class="item">COIN {{ game.self.chips }}</div>
           <div class="item">WIN {{ game.self.win }}</div>
         </div>
-        <div class="flex">
+        <div class="game-option flex">
           <!-- info -->
           <div class="info content flex">
             <div class="info-box flex">
@@ -457,7 +457,9 @@ export default {
       });
     },
     detectWindowWidth(e) {
-      if (window.innerWidth < 677) this.windowSize = true;
+      console.log(window.innerWidth < window.innerHeight);
+      if (window.innerWidth < 768 && window.innerWidth < window.innerHeight)
+        this.windowSize = true;
       else this.windowSize = false;
       console.log(this.windowSize);
     },

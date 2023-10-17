@@ -1,8 +1,8 @@
 <template>
   <!-- players -->
   <div class="flex" v-if="players">
-    <!-- {{  }} -->
-    <div class="hand-card-box players" v-for="i in players" :key="i">
+    <div class="hand-card-box players-box" v-for="i in players" :key="i">
+      <!-- bet coins -->
       <div v-show="i.name != bank" class="coin-box flex">
         <div class="item" v-for="i in sort(i.bet)" :key="i">
           <img :src="'/src/image/poker/coin_' + i + '.png'" />
@@ -14,12 +14,16 @@
           <img src="@/image/poker/start.svg" />
         </div>
       </div>
-      <!-- hand card -->
+      <!-- hand cards -->
       <div class="hand-cards in-flex">
         <div class="count flex" v-show="i.cardCount != 0">
           {{ i.cardCount <= 9 ? '0' + i.cardCount : i.cardCount }}
         </div>
-        <div class="hand-card" v-for="(card, index) in i.handCard" :key="index">
+        <div
+          class="hand-card player"
+          v-for="(card, index) in i.handCard"
+          :key="index"
+        >
           <div :class="{ 'card-shdow': card === 'card_back' }">
             <img :src="'/src/image/poker/card/' + card + '.png'" alt="" />
           </div>
@@ -44,11 +48,12 @@
       <div class="icon" v-show="self.name === bank">
         <img src="@/image/poker/start.svg" />
       </div>
-      {{ typeof self.cardCount }}
+      <!-- point -->
       <div class="count flex" v-show="self.cardCount != 0">
         {{ self.cardCount <= 9 ? '0' + self.cardCount : self.cardCount }}
       </div>
     </div>
+    <!-- hand cards -->
     <div class="in-flex hand-cards">
       <div
         class="hand-card self"
@@ -92,11 +97,14 @@ export default {
       const self = handCard.querySelectorAll('.hand-card.self');
 
       let move = 0;
+      let num = 90;
+      if ((window.innerWidth >= 992) & (window.innerWidth < 1139)) num = 100;
+      if (window.innerWidth >= 1140) num = 130;
 
       setTimeout(() => {
         self.forEach((el) => {
           el.style.transform = `translateX(-${move}px)`;
-          if (self.length > 2) move += 100;
+          if (self.length > 2) move += num;
         });
 
         let mover = 0;
@@ -105,15 +113,19 @@ export default {
       }, 100);
     },
     playersCardTranform() {
-      const handCardBox = document.querySelectorAll('.hand-card-box.players');
+      const handCardBox = document.querySelectorAll(
+        '.hand-card-box.players-box'
+      );
+      let move = 0;
+      let num = 80;
+      if (window.innerWidth >= 992) num = 65;
+
       handCardBox.forEach((el) => {
-        let move = 0;
         // setTimeout(() => {
         const handCard = el.querySelectorAll('.hand-card');
         handCard.forEach((s) => {
-          console.log(s.style.transform);
           s.style.transform = `translateX(-${move}px)`;
-          if (handCard.length > 2) move += 65;
+          if (handCard.length > 2) move += num;
         });
         // }, 50);
       });

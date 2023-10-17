@@ -2,8 +2,8 @@
 @import './rwd.scss';
 
 .window {
-  height: 100vh !important;
-  width: 100vw !important;
+  height: 100% !important;
+  width: 100% !important;
   background-color: black !important;
   position: fixed !important;
   z-index: 99999999999999 !important;
@@ -31,15 +31,19 @@ button {
 :deep(.hand-card-box) {
   &.self-box {
     position: absolute;
-    bottom: 100px;
+    bottom: 90px;
     left: 50%;
     transform: translateX(-50%);
     overflow: hidden;
     padding: 5px;
     margin-bottom: 5px;
+    @include min-L {
+      bottom: 120px;
+    }
     .bank-box {
       justify-content: center;
     }
+
     .count {
       font-size: 1.2rem;
       color: white;
@@ -52,14 +56,19 @@ button {
     }
   }
 
-  &.players {
+  &.players-box {
     position: absolute;
     text-wrap: nowrap;
     &:nth-child(1) {
       top: 50%;
-      left: 100px;
+      left: 30px;
       transform: translateY(-50%);
-      // width: 50px;
+      @include min-L {
+        left: 50px;
+      }
+      @include min-xl {
+        left: 100px;
+      }
     }
     &:nth-child(2) {
       top: 150px;
@@ -68,32 +77,35 @@ button {
     }
     &:nth-child(3) {
       top: 50%;
-      right: 100px;
+      right: 30px;
       transform: translateY(-50%);
+      @include min-L {
+        right: 50px;
+      }
+      @include min-xl {
+        right: 100px;
+      }
     }
     .bank-box {
-      img {
-        max-width: 20px;
-      }
       .icon {
-        margin-right: 10px;
+        img {
+          max-width: 20px;
+        }
       }
     }
     .info-box {
       color: $text;
       .name {
         font-size: 1.4rem;
-
-        // text-align: center;
         font-weight: bold;
-        // background-color: red;
         max-width: 150px;
       }
       .chips {
+        font-size: 1.2rem;
+        font-weight: bold;
       }
     }
     .coin-box {
-      margin-bottom: 10px;
       .item {
         img {
           max-width: 25px;
@@ -112,6 +124,7 @@ button {
       position: absolute;
       z-index: 1;
       top: 50%;
+      left: -15px;
       transform: translateY(-50%);
       box-shadow: 2px 2px 4px rgba(38, 12, 99, 0.8);
     }
@@ -121,22 +134,26 @@ button {
     transition: transform 0.4s;
     position: relative;
     .hand-card {
-      margin-left: 10px;
-      &:first-child,
-      &:nth-child(2) {
-        margin-left: unset;
-      }
       transition: transform 0.2s;
-
+      &.player {
+        margin-left: 10px;
+        &:nth-child(2) {
+          margin-left: unset;
+        }
+      }
       &.self {
-        $cox: 10;
-
-        // position: absolute;
-        // left: 50%;
-        // top: 50%;
-        // transform: translate(-50%, -50%);
+        margin-left: 10px;
+        &:first-child {
+          margin-left: unset;
+        }
         img {
-          min-width: 150px;
+          min-width: 105px;
+          @include min-L {
+            min-width: 120px;
+          }
+          @include min-xl {
+            min-width: 150px;
+          }
         }
       }
       img {
@@ -146,10 +163,16 @@ button {
     }
   }
   .bank-box {
-    margin-bottom: 10px;
-    img {
-      max-width: 30px;
-      animation: three_d 5s infinite;
+    margin-bottom: 8px;
+    @include min-L {
+      margin-bottom: 10px;
+    }
+    .icon {
+      margin-right: 10px;
+      img {
+        max-width: 30px;
+        animation: three_d 2s infinite;
+      }
     }
   }
 }
@@ -170,119 +193,6 @@ button {
   .flex {
     justify-content: center;
   }
-  .hit {
-    &.content {
-      width: 100%;
-      flex: 1;
-      button {
-        margin: 0 10px;
-        min-width: 100px;
-        // height: 25px;
-        // border-radius: 100%;
-        border-radius: 8px;
-        padding: 15px;
-        font-size: 1.2rem;
-        animation: hit-shdow 10s infinite;
-
-        &.hit {
-          background-color: rgb(212, 192, 64);
-        }
-        &.stand {
-          background-color: rgb(152 138 188);
-        }
-
-        border: 0;
-      }
-      .flex {
-        height: 100%;
-        align-items: center;
-      }
-    }
-  }
-  .coin {
-    &.content {
-      flex: 2;
-      .coin-box {
-        // display: flex;
-        .item {
-          cursor: pointer;
-          margin: 15px;
-          display: flex;
-          img {
-            max-width: 50px;
-          }
-          button {
-            min-width: 60px;
-            text-align: center;
-            // display: flex;
-            align-items: center;
-            padding: 0 10px;
-            border-radius: 8px;
-            border: none;
-            &.reset {
-              background-color: rgb(145, 112, 215);
-              color: white;
-            }
-            &.bet {
-              font-size: 1rem;
-            }
-            &.bet-max {
-              font-size: 0.9rem;
-            }
-            &.bet,
-            &.bet-max {
-              background-color: rgb(215, 220, 170);
-              font-weight: bold;
-            }
-          }
-        }
-      }
-    }
-  }
-  .info {
-    &.content {
-      flex: 1;
-      .info-box {
-        margin-right: 15px;
-        margin-left: 15px;
-        width: 100%;
-        align-items: center;
-
-        // margin: 0 auto 15px auto;
-        .info {
-          $betColor: rgb(107, 51, 132);
-          text-align: center;
-          flex: 1;
-          display: flex;
-          border: 2px solid $betColor;
-          text-wrap: nowrap;
-          &:nth-child(1) {
-            border-radius: 4px 0 0 4px;
-          }
-          &:nth-child(2) {
-            border-radius: 0 4px 4px 0;
-          }
-          // box-shadow: 4px 2px 6px rgba(225, 212, 181, 0.2);
-
-          .title {
-            padding: 10px 5px;
-            background-color: $betColor;
-            color: white;
-            font-size: 0.5rem;
-            flex: 2;
-          }
-          .num {
-            flex: 3;
-            // width: 100%;
-            justify-content: center;
-            color: $text;
-            display: flex;
-            align-items: center;
-          }
-        }
-      }
-    }
-  }
   .game-info {
     background-color: rgb(67 23 109);
     text-align: center;
@@ -296,6 +206,124 @@ button {
         padding: 0 $spacing;
         margin: 0;
         border-left: 1px solid $text;
+      }
+    }
+  }
+  .game-option {
+    padding: 5px 0 10px 0;
+
+    .hit {
+      &.content {
+        width: 100%;
+        flex: 1;
+        button {
+          margin: 0 10px;
+          border-radius: 8px;
+          padding: 15px;
+          font-size: 1rem;
+          animation: hit-shdow 10s infinite;
+          @include min-L {
+            min-width: 100px;
+            font-size: 1.2rem;
+          }
+
+          &.hit {
+            background-color: rgb(212, 192, 64);
+          }
+          &.stand {
+            background-color: rgb(152 138 188);
+          }
+
+          border: 0;
+        }
+        .flex {
+          height: 100%;
+          align-items: center;
+        }
+      }
+    }
+    .coin {
+      &.content {
+        flex: 2;
+        .coin-box {
+          .item {
+            cursor: pointer;
+            margin: 8px;
+            display: flex;
+            @include min-L {
+              margin: 15px;
+            }
+            img {
+              max-width: 40px;
+              @include min-L {
+                max-width: 50px;
+              }
+            }
+            button {
+              min-width: 60px;
+              text-align: center;
+              align-items: center;
+              padding: 0 10px;
+              border-radius: 8px;
+              border: none;
+              &.reset {
+                background-color: rgb(145, 112, 215);
+                color: white;
+              }
+              &.bet {
+                font-size: 1rem;
+              }
+              &.bet-max {
+                font-size: 0.9rem;
+              }
+              &.bet,
+              &.bet-max {
+                background-color: rgb(215, 220, 170);
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      }
+    }
+    .info {
+      &.content {
+        flex: 1;
+        .info-box {
+          margin-right: 15px;
+          margin-left: 15px;
+          width: 100%;
+          align-items: center;
+          .info {
+            $betColor: rgb(107, 51, 132);
+            text-align: center;
+            flex: 1;
+            display: flex;
+            border: 2px solid $betColor;
+            text-wrap: nowrap;
+            &:nth-child(1) {
+              border-radius: 4px 0 0 4px;
+            }
+            &:nth-child(2) {
+              border-radius: 0 4px 4px 0;
+            }
+
+            .title {
+              padding: 10px 5px;
+              background-color: $betColor;
+              color: white;
+              font-size: 0.5rem;
+              flex: 2;
+            }
+            .num {
+              flex: 3;
+              justify-content: center;
+              color: $text;
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
       }
     }
   }
@@ -412,10 +440,8 @@ button {
   0% {
     transform: rotate3d(0, 0, 0, 0turn);
   }
-  50% {
-    transform: rotate3d(0, 2, 0, 0.5turn);
-  }
+
   100% {
-    transform: rotate3d(0, 2, 0, 1turn);
+    transform: rotate3d(0, 2, 0, 0.5turn);
   }
 }
