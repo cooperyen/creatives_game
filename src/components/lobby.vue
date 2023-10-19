@@ -124,6 +124,7 @@ export default {
       this.checkRoom();
     },
     joinRoom(roomId) {
+      console.log(roomId);
       if (roomId) {
         this.socket.emit('join', {
           room: roomId,

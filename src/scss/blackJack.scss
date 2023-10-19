@@ -4,14 +4,53 @@
 .window {
   height: 100% !important;
   width: 100% !important;
-  background-color: black !important;
+  background-color: #454545 !important;
   position: fixed !important;
   z-index: 99999999999999 !important;
+
+  .content {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    color: white;
+    .icon {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      svg {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        animation: phoneRote 3s infinite;
+        transform-origin: center center -300%;
+      }
+    }
+    p {
+      margin-top: 150px;
+      text-align: center;
+    }
+  }
+}
+
+@keyframes phoneRote {
+  0% {
+    transform: rotate(0);
+  }
+  60% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+  }
 }
 .bg {
   margin: 0 auto;
   max-width: 1920px;
-  position: relative;
+  position: fixed;
   background-image: url('./../image/poker/bg.jpg');
   // background-color: rgb(71, 55, 67);
   height: 100vh;
@@ -134,7 +173,7 @@ button {
     transition: transform 0.4s;
     position: relative;
     .hand-card {
-      transition: transform 0.2s;
+      // transition: transform 0.2s;
       &.player {
         margin-left: 10px;
         &:nth-child(2) {
@@ -142,6 +181,7 @@ button {
         }
       }
       &.self {
+        transition: transform 0.2s;
         margin-left: 10px;
         &:first-child {
           margin-left: unset;

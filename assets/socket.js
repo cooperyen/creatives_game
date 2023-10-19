@@ -27,11 +27,11 @@ export const state = reactive({
   blackJack: null
 });
 
-const testURL = 'http://198.211.33.236:88'
+const testURL = 'http://200.69.21.59:88'
 const testURL2 = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = testURL2;
+const URL = testURL;
 
 export const socket = io(URL);
 

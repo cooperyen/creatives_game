@@ -1,5 +1,14 @@
 <template>
-  <div :class="{ window: windowSize }"></div>
+  <div v-if="windowSize" class="window">
+    <div class="content">
+      <div class="icon">
+        <font-awesome-icon icon="fa-solid fa-mobile-screen-button" />
+      </div>
+      <div>
+        <p>rotate your phone.</p>
+      </div>
+    </div>
+  </div>
   <div class="bg">
     <userNameBox :userName="ownself" class="name"></userNameBox>
     <div class="container">
@@ -457,34 +466,33 @@ export default {
       });
     },
     detectWindowWidth(e) {
-      console.log(window.innerWidth < window.innerHeight);
       if (window.innerWidth < 768 && window.innerWidth < window.innerHeight)
         this.windowSize = true;
-      else this.windowSize = false;
-      console.log(this.windowSize);
+
+      if (window.innerWidth >= 768 && window.innerWidth > window.innerHeight)
+        this.windowSize = false;
     },
   },
   created() {
     this.ownself = this.$store.state.userStore.userName;
     this.gameRoom = this.$store.state.userStore.userRoom;
   },
+  unmounted() {
+    window.removeEventListener('resize', this.detectWindowWidth);
+  },
   mounted() {
+    this.detectWindowWidth();
     window.addEventListener('resize', this.detectWindowWidth);
 
     if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
 
     const data = { id: this.ownself, room: this.gameRoom };
-
-    console.log(data);
     this.socket.emit('id_check', data);
-
-    // console.log(this.gameRoom);
     this.socket.emit('bj', {
       id: this.ownself,
       room: `blackjack/${this.gameRoom}`,
     });
   },
-  // created(){}
 };
 </script>
 <style scoped>

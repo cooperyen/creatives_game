@@ -10,10 +10,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faMobileScreenButton } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faChevronLeft)
+library.add(faChevronLeft, faMobileScreenButton)
 
 const store = createStore({
   modules: {
