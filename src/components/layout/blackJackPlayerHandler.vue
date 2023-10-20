@@ -5,7 +5,8 @@
       <!-- bet coins -->
       <div v-show="i.name != bank" class="coin-box flex">
         <div class="item" v-for="i in sort(i.bet)" :key="i">
-          <img :src="'/src/image/poker/coin_' + i + '.png'" />
+          <!-- <img :src="'/src/image/poker/coin_' + i + '.png'" /> -->
+          <img :src="getCoinUrl(i)" />
         </div>
       </div>
       <!-- bank icon -->
@@ -25,7 +26,8 @@
           :key="index"
         >
           <div :class="{ 'card-shdow': card === 'card_back' }">
-            <img :src="'/src/image/poker/card/' + card + '.png'" alt="" />
+            <!-- <img :src="'/src/image/poker/card/' + card + '.png'" alt="" /> -->
+            <img :src="getPorkerUrl(card)" alt="" />
           </div>
         </div>
       </div>
@@ -61,7 +63,8 @@
         :key="index"
       >
         <div :class="{ 'card-shdow': card === 'card_back' }">
-          <img :src="'/src/image/poker/card/' + card + '.png'" alt="" />
+          <!-- <img :src="'/src/image/poker/card/' + card + '.png'" alt="" /> -->
+          <img :src="getPorkerUrl(card)" alt="" />
         </div>
       </div>
     </div>
@@ -85,6 +88,12 @@ export default {
     },
   },
   methods: {
+    getCoinUrl(name) {
+      return new URL(`/src/image/poker/coin_${name}.png`, import.meta.url).href;
+    },
+    getPorkerUrl(name) {
+      return new URL(`/src/image/poker/card/${name}.png`, import.meta.url).href;
+    },
     sort(arr) {
       if (arr.length === 0 || arr === 0) return [];
       function compare(a, b) {

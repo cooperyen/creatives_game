@@ -120,7 +120,8 @@
                     : playerBitCoinSet(i.coin)
                 "
               >
-                <img :src="'/src/image/poker/' + i.img + '.png'" />
+                <!-- <img :src="'/src/image/poker/' + i.img + '.png'" /> -->
+                <img :src="getCoinUrl(i.img)" />
               </div>
 
               <!-- rest -->
@@ -297,6 +298,9 @@ export default {
     },
   },
   methods: {
+    getCoinUrl(name) {
+      return new URL(`/src/image/poker/${name}.png`, import.meta.url).href;
+    },
     // data.
     receiveDataSeting(data) {
       // game
