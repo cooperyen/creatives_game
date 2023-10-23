@@ -50,6 +50,7 @@ export default {
   watch: {
     'state.connected': {
       handler(el) {
+        console.log(el);
         if (el) this.loading = true;
         if (!el) this.loading = false;
       },

@@ -29,16 +29,17 @@ export const state = reactive({
 
 // const testURL = 'http://200.69.21.59:88'
 const testURL = 'https://user.creatives.ink'
-const testURL2 = 'http://127.0.0.1:5000/'
+// const testURL = 'http://127.0.0.1:5000/'
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = testURL;
 
 export const socket = io(URL);
 
-socket.on("connect", (el) => {
-  console.log('connect')
-  state.connected = null
+state.connected = null;
+
+socket.on("connect", () => {
+  console.log('el');
   state.connected = true;
   state.socketId = socket.id;
 });

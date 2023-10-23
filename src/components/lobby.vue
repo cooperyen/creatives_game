@@ -120,8 +120,13 @@ export default {
     },
     load() {
       if (this.userName === null) return;
-      this.socket.emit('id_check', { id: this.userName, room: this.userRooms });
+      this.socket.emit('id_check', {
+        id: this.userName,
+        room: this.userRooms,
+      });
+
       this.checkRoom();
+      this.showPage = true;
     },
     joinRoom(roomId) {
       console.log(roomId);
@@ -152,6 +157,13 @@ export default {
         });
       },
     },
+    'state.connected': {
+      handler(el) {
+        if (!el) return;
+        this.load();
+        this.showPage = true;
+      },
+    },
   },
   props: ['socket', 'state'],
   created() {
@@ -161,8 +173,9 @@ export default {
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
   mounted() {
-    this.load();
-    this.showPage = true;
+    this.checkRoom();
+
+    if (this.state.connected) this.load();
 
     this.swipierInit();
   },

@@ -238,6 +238,17 @@ export default {
   components: { userNameBox, blackJackPlayerHandler, blackJackHitHandler },
   props: ['socket', 'state'],
   watch: {
+    'state.connected': {
+      handler(el) {
+        if (!el) return;
+        const data = { id: this.ownself, room: this.gameRoom };
+        this.socket.emit('id_check', data);
+        this.socket.emit('bj', {
+          id: this.ownself,
+          room: `blackjack/${this.gameRoom}`,
+        });
+      },
+    },
     'state.blackJack': {
       handler(el) {
         // console.log(el);
@@ -489,13 +500,6 @@ export default {
     window.addEventListener('resize', this.detectWindowWidth);
 
     if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
-
-    const data = { id: this.ownself, room: this.gameRoom };
-    this.socket.emit('id_check', data);
-    this.socket.emit('bj', {
-      id: this.ownself,
-      room: `blackjack/${this.gameRoom}`,
-    });
   },
 };
 </script>
