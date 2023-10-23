@@ -172,11 +172,12 @@ export default {
     this.userRoom =
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
-  mounted() {
+  beforeMount() {
+    console.log(this.state.connected);
     this.checkRoom();
-
-    if (this.state.connected) this.load();
-
+    if (this.state.connected === true) this.load();
+  },
+  mounted() {
     this.swipierInit();
   },
   unmounted() {

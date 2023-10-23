@@ -37,6 +37,8 @@ export default {
     login() {
       const nameLength = this.userName.length;
 
+      console.log(this.state.connected);
+
       if (this.userName === '' || nameLength > 15) alert('this.userName');
       if (this.userName != '' && nameLength <= 15) {
         this.$store.state.userStore.userName = this.userName;

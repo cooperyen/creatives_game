@@ -36,11 +36,13 @@ const URL = testURL;
 
 export const socket = io(URL);
 
-state.connected = null;
+state.connected = false;
 
 socket.on("connect", () => {
   console.log('el');
-  state.connected = true;
+  setTimeout(() => {
+    state.connected = true;
+  }, 500);
   state.socketId = socket.id;
 });
 
