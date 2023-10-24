@@ -3,6 +3,8 @@
     <router-link to="/">change ID</router-link>
   </userNameBox>
 
+  <!-- <button @click="$emit('loadingLoop', true)">123</button> -->
+
   <transition name="content-ready">
     <div v-show="showPage">
       <div class="container pd-side room-box">
@@ -60,6 +62,7 @@ import { register } from 'swiper/element/bundle';
 register();
 
 export default {
+  emits: ['loadingLoop'],
   setup() {
     const spaceBetween = 0;
 
@@ -112,30 +115,35 @@ export default {
 
       swiperEl.initialize();
     },
-    checkRoom() {
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      if (userData.userRoom === null || userData.userRoom === undefined) return;
-      if (userData.userRoom.indexOf('mind') === -1) return;
-      this.$store.commit('clearUserRoom');
-    },
-    load() {
-      if (this.userName === null) return;
+    doIdCheck() {
       this.socket.emit('id_check', {
         id: this.userName,
         room: this.userRooms,
       });
+    },
+    checkRoom() {
+      const userData = JSON.parse(localStorage.getItem('userData'));
 
+      const state =
+        userData.userRoom === null || userData.userRoom === undefined;
+
+      if (state) this.doIdCheck();
+
+      if (!state) this.$store.commit('clearUserRoom');
+      // if (userData.userRoom.indexOf('mind') === -1) return;
+    },
+    load() {
+      if (this.userName === null) return;
       this.checkRoom();
       this.showPage = true;
     },
     joinRoom(roomId) {
-      console.log(roomId);
       if (roomId) {
+        // this.$emit('loadingLoop', true);
         this.socket.emit('join', {
           room: roomId,
           id: this.userName,
         });
-        this.$store.commit('updateUserRoom', roomId);
       } else {
         alert('未指定房間 ID');
       }
@@ -144,7 +152,9 @@ export default {
   watch: {
     'state.goUrl': {
       handler(el) {
+        console.log(el);
         if (el === null || el.indexOf('waiting_room') === -1) return;
+        this.$store.commit('updateUserRoom', el.substring(el.indexOf('game')));
         this.$router.push(el);
       },
       // deep: true,
@@ -173,7 +183,6 @@ export default {
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
   beforeMount() {
-    console.log(this.state.connected);
     this.checkRoom();
     if (this.state.connected === true) this.load();
   },

@@ -39,7 +39,7 @@ export const socket = io(URL);
 state.connected = false;
 
 socket.on("connect", () => {
-  console.log('el');
+  // console.log('el');
   setTimeout(() => {
     state.connected = true;
   }, 500);
@@ -55,10 +55,11 @@ socket.on('re_act', function (data) {
 
   state.goUrl = null;
   state.gameDataFirstLoad = null;
-  console.log(data.way);
+  // console.log(data.way);
   switch (data.way) {
 
     case 'id_check':
+      console.log(data);
       if (data.game_list != null || data.game_list != undefined) {
         state.gameRooms = null;
         state.gameRooms = data.game_list;
@@ -101,8 +102,15 @@ socket.on('re_act', function (data) {
 
       localStorage.setItem('userData', JSON.stringify(userData));
 
+      console.log(data);
       state.gameDataFirstLoad = data
 
+      break;
+
+    case 'lunch_start':
+      if (data.data === null || data.data === undefined) break;
+
+      state.gameDataFirstLoad = data
       break;
   }
 
@@ -111,6 +119,7 @@ socket.on('re_act', function (data) {
 
 
 socket.on('updata_lobby', function (data) {
+  console.log('updata_lobby', data);
   state.currentPlayers = data.room_data
 
 })
@@ -158,7 +167,7 @@ socket.on('re_lunch', function (data) {
 
 
 socket.on('re_bj', function (data) {
-  console.log(data);
+  // console.log(data);
   if (data === null || data === undefined) return;
   state.blackJack = null;
 
@@ -166,7 +175,7 @@ socket.on('re_bj', function (data) {
 })
 
 socket.on('re_no_game', function (data) {
-  console.log('re_no_game', data);
+  // console.log('re_no_game', data);
   state.goUrl = null;
   if (data.noRoom === null || data.noRoom === undefined) return;
   state.goUrl = 'lobby';

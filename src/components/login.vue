@@ -37,8 +37,6 @@ export default {
     login() {
       const nameLength = this.userName.length;
 
-      console.log(this.state.connected);
-
       if (this.userName === '' || nameLength > 15) alert('this.userName');
       if (this.userName != '' && nameLength <= 15) {
         this.$store.state.userStore.userName = this.userName;
@@ -52,13 +50,14 @@ export default {
   watch: {
     'state.connected': {
       handler(el) {
-        console.log(el);
+        // console.log(el);
         if (el) this.loading = true;
         if (!el) this.loading = false;
       },
     },
     'state.goUrl': {
       handler(el) {
+        console.log('url', el);
         if (el === null) return;
         this.$router.push(el);
         // this.state.goUrl = null;

@@ -113,6 +113,7 @@ export default {
       readyToGo: false,
     };
   },
+
   watch: {
     'state.currentPlayers': {
       handler(el) {
@@ -168,6 +169,7 @@ export default {
       this.time = 60;
     },
   },
+  emits: ['loadingLoop'],
   props: ['socket', 'state'],
   methods: {
     readyGameUI(boolean) {
@@ -263,6 +265,7 @@ export default {
     this.selfPlayer = userName;
 
     this.socket.emit('id_check', { id: userName, room: userRoom });
+    this.$emit('loadingLoop', false);
   },
   unmount() {
     clearTimeout(this.countDownFun);

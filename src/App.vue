@@ -8,6 +8,8 @@
     </div>
   </transition>
 
+  <loadingLoop v-show="clickLoading"></loadingLoop>
+  <!-- @loadingLoop="loadingLoopFun" -->
   <router-view :socket="socket" :state="state" v-slot="{ Component }">
     <transition :name="$route.meta.transition || 'fade'">
       <div :key="$route.name">
@@ -21,16 +23,17 @@
 
 <script>
 import { state, socket } from '@/../assets/socket';
-
+import loadingLoop from '@/../src/ui/loadingLoop.vue';
 export default {
   data() {
     return {
       socket,
       state,
       loading: false,
+      clickLoading: false,
     };
   },
-
+  components: { loadingLoop },
   computed: {
     connected() {
       return state.connected;
@@ -46,7 +49,12 @@ export default {
       },
     },
   },
+
   methods: {
+    loadingLoopFun(el) {
+      console.log(el);
+      this.clickLoading = el;
+    },
     connectedCheck() {
       const connected = this.state.connected;
       if (connected === undefined) return;

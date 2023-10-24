@@ -1,5 +1,6 @@
 <template>
   <userNameBox :userName="player" class="name"></userNameBox>
+
   <div class="transition" v-show="passNotice != false">
     <!-- <div id="transition"> -->
     <div class="next-container">
@@ -96,7 +97,7 @@
       </div>
     </div>
   </div>
-
+  {{ gameData }}
   <div v-show="!passNotice" class="game-container">
     <div id="in_play">
       <div v-if="gameData === null"></div>
@@ -201,7 +202,7 @@ export default {
   props: ['socket', 'state'],
   watch: {
     passNotice(el) {
-      console.log(el);
+      // console.log(el);
       if (el.msg != null && el.states === 'msg') {
         this.time = 5;
         this.countDown();
@@ -209,7 +210,7 @@ export default {
     },
     'state.drawVote': {
       handler(el) {
-        console.log(el);
+        // console.log(el);
         if (el != null && el.isPass) this.drawVote = el;
         if (el != null && !el.isPass) {
           this.drawVote = false;
@@ -226,7 +227,7 @@ export default {
     },
     'state.gameDataFirstLoad': {
       handler(el) {
-        console.log(el);
+        if (el === null || el === undefined) return;
         this.gameData = true;
         this.hp = el.hp;
         this.dart = el.dart;
@@ -245,7 +246,7 @@ export default {
         } else this.passNotice = { msg: el.card, states: 'msg' };
 
         if (tureFalse('hp')) {
-          if (this.hp < el.hp) console.log('fail');
+          // if (this.hp < el.hp) console.log('fail');
           this.hp = el.hp;
         }
         if (tureFalse('dart')) this.dart = el.dart;
@@ -261,7 +262,6 @@ export default {
     },
     'state.gameOne.gameOver': {
       handler(el) {
-        console.log('gogo', el);
         if (el.url === null && el.url != 'lobby') return;
         this.gameOver = true;
         this.dart = el.dart;
@@ -272,19 +272,19 @@ export default {
       },
     },
     handCard(el) {
-      console.log('handCard', this.handCard);
+      // console.log('handCard', this.handCard);
       this.$nextTick(() => {
         this.cardAnimate();
       });
     },
     time(el) {
-      console.log(el);
+      // console.log(el);
       if (el === 0) this.time = 5;
     },
   },
   methods: {
     large(el) {
-      console.log(String(el).length);
+      // console.log(String(el).length);
       return el.length >= 2 ? true : false;
     },
     countDown() {
@@ -319,8 +319,6 @@ export default {
         dy = (10 * 2) / 10;
         fsdfsd += dy;
 
-        console.log(i);
-
         DOM.style.transform = '';
         DOM.style.transform = `
           translate(${-50 + i * 5}% , ${fsdfsd * i}px)
@@ -336,7 +334,7 @@ export default {
       }
     },
     start_dart() {
-      console.log(this.dart);
+      // console.log(this.dart);
       if (this.dart > 0) {
         this.socket.emit('draw', {
           message: 'go',
@@ -363,10 +361,12 @@ export default {
       this.$router.replace('/lobby');
     },
   },
+  beforeMount() {
+    this.player = this.$store.state.userStore.userName;
+  },
   mounted() {
     if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
     this.cardAnimate();
-    this.player = this.$store.state.userStore.userName;
     this.socket.emit('game_room', this.state.activeGameRoom);
   },
 };
