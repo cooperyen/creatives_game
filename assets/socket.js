@@ -9,7 +9,7 @@ export const state = reactive({
   socketId: '',
   userName: null,
   goUrl: null,
-  gameRooms: null,
+  gameRooms: { state: false, gameList: null },
   lobbyPlayerList: null,
   currentPlayers: null,
   router: null,
@@ -30,6 +30,7 @@ export const state = reactive({
 // const testURL = 'http://200.69.21.59:88'
 const testURL = 'https://user.creatives.ink'
 // const testURL = 'http://127.0.0.1:5000/'
+// const testURL = 'https://6d09-60-251-61-249.ngrok-free.app'
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = testURL;
@@ -38,12 +39,15 @@ export const socket = io(URL);
 
 state.connected = false;
 
-socket.on("connect", () => {
-  // console.log('el');
+socket.on("connect", (el) => {
   setTimeout(() => {
     state.connected = true;
-  }, 500);
-  state.socketId = socket.id;
+    state.socketId = socket.id;
+  }, 200);
+});
+
+socket.on("connected", (el) => {
+  // console.log('sid', el);
 });
 
 socket.on("disconnect", () => {
@@ -52,17 +56,14 @@ socket.on("disconnect", () => {
 
 
 socket.on('re_act', function (data) {
-
   state.goUrl = null;
   state.gameDataFirstLoad = null;
-  // console.log(data.way);
   switch (data.way) {
 
     case 'id_check':
-      console.log(data);
       if (data.game_list != null || data.game_list != undefined) {
         state.gameRooms = null;
-        state.gameRooms = data.game_list;
+        state.gameRooms = { state: true, gameList: data.game_list };
       }
 
 
@@ -81,7 +82,7 @@ socket.on('re_act', function (data) {
       state.loginError = null;
 
       if (data.url != null || data.url != undefined) {
-        state.goUrl = data.url;
+        state.goUrl = 'lobby';
       }
 
       if (data.message != null || data.message != undefined)
@@ -101,8 +102,6 @@ socket.on('re_act', function (data) {
       state.goUrl = data.url;
 
       localStorage.setItem('userData', JSON.stringify(userData));
-
-      console.log(data);
       state.gameDataFirstLoad = data
 
       break;
@@ -118,10 +117,8 @@ socket.on('re_act', function (data) {
 });
 
 
-socket.on('updata_lobby', function (data) {
-  console.log('updata_lobby', data);
+socket.on('updata_watingroom_ready', function (data) {
   state.currentPlayers = data.room_data
-
 })
 
 

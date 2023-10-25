@@ -1,6 +1,6 @@
 <template>
   <transition name="connect">
-    <div id="connect" v-show="!loading">
+    <div id="connect" v-show="!$store.state.userStore.loading">
       <div class="loading-box flex">
         <h2>Connecting</h2>
         <span>......</span>
@@ -9,7 +9,7 @@
   </transition>
 
   <loadingLoop v-show="clickLoading"></loadingLoop>
-  <!-- @loadingLoop="loadingLoopFun" -->
+
   <router-view :socket="socket" :state="state" v-slot="{ Component }">
     <transition :name="$route.meta.transition || 'fade'">
       <div :key="$route.name">
@@ -45,7 +45,7 @@ export default {
   watch: {
     'state.connected': {
       handler(el) {
-        this.connectedCheck();
+        // this.connectedCheck();
       },
     },
   },
@@ -69,7 +69,7 @@ export default {
     window.onpopstate = function () {
       history.go(1);
     };
-    this.connectedCheck();
+    // this.connectedCheck();
   },
   created() {
     const userName = this.$store.state.userStore.userName;

@@ -2,7 +2,7 @@
   <transition name="lobby">
     <div class="user-container" v-show="ani">
       <div class="content">
-        <h2 id="userid" style="text-align: right">勇者 : {{ userName }}</h2>
+        <h2 id="userid">勇者 : {{ userName }}</h2>
         <slot></slot>
       </div>
     </div>
@@ -33,6 +33,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/../../../scss/color.scss';
+@import '@/../../../scss/rwd.scss';
 .user-container {
   color: $text;
   height: 80px;
@@ -43,9 +44,17 @@ export default {
     right: 20px;
     top: 20px;
     position: absolute;
+    h2 {
+      @include sm {
+        font-size: 1.2rem;
+      }
+    }
     a {
       color: $text;
       float: right;
+      @include sm {
+        font-size: 1rem;
+      }
     }
   }
 }

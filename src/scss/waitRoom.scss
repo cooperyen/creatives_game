@@ -5,7 +5,7 @@
   width: 100%;
   margin-top: 50px;
   @include sm {
-    margin-top: 10px;
+    margin-top: 0px;
   }
   // position: absolute;
   // left: 50%;
@@ -36,6 +36,7 @@
       background-repeat: no-repeat;
       @include sm {
         // background-image: url('./../image/player_mb.png');
+        height: 80px;
       }
       @include min-sm {
         margin-bottom: 10px;
@@ -166,7 +167,7 @@
   margin: 0 auto;
   position: relative;
   @include sm {
-    height: 160px;
+    // height: 160px;
   }
   .back-btn {
     position: absolute;
@@ -213,7 +214,7 @@
   width: 100%;
   height: 100%;
   @include sm {
-    margin-top: 20px;
+    margin-top: 0px;
   }
   .ready-box {
     filter: drop-shadow(0px 0px 6px rgb(255, 214, 34));

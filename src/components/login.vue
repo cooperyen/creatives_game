@@ -1,6 +1,6 @@
 <template>
   <transition name="login">
-    <div class="container" v-show="loading">
+    <div class="container" v-show="$store.state.userStore.loading">
       <div class="title">
         <h1>
           幫自己取個名字吧
@@ -22,12 +22,17 @@
       </div>
     </div>
   </transition>
+  <div class="connected" v-show="connectedTime != 0">
+    <div>connecting : {{ connectedTime }}</div>
+  </div>
 </template>
 
 <script>
 export default {
+  emits: ['waitPageTrLoop'],
   data() {
     return {
+      connectedTime: 0,
       userName: '',
       loading: false,
     };
@@ -51,8 +56,8 @@ export default {
     'state.connected': {
       handler(el) {
         // console.log(el);
-        if (el) this.loading = true;
-        if (!el) this.loading = false;
+        if (el) this.$store.state.userStore.loading = true;
+        if (!el) this.$store.state.userStore.loading = false;
       },
     },
     'state.goUrl': {
@@ -74,12 +79,30 @@ export default {
   },
   created() {
     localStorage.setItem('userData', JSON.stringify({ userName: null }));
+    this.state.connected = false;
   },
   beforeUnmount() {
     localStorage.removeItem('reloaded');
+    this.$store.state.userStore.loading = false;
   },
   mounted() {
-    this.state.connected = false;
+    // this.$emit('waitPageTrLoop', true);
+
+    const conetectLoop = setInterval(() => {
+      const result = doCheck(this);
+      this.connectedTime += 1;
+      if (result) {
+        this.connectedTime = 0;
+        clearInterval(conetectLoop);
+        this.$store.state.userStore.loading = true;
+      }
+      if (this.connectedTime >= 4) this.$router.go(0);
+    }, 1000);
+
+    function doCheck(el) {
+      if (el.state.connected) return true;
+      if (!el.state.connected) return false;
+    }
   },
 };
 </script>

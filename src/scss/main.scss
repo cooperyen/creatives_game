@@ -1,5 +1,6 @@
 @import './color.scss';
 @import './transition.scss';
+@import './rwd.scss';
 
 * {
   margin: 0;
@@ -47,10 +48,18 @@ body {
   padding-right: 15px;
 }
 
+.connected {
+  position: fixed;
+  right: 15px;
+  bottom: 15px;
+  color: $text;
+  z-index: 99999999999999999;
+}
+
 #connect {
   width: 100vw;
   height: 100vh;
-  background-color: $mainColor;
+  background-color: rgba($color: $mainColor, $alpha: 0.5);
   position: fixed;
   z-index: 99999999999999999;
   left: 50%;
@@ -61,14 +70,15 @@ body {
     left: 50%;
     top: 30%;
     transform: translate(-50%, -50%);
-    h2 {
-      color: white;
-      font-size: 3rem;
-    }
+    h2,
     span {
       color: white;
       font-size: 3rem;
-
+      @include xs {
+        font-size: 1.8rem;
+      }
+    }
+    span {
       width: 100%;
       display: block;
       animation: ttt 1s infinite ease-in-out;

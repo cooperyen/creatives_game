@@ -1,95 +1,101 @@
 <template>
-  <div class="back-container">
-    <div class="back-btn">
-      <router-link to="/lobby" class="flex">
-        <font-awesome-icon icon="fa-solid fa-chevron-left" />
-        <p>to looby</p>
-      </router-link>
+  <div v-show="$store.state.userStore.loading">
+    <div class="back-container">
+      <div class="back-btn">
+        <router-link to="/lobby" class="flex">
+          <font-awesome-icon icon="fa-solid fa-chevron-left" />
+          <p>to looby</p>
+        </router-link>
+      </div>
+      <div class="room-box">
+        <h2>
+          {{ userRoom }}
+        </h2>
+      </div>
     </div>
-    <div class="room-box">
-      <h2>
-        {{ userRoom }}
-      </h2>
-    </div>
-  </div>
-  <div class="container">
-    <!-- player's content -->
-    <div class="flex player-container">
-      <!-- otherPlayers -->
-      <div class="player-box">
-        <div class="player-item" v-for="i in otherPlayers" :key="i">
-          <!-- <div class="layout"></div> -->
-          <div class="layout-inner flex">
-            <!-- icon -->
+    <div class="container">
+      <!-- player's content -->
+      <div class="flex player-container">
+        <!-- otherPlayers -->
+        <div class="player-box">
+          <div class="player-item" v-for="i in otherPlayers" :key="i">
+            <!-- <div class="layout"></div> -->
+            <div class="layout-inner flex">
+              <!-- icon -->
+              <div class="icon-box">
+                <img src="./../image/user.png" alt="" />
+              </div>
+              <!-- name -->
+              <div class="name-box flex">
+                <p>{{ i }}</p>
+              </div>
+              <!-- ready icon -->
+              <readyIcon v-show="readyList[i]"></readyIcon>
+            </div>
+          </div>
+          <!-- empty -->
+          <div
+            class="player-item empty"
+            v-for="i in otherPlayerSetroom"
+            :key="i"
+          >
+            <!-- <div class="layout empty"></div> -->
+          </div>
+        </div>
+
+        <!-- self -->
+        <div class="leader-box">
+          <div class="leader-item">
             <div class="icon-box">
               <img src="./../image/user.png" alt="" />
             </div>
-            <!-- name -->
-            <div class="name-box flex">
-              <p>{{ i }}</p>
+            <div class="name-box">
+              <p>
+                {{ selfPlayer }}
+              </p>
             </div>
-            <!-- ready icon -->
-            <readyIcon v-show="readyList[i]"></readyIcon>
+            <readyIcon v-show="readyList[selfPlayer]"></readyIcon>
           </div>
-        </div>
-        <!-- empty -->
-        <div class="player-item empty" v-for="i in otherPlayerSetroom" :key="i">
-          <!-- <div class="layout empty"></div> -->
-        </div>
-      </div>
-
-      <!-- self -->
-      <div class="leader-box">
-        <div class="leader-item">
-          <div class="icon-box">
-            <img src="./../image/user.png" alt="" />
-          </div>
-          <div class="name-box">
-            <p>
-              {{ selfPlayer }}
-            </p>
-          </div>
-          <readyIcon v-show="readyList[selfPlayer]"></readyIcon>
         </div>
       </div>
     </div>
-  </div>
-  <!-- buttons -->
+    <!-- buttons -->
 
-  <div class="active-container" v-show="!readyToGo">
-    <!-- <transition name="move-up"> -->
-    <div class="count-down" :class="{ visible: !isShowCountDown }">
-      請準備遊戲，<span>{{ time }}</span> 秒後反回大廳
-    </div>
-    <!-- </transition> -->
-    <div class="ready-container">
-      <div class="ready-box">
-        <div class="ready-content">
-          <div
-            class="ready-btn"
-            :class="{
-              ready: !readyList[selfPlayer],
-              cancel: readyList[selfPlayer],
-            }"
-          >
-            <p
-              @click="
-                ready(readyList[selfPlayer] ? 'ready' : 'unready', selfPlayer)
-              "
+    <div class="active-container" v-show="!readyToGo">
+      <!-- <transition name="move-up"> -->
+      <div class="count-down" :class="{ visible: !isShowCountDown }">
+        請準備遊戲，<span>{{ time }}</span> 秒後反回大廳
+      </div>
+      <!-- </transition> -->
+      <div class="ready-container">
+        <div class="ready-box">
+          <div class="ready-content">
+            <div
+              class="ready-btn"
+              :class="{
+                ready: !readyList[selfPlayer],
+                cancel: readyList[selfPlayer],
+              }"
             >
-              {{ readyList[selfPlayer] ? 'cancel' : 'ready' }}
-            </p>
+              <p
+                @click="
+                  ready(readyList[selfPlayer] ? 'ready' : 'unready', selfPlayer)
+                "
+              >
+                {{ readyList[selfPlayer] ? 'cancel' : 'ready' }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="start-game" v-if="readyToGo">
-    <div class="start-layout">
-      <div class="content">
-        <h2>開始遊戲，{{ time }} 秒後返回遊戲廳</h2>
-        <button @click="startGame()">出發囉!!</button>
+    <div class="start-game" v-if="readyToGo">
+      <div class="start-layout">
+        <div class="content">
+          <h2>開始遊戲，{{ time }} 秒後返回遊戲廳</h2>
+          <button @click="startGame()">出發囉!!</button>
+        </div>
       </div>
     </div>
   </div>
@@ -213,16 +219,19 @@ export default {
       }
     },
     currentPlayers(el) {
-      console.log(el);
-      if (el === undefined) return;
+      // no data than return.
+      if (el === undefined || el === null) return;
+
       const userRoom = this.$store.state.userStore.userRoom;
-      const otherPlayers = el[userRoom].player.filter((el) => {
+      const roomPlayers = el[userRoom].player;
+
+      // room players without self.
+      const otherPlayers = roomPlayers.filter((el) => {
         return el != this.selfPlayer;
       });
 
-      if (el[userRoom].player.length > 1) {
-        if (!this.readyList[this.selfPlayer]) this.readyGameUI(true);
-      } else this.readyGameUI(false);
+      if (roomPlayers.length > 1) this.readyGameUI(true);
+      if (roomPlayers.length <= 1) this.readyGameUI(false);
 
       this.otherPlayers = otherPlayers;
       this.otherPlayerSetroom = 3 - otherPlayers.length;
@@ -233,7 +242,7 @@ export default {
       if (this.time <= 0) {
         this.$router.push('/lobby');
       }
-      if (this.time != 0) {
+      if (this.time > 0) {
         this.countDownFun = setTimeout(() => {
           this.countDown();
         }, 1000);
@@ -246,7 +255,7 @@ export default {
         this.readyToGo = false;
         this.ready('unready', this.selfPlayer);
       }
-      if (this.time != 0) {
+      if (this.time > 0) {
         this.countDownFun = setTimeout(() => {
           this.countDownStart();
         }, 1000);
@@ -254,6 +263,9 @@ export default {
     },
   },
   mounted() {
+    setTimeout(() => {
+      this.$store.state.userStore.loading = true;
+    }, 1000);
     const LocalStorageData = JSON.parse(localStorage.getItem('userData'));
     const userName = LocalStorageData.userName;
     const userRoom = LocalStorageData.userRoom;
@@ -267,10 +279,11 @@ export default {
     this.socket.emit('id_check', { id: userName, room: userRoom });
     this.$emit('loadingLoop', false);
   },
-  unmount() {
+  beforeUnmount() {
     clearTimeout(this.countDownFun);
     clearTimeout(this.countDownStart);
     this.$store.commit('clearUserRoom');
+    this.$store.state.userStore.loading = false;
   },
 };
 </script>

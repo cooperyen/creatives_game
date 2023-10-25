@@ -8,11 +8,15 @@ $text: rgb(198, 190, 149);
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .room-box {
   @include med {
     margin-top: 15px;
+  }
+  @include xs {
+    width: 90%;
   }
   .room {
     border-radius: 5px;
@@ -50,7 +54,10 @@ $text: rgb(198, 190, 149);
         )
         6;
       animation: mover 3s ease infinite;
-
+      @include sm {
+        max-height: 300px;
+        overflow: hidden;
+      }
       .img-box {
         img {
           border-radius: $imgborder;
@@ -64,7 +71,7 @@ $text: rgb(198, 190, 149);
         left: 50%;
         transform: translateX(-50%);
         margin-top: 10px;
-
+        width: 100%;
         .title {
           font-weight: bold;
           color: $text;
@@ -73,6 +80,9 @@ $text: rgb(198, 190, 149);
           font-size: 1.3rem;
           text-align: center;
           text-transform: uppercase;
+          @include xs {
+            font-size: 1.1rem;
+          }
         }
       }
     }
@@ -85,7 +95,7 @@ $text: rgb(198, 190, 149);
   .content {
     border-radius: 8px;
     background-color: rgba($color: $mainBg, $alpha: 0.7);
-    padding: 20px 15px;
+    padding: 10px 15px;
   }
   p {
     font-size: 1.2rem;

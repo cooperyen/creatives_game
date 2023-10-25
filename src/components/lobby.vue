@@ -15,7 +15,7 @@
           pagination="ture"
           :breakpoints="breakpoints"
         >
-          <swiper-slide class="room" v-for="i in state.gameRooms" :key="i">
+          <swiper-slide class="room" v-for="i in gameRooms" :key="i">
             <div class="room-layout">
               <div class="room-content" @click="joinRoom(i)">
                 <div class="img-box">
@@ -52,6 +52,9 @@
       </div>
     </div>
   </transition>
+  <div class="connected" v-show="connectedTime != 0">
+    <div>connecting : {{ connectedTime }}</div>
+  </div>
 </template>
 
 <script>
@@ -85,6 +88,7 @@ export default {
   },
   data() {
     return {
+      connectedTime: 0,
       userName: null,
       userRoom: null,
       gameRooms: null,
@@ -128,14 +132,32 @@ export default {
         userData.userRoom === null || userData.userRoom === undefined;
 
       if (state) this.doIdCheck();
-
-      if (!state) this.$store.commit('clearUserRoom');
-      // if (userData.userRoom.indexOf('mind') === -1) return;
     },
     load() {
       if (this.userName === null) return;
-      this.checkRoom();
-      this.showPage = true;
+      this.$store.commit('clearUserRoom');
+
+      const conetectLoop = setInterval(() => {
+        const result = doCheck(this);
+        this.connectedTime += 1;
+        if (result) {
+          this.connectedTime = 0;
+          clearInterval(conetectLoop);
+          this.gameRooms = this.state.gameRooms.gameList;
+          this.$store.state.userStore.loading = true;
+          setTimeout(() => {
+            this.showPage = true;
+          }, 500);
+        }
+      }, 2000);
+
+      function doCheck(el) {
+        // make sure backEnd data same as frontEnd.
+        el.checkRoom();
+
+        if (el.state.gameRooms.state) return true;
+        if (!el.state.gameRooms.state) return false;
+      }
     },
     joinRoom(roomId) {
       if (roomId) {
@@ -152,7 +174,6 @@ export default {
   watch: {
     'state.goUrl': {
       handler(el) {
-        console.log(el);
         if (el === null || el.indexOf('waiting_room') === -1) return;
         this.$store.commit('updateUserRoom', el.substring(el.indexOf('game')));
         this.$router.push(el);
@@ -167,13 +188,6 @@ export default {
         });
       },
     },
-    'state.connected': {
-      handler(el) {
-        if (!el) return;
-        this.load();
-        this.showPage = true;
-      },
-    },
   },
   props: ['socket', 'state'],
   created() {
@@ -183,13 +197,27 @@ export default {
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
   beforeMount() {
-    this.checkRoom();
-    if (this.state.connected === true) this.load();
+    // this.checkRoom();
+    // if (this.state.connected === true) this.load();
   },
   mounted() {
     this.swipierInit();
+
+    const conetectLoop = setInterval(() => {
+      const result = doCheck(this);
+      if (result) clearInterval(conetectLoop);
+    }, 500);
+
+    function doCheck(el) {
+      if (el.state.connected) {
+        el.load();
+        return true;
+      } else return false;
+    }
   },
-  unmounted() {
+
+  beforeUnmount() {
+    this.$store.state.userStore.loading = false;
     this.showPage = false;
   },
 };

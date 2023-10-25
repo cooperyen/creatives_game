@@ -7,6 +7,7 @@ const userStore = {
     return {
       userName,
       userRoom,
+      loading: false,
     };
   },
   mutations: {
