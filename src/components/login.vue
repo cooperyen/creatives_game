@@ -1,6 +1,6 @@
 <template>
   <transition name="login">
-    <div class="container" v-show="$store.state.userStore.loading">
+    <div class="login-container" v-show="$store.state.userStore.loading">
       <div class="title">
         <h1>
           幫自己取個名字吧
@@ -14,6 +14,7 @@
             type="text"
             placeholder="名字必須有氣勢"
             required=""
+            @keyup.enter="login()"
           />
         </div>
         <div class="login btn">
@@ -35,6 +36,7 @@ export default {
       connectedTime: 0,
       userName: '',
       loading: false,
+      connected: '',
     };
   },
   props: ['socket', 'state'],
@@ -56,8 +58,8 @@ export default {
     'state.connected': {
       handler(el) {
         // console.log(el);
-        if (el) this.$store.state.userStore.loading = true;
-        if (!el) this.$store.state.userStore.loading = false;
+        this.connected = el;
+        this.$store.state.userStore.loading = el;
       },
     },
     'state.goUrl': {
@@ -72,7 +74,7 @@ export default {
     'state.loginError': {
       handler(el) {
         if (el === null) return;
-        alert(el);
+        alert(JSON.stringify(el));
       },
       deep: true,
     },
@@ -88,20 +90,24 @@ export default {
   mounted() {
     // this.$emit('waitPageTrLoop', true);
 
+    const that = this;
     const conetectLoop = setInterval(() => {
-      const result = doCheck(this);
+      const result = doCheck();
       this.connectedTime += 1;
       if (result) {
         this.connectedTime = 0;
         clearInterval(conetectLoop);
-        this.$store.state.userStore.loading = true;
+        setTimeout(() => {
+          this.$store.state.userStore.loading = true;
+        }, 1000);
       }
-      if (this.connectedTime >= 4) this.$router.go(0);
+      if (this.connectedTime >= 10) this.$router.go(0);
     }, 1000);
 
     function doCheck(el) {
-      if (el.state.connected) return true;
-      if (!el.state.connected) return false;
+      console.log(that.state.connected);
+      if (that.state.connected || that.connected) return true;
+      if (!that.state.connected || !that.connected) return false;
     }
   },
 };

@@ -43,11 +43,13 @@ socket.on("connect", (el) => {
   setTimeout(() => {
     state.connected = true;
     state.socketId = socket.id;
-  }, 200);
+  }, 500);
 });
 
 socket.on("connected", (el) => {
-  // console.log('sid', el);
+  setTimeout(() => {
+    state.connected = true;
+  }, 100);
 });
 
 socket.on("disconnect", () => {
@@ -78,11 +80,14 @@ socket.on('re_act', function (data) {
       break;
 
     case 'login':
+
       localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
       state.loginError = null;
+      state.goUrl = null;
+      // state.loginError = data
 
       if (data.url != null || data.url != undefined) {
-        state.goUrl = 'lobby';
+        state.goUrl = data.url;
       }
 
       if (data.message != null || data.message != undefined)

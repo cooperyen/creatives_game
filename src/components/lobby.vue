@@ -1,6 +1,6 @@
 <template>
   <userNameBox :userName="userName">
-    <router-link to="/">change ID</router-link>
+    <p @click="$router.replace('/')">change ID</p>
   </userNameBox>
 
   <!-- <button @click="$emit('loadingLoop', true)">123</button> -->
