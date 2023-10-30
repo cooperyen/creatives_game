@@ -1,6 +1,6 @@
 <template>
   <userNameBox :userName="userName">
-    <p @click="$router.replace('/')">change ID</p>
+    <p @click="$router.replace">change ID</p>
   </userNameBox>
 
   <!-- <button @click="$emit('loadingLoop', true)">123</button> -->
@@ -203,17 +203,18 @@ export default {
   mounted() {
     this.swipierInit();
 
-    const conetectLoop = setInterval(() => {
-      const result = doCheck(this);
-      if (result) clearInterval(conetectLoop);
-    }, 500);
+    // const conetectLoop = setInterval(() => {
+    //   const result = doCheck(this);
+    //   if (result) clearInterval(conetectLoop);
+    // }, 500);
 
-    function doCheck(el) {
-      if (el.state.connected) {
-        el.load();
-        return true;
-      } else return false;
-    }
+    // function doCheck(el) {
+    //   if (el.state.connected) {
+    //     el.load();
+    //     return true;
+    //   } else return false;
+    // }
+    this.load();
   },
 
   beforeUnmount() {

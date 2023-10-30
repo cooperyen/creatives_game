@@ -38,13 +38,17 @@ const URL = testURL;
 export const socket = io(URL);
 
 state.connected = false;
+state.gameDataUpdate = null;
+
 
 socket.on("connect", (el) => {
   setTimeout(() => {
     state.connected = true;
     state.socketId = socket.id;
+    console.log(state.socketId);
   }, 500);
 });
+
 
 socket.on("connected", (el) => {
   setTimeout(() => {
@@ -79,6 +83,12 @@ socket.on('re_act', function (data) {
 
       break;
 
+
+    case 'id_check_in_game':
+      if (data.url != 'lobby') state.gameDataFirstLoad = data.page
+      if (data.url === 'lobby') state.loginError = 'fail';
+      break;
+
     case 'login':
 
       localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
@@ -108,16 +118,21 @@ socket.on('re_act', function (data) {
 
       localStorage.setItem('userData', JSON.stringify(userData));
       state.gameDataFirstLoad = data
+      console.log('lunch_mind', data);
 
       break;
 
     case 'lunch_start':
+      console.log('lunch_start', data);
       if (data.data === null || data.data === undefined) break;
 
       state.gameDataFirstLoad = data
       break;
-  }
 
+    case 'lunch_start_fail':
+      state.loginError = 'fail';
+      break;
+  }
 
 });
 
@@ -143,12 +158,14 @@ socket.on('updata_ready', function (data) {
   }, {})
 })
 
-socket.on('update_game', function (data) {
+socket.on('game_update_game', function (data) {
+  console.log('game_update_gamed', data);
   state.gameDataUpdate = data
   state.drawVote = null
 })
 
 socket.on('re_flash', function (data) {
+  console.log('re_flash', data);
   state.gameDataUpdate = data
 })
 

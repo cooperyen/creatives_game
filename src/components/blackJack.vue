@@ -500,6 +500,9 @@ export default {
     window.addEventListener('resize', this.detectWindowWidth);
 
     if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
+
+    if (this.state.activeGameRoom != null)
+      this.$store.state.userStore.loading = true;
   },
 };
 </script>

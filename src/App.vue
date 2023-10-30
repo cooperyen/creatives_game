@@ -43,16 +43,15 @@ export default {
     },
   },
   watch: {
-    'state.connected': {
-      handler(el) {
-        // this.connectedCheck();
-      },
-    },
+    // 'state.connected': {
+    //   handler(el) {
+    //     // this.connectedCheck();
+    //   },
+    // },
   },
 
   methods: {
     loadingLoopFun(el) {
-      console.log(el);
       this.clickLoading = el;
     },
     connectedCheck() {

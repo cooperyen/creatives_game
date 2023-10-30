@@ -179,6 +179,7 @@ export default {
   data() {
     return {
       player: null,
+      gameRoom: null,
       gameData: false,
       handCard: null,
       hp: null,
@@ -208,6 +209,12 @@ export default {
         this.countDown();
       }
     },
+    'state.loginError': {
+      handler(el) {
+        if (el === 'fail') this.$router.replace('/lobby');
+      },
+      deep: true,
+    },
     'state.drawVote': {
       handler(el) {
         // console.log(el);
@@ -227,13 +234,15 @@ export default {
     },
     'state.gameDataFirstLoad': {
       handler(el) {
+        console.log(el);
         if (el === null || el === undefined) return;
         this.gameData = true;
         this.hp = el.hp;
         this.dart = el.dart;
         this.remain = el.remain;
-        this.level = el.data.level;
-        this.handCard = el.data[this.player];
+        this.level = el.level;
+        this.handCard = el[this.player];
+        this.$store.state.userStore.loading = true;
       },
       deep: true,
     },
@@ -299,7 +308,10 @@ export default {
       }
     },
     playcard() {
-      const data = { player: this.player, room: this.state.activeGameRoom };
+      const data = {
+        player: this.player,
+        room: this.$store.state.userStore.userRoom,
+      };
       this.socket.emit('play', data);
     },
     cardAnimate() {
@@ -338,7 +350,7 @@ export default {
       if (this.dart > 0) {
         this.socket.emit('draw', {
           message: 'go',
-          room: this.state.activeGameRoom,
+          room: this.$store.state.userStore.userRoom,
         });
       } else {
         alert('沒飛鏢啊!!按屁按逆!!');
@@ -349,7 +361,7 @@ export default {
 
       this.socket.emit('draw', {
         message: data,
-        room: this.state.activeGameRoom,
+        room: this.$store.state.userStore.userRoom,
       });
 
       // if (data === 'no') this.drawVote = false;
@@ -365,9 +377,27 @@ export default {
     this.player = this.$store.state.userStore.userName;
   },
   mounted() {
-    if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
-    this.cardAnimate();
-    this.socket.emit('game_room', this.state.activeGameRoom);
+    console.log(this.state.activeGameRoom);
+    // if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
+    if (this.state.activeGameRoom != null)
+      this.$store.commit('updateUserRoom', this.state.activeGameRoom);
+
+    setTimeout(() => {
+      if (this.$store.state.userStore.userRoom === null)
+        this.$router.replace('/lobby');
+
+      console.log(this.$store.state.userStore.userRoom);
+      this.cardAnimate();
+      // this.socket.emit('game_room', this.$store.state.userStore.userRoom);
+
+      this.socket.emit('id_check', {
+        id: this.$store.state.userStore.userName,
+        room: `mind/${this.$store.state.userStore.userRoom}`,
+      });
+    }, 500);
+  },
+  beforeUnmount() {
+    this.$store.state.userStore.loading = false;
   },
 };
 </script>
