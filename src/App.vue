@@ -34,14 +34,6 @@ export default {
     };
   },
   components: { loadingLoop },
-  computed: {
-    connected() {
-      return state.connected;
-    },
-    socketId() {
-      return state.socketId;
-    },
-  },
   watch: {
     // 'state.connected': {
     //   handler(el) {
@@ -62,6 +54,15 @@ export default {
         connected ? (this.loading = true) : (this.loading = false);
       }, 1000);
     },
+    cookieCheck() {
+      const data = JSON.parse(localStorage.getItem('userData'));
+
+      if (data === null)
+        localStorage.setItem(
+          'userData',
+          JSON.stringify({ userName: null, userRoom: null })
+        );
+    },
   },
   mounted() {
     // history.pushState(null, null, location.href);
@@ -71,9 +72,11 @@ export default {
     // this.connectedCheck();
   },
   created() {
+    this.cookieCheck();
     const userName = this.$store.state.userStore.userName;
     const userRoom = this.$store.state.userStore.userRoom;
-    if (userName === null || userName === undefined) this.$router.push('/');
+    if (userName === null || userName === undefined || userRoom === undefined)
+      this.$router.push('/');
     if (this.$route.path === '/') return;
     // this.socket.emit('id_check', { id: userName, room: userRoom });
   },

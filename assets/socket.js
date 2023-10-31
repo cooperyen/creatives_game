@@ -4,6 +4,7 @@ import { userStore } from '@/../assets/userStore.js';
 
 
 export const state = reactive({
+  isConnected: false,
   connected: false,
   loading: false,
   socketId: '',
@@ -37,33 +38,40 @@ const URL = testURL;
 
 export const socket = io(URL);
 
-state.connected = false;
-state.gameDataUpdate = null;
-
+// export const conntect = () => {
 
 socket.on("connect", (el) => {
-  setTimeout(() => {
-    state.connected = true;
-    state.socketId = socket.id;
-    console.log(state.socketId);
-  }, 500);
+  state.connected = true;
+  state.socketId = socket.id;
+
 });
 
-
 socket.on("connected", (el) => {
-  setTimeout(() => {
-    state.connected = true;
-  }, 100);
+  state.connected = true;
+
 });
 
 socket.on("disconnect", () => {
   state.connected = false;
 });
+// }
 
+
+state.connected = false;
+state.gameDataUpdate = null;
+state.gameOne.readyList = null;
+state.currentPlayers = null;
 
 socket.on('re_act', function (data) {
+
   state.goUrl = null;
   state.gameDataFirstLoad = null;
+  state.loginError = null;
+  state.activeGameRoom = null;
+
+  const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
+  state.activeGameRoom = gameRoom;
+
   switch (data.way) {
 
     case 'id_check':
@@ -71,7 +79,6 @@ socket.on('re_act', function (data) {
         state.gameRooms = null;
         state.gameRooms = { state: true, gameList: data.game_list };
       }
-
 
       // lobby escapes from load cycles.
       if (data.url === 'lobby') {
@@ -81,20 +88,22 @@ socket.on('re_act', function (data) {
       if (data.go === 'waiting_room')
         state.goUrl = `waiting_room/${data.url}`
 
+      if (data.backGame != null) {
+        state.goUrl = `${data.backGame}/${data.url}`
+      }
       break;
 
-
     case 'id_check_in_game':
-      if (data.url != 'lobby') state.gameDataFirstLoad = data.page
+      if (data.url != 'lobby') state.gameDataFirstLoad = data.page;
       if (data.url === 'lobby') state.loginError = 'fail';
       break;
 
     case 'login':
 
-      localStorage.setItem('userData', JSON.stringify({ userName: data.id }));
+      localStorage.setItem('userData', JSON.stringify({ userName: data.id, userRoom: null }));
       state.loginError = null;
       state.goUrl = null;
-      // state.loginError = data
+
 
       if (data.url != null || data.url != undefined) {
         state.goUrl = data.url;
@@ -109,8 +118,8 @@ socket.on('re_act', function (data) {
 
       if (data.url === null || data.url === undefined) break;
 
-      const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
-      state.activeGameRoom = gameRoom
+      // const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
+      // state.activeGameRoom = gameRoom
       const userData = JSON.parse(localStorage.getItem('userData'));
       userData.userRoom = gameRoom
 
@@ -118,12 +127,11 @@ socket.on('re_act', function (data) {
 
       localStorage.setItem('userData', JSON.stringify(userData));
       state.gameDataFirstLoad = data
-      console.log('lunch_mind', data);
+
 
       break;
 
     case 'lunch_start':
-      console.log('lunch_start', data);
       if (data.data === null || data.data === undefined) break;
 
       state.gameDataFirstLoad = data
@@ -159,13 +167,11 @@ socket.on('updata_ready', function (data) {
 })
 
 socket.on('game_update_game', function (data) {
-  console.log('game_update_gamed', data);
   state.gameDataUpdate = data
   state.drawVote = null
 })
 
 socket.on('re_flash', function (data) {
-  console.log('re_flash', data);
   state.gameDataUpdate = data
 })
 

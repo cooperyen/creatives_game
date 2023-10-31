@@ -8,9 +8,16 @@ const userStore = {
       userName,
       userRoom,
       loading: false,
+      connectedTime: 0,
     };
   },
   mutations: {
+    connectedTimePlus(state) {
+      state.connectedTime += 1;
+    },
+    connectedTimeMinus(state) {
+      state.connectedTime -= 1;
+    },
     updateUserRoom(state, data) {
       state.userRoom = data;
       localStorage.setItem('userData', JSON.stringify(state))

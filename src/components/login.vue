@@ -52,7 +52,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('clearUserRoom');
+    // this.$store.commit('clearUserRoom');
   },
   watch: {
     'state.connected': {
@@ -80,7 +80,10 @@ export default {
     },
   },
   created() {
-    localStorage.setItem('userData', JSON.stringify({ userName: null }));
+    localStorage.setItem(
+      'userData',
+      JSON.stringify({ userName: null, userRoom: null })
+    );
     this.state.connected = false;
   },
   beforeUnmount() {
@@ -105,7 +108,6 @@ export default {
     }, 1000);
 
     function doCheck(el) {
-      console.log(that.state.connected);
       if (that.state.connected || that.connected) return true;
       if (!that.state.connected || !that.connected) return false;
     }

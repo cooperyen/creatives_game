@@ -386,7 +386,6 @@ export default {
       if (this.$store.state.userStore.userRoom === null)
         this.$router.replace('/lobby');
 
-      console.log(this.$store.state.userStore.userRoom);
       this.cardAnimate();
       // this.socket.emit('game_room', this.$store.state.userStore.userRoom);
 
@@ -397,6 +396,7 @@ export default {
     }, 500);
   },
   beforeUnmount() {
+    this.$store.state.userStore.userRoom = null;
     this.$store.state.userStore.loading = false;
   },
 };

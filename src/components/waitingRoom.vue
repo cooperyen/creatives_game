@@ -79,7 +79,7 @@
             >
               <p
                 @click="
-                  ready(readyList[selfPlayer] ? 'ready' : 'unready', selfPlayer)
+                  ready(readyList[selfPlayer] ? 'unready' : 'ready', selfPlayer)
                 "
               >
                 {{ readyList[selfPlayer] ? 'cancel' : 'ready' }}
@@ -99,12 +99,16 @@
       </div>
     </div>
   </div>
+  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script>
+import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 export default {
   data() {
     return {
+      conetectLoop: null,
+      connectedTime: 0,
       otherPlayers: null,
       otherPlayerSetroom: 3,
       selfPlayer: null,
@@ -119,20 +123,27 @@ export default {
       readyToGo: false,
     };
   },
-
+  components: { transferPageCountDown },
   watch: {
+    'state.loginError': {
+      handler(el) {
+        if (this.state.activeGameRoom != 'fail') return;
+        this.$router.replace(`/${el}`);
+      },
+    },
     'state.currentPlayers': {
       handler(el) {
         this.currentPlayers(el);
       },
+      deep: true,
     },
     'state.goUrl': {
       handler(el) {
-        if (el === null) return;
-        clearTimeout(this.countDownFun);
-
-        if (this.state.activeGameRoom != null)
-          this.$store.commit('updateUserRoom', this.state.activeGameRoom);
+        console.log(el);
+        if (this.state.activeGameRoom != null) {
+          // this.$store.commit('updateUserRoom', el);
+          this.$store.state.userStore.userRoom = el;
+        }
 
         this.$router.replace(`/${el}`);
       },
@@ -187,6 +198,8 @@ export default {
       if (!boolean) {
         this.isShowCountDown = false;
         this.isCountDown = false;
+        this.readyToGo = false;
+        this.readyList = [];
       }
     },
     startGame() {
@@ -222,9 +235,11 @@ export default {
       // no data than return.
       if (el === undefined || el === null) return;
 
-      const userRoom = this.$store.state.userStore.userRoom;
-      const roomPlayers = el[userRoom].player;
+      const userRoomURL = this.$store.state.userStore.userRoom;
+      const userRoom = userRoomURL.substring(userRoomURL.indexOf('/') + 1);
 
+      if (userRoom === null) return;
+      const roomPlayers = el[userRoom].player;
       // room players without self.
       const otherPlayers = roomPlayers.filter((el) => {
         return el != this.selfPlayer;
@@ -261,25 +276,51 @@ export default {
         }, 1000);
       }
     },
+    loadCheck() {
+      const that = this;
+      this.conetectLoop = setInterval(() => {
+        const result = doCheck();
+        this.$store.commit('connectedTimePlus');
+        if (result) {
+          this.$store.state.userStore.connectedTime = 0;
+          clearInterval(this.conetectLoop);
+          setTimeout(() => {
+            this.$store.state.userStore.loading = true;
+          }, 500);
+        }
+
+        if (this.$store.state.userStore.connectedTime >= 10) {
+          this.$router.replace('/lobby');
+        }
+      }, 1000);
+
+      function doCheck() {
+        // make sure backEnd data same as frontEnd.
+        that.socket.emit('id_check', {
+          id: that.selfPlayer,
+          room: that.userRoom,
+        });
+
+        if (that.otherPlayers != null) return true;
+        if (that.otherPlayers === null) return false;
+      }
+    },
   },
   mounted() {
-    setTimeout(() => {
-      this.$store.state.userStore.loading = true;
-    }, 1000);
     const LocalStorageData = JSON.parse(localStorage.getItem('userData'));
     const userName = LocalStorageData.userName;
     const userRoom = LocalStorageData.userRoom;
 
-    if (userRoom === null || userRoom === undefined)
-      this.$router.push('/lobby');
-
     this.userRoom = userRoom;
     this.selfPlayer = userName;
 
-    this.socket.emit('id_check', { id: userName, room: userRoom });
-    this.$emit('loadingLoop', false);
+    if (userRoom === null || userRoom === undefined)
+      this.$router.push('/lobby');
+
+    this.loadCheck();
   },
   beforeUnmount() {
+    clearInterval(this.conetectLoop);
     clearTimeout(this.countDownFun);
     clearTimeout(this.countDownStart);
     this.$store.commit('clearUserRoom');

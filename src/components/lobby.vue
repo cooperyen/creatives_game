@@ -1,9 +1,7 @@
 <template>
   <userNameBox :userName="userName">
-    <p @click="$router.replace">change ID</p>
+    <p @click="$router.replace('/')">change ID</p>
   </userNameBox>
-
-  <!-- <button @click="$emit('loadingLoop', true)">123</button> -->
 
   <transition name="content-ready">
     <div v-show="showPage">
@@ -52,12 +50,11 @@
       </div>
     </div>
   </transition>
-  <div class="connected" v-show="connectedTime != 0">
-    <div>connecting : {{ connectedTime }}</div>
-  </div>
+  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script>
+import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 import { register } from 'swiper/element/bundle';
 // Import Swiper styles
@@ -65,7 +62,6 @@ import { register } from 'swiper/element/bundle';
 register();
 
 export default {
-  emits: ['loadingLoop'],
   setup() {
     const spaceBetween = 0;
 
@@ -88,6 +84,8 @@ export default {
   },
   data() {
     return {
+      conetectLoop: null,
+      loadLoop: null,
       connectedTime: 0,
       userName: null,
       userRoom: null,
@@ -97,7 +95,7 @@ export default {
       chGameName: { game01: '心靈同步', game02: '21點' },
     };
   },
-  components: { userNameBox },
+  components: { userNameBox, transferPageCountDown },
   methods: {
     swipierInit() {
       const swiperEl = document.querySelector('swiper-container');
@@ -127,41 +125,48 @@ export default {
     },
     checkRoom() {
       const userData = JSON.parse(localStorage.getItem('userData'));
-
-      const state =
-        userData.userRoom === null || userData.userRoom === undefined;
-
-      if (state) this.doIdCheck();
+      // if (userData.userRoom != null && userData.userRoom.indexOf('game') != -1)
+      //   this.$store.commit('clearUserRoom');
+      // const state = userData.userRoom === null ? true : false;
+      // console.log(state);
+      // if (state) this.doIdCheck();
+      this.socket.emit('id_check', {
+        id: userData.userName,
+        room: userData.userRoom,
+      });
     },
     load() {
       if (this.userName === null) return;
-      this.$store.commit('clearUserRoom');
 
-      const conetectLoop = setInterval(() => {
-        const result = doCheck(this);
-        this.connectedTime += 1;
+      const that = this;
+
+      this.loadLoop = setInterval(() => {
+        const result = doCheck();
+        this.$store.commit('connectedTimePlus');
         if (result) {
-          this.connectedTime = 0;
-          clearInterval(conetectLoop);
+          this.$store.state.userStore.connectedTime = 0;
+          clearInterval(this.loadLoop);
           this.gameRooms = this.state.gameRooms.gameList;
           this.$store.state.userStore.loading = true;
           setTimeout(() => {
             this.showPage = true;
           }, 500);
         }
+        if (this.$store.state.userStore.connectedTime >= 10) {
+          this.$store.commit('clearUserRoom');
+        }
       }, 2000);
 
-      function doCheck(el) {
+      function doCheck() {
         // make sure backEnd data same as frontEnd.
-        el.checkRoom();
+        that.checkRoom();
 
-        if (el.state.gameRooms.state) return true;
-        if (!el.state.gameRooms.state) return false;
+        if (that.state.gameRooms.state) return true;
+        if (!that.state.gameRooms.state) return false;
       }
     },
     joinRoom(roomId) {
       if (roomId) {
-        // this.$emit('loadingLoop', true);
         this.socket.emit('join', {
           room: roomId,
           id: this.userName,
@@ -170,15 +175,29 @@ export default {
         alert('未指定房間 ID');
       }
     },
+    loadCheck() {
+      const that = this;
+      this.conetectLoop = setInterval(() => {
+        const result = doCheck(this);
+        if (result) clearInterval(this.conetectLoop);
+      }, 1000);
+
+      function doCheck() {
+        if (that.state.connected) {
+          that.load();
+          return true;
+        } else return false;
+      }
+    },
   },
   watch: {
     'state.goUrl': {
       handler(el) {
-        if (el === null || el.indexOf('waiting_room') === -1) return;
+        if (el === null) return;
         this.$store.commit('updateUserRoom', el.substring(el.indexOf('game')));
-        this.$router.push(el);
+        this.$router.replace(el);
       },
-      // deep: true,
+      deep: true,
     },
     'state.lobbyPlayerList': {
       handler(el) {
@@ -196,28 +215,15 @@ export default {
     this.userRoom =
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
-  beforeMount() {
-    // this.checkRoom();
-    // if (this.state.connected === true) this.load();
-  },
+  beforeMount() {},
   mounted() {
     this.swipierInit();
-
-    // const conetectLoop = setInterval(() => {
-    //   const result = doCheck(this);
-    //   if (result) clearInterval(conetectLoop);
-    // }, 500);
-
-    // function doCheck(el) {
-    //   if (el.state.connected) {
-    //     el.load();
-    //     return true;
-    //   } else return false;
-    // }
-    this.load();
+    this.loadCheck();
   },
 
   beforeUnmount() {
+    clearInterval(this.conetectLoop);
+    clearInterval(this.loadLoop);
     this.$store.state.userStore.loading = false;
     this.showPage = false;
   },

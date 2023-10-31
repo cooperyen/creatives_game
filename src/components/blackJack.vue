@@ -1,4 +1,7 @@
 <template>
+  <div class="end game">
+    <router-link to="/lobby">END GAME</router-link>
+  </div>
   <div v-if="windowSize" class="window">
     <div class="content">
       <div class="icon">
@@ -238,17 +241,17 @@ export default {
   components: { userNameBox, blackJackPlayerHandler, blackJackHitHandler },
   props: ['socket', 'state'],
   watch: {
-    'state.connected': {
-      handler(el) {
-        if (!el) return;
-        const data = { id: this.ownself, room: this.gameRoom };
-        this.socket.emit('id_check', data);
-        this.socket.emit('bj', {
-          id: this.ownself,
-          room: `blackjack/${this.gameRoom}`,
-        });
-      },
-    },
+    // 'state.connected': {
+    //   handler(el) {
+    //     if (!el) return;
+    //     const data = { id: this.ownself, room: this.gameRoom };
+    //     this.socket.emit('id_check', data);
+    //     this.socket.emit('bj', {
+    //       id: this.ownself,
+    //       room: `blackjack/${this.gameRoom}`,
+    //     });
+    //   },
+    // },
     'state.blackJack': {
       handler(el) {
         // console.log(el);
@@ -354,14 +357,14 @@ export default {
     registerEmit() {
       return {
         id: this.ownself,
-        room: `blackjack/${this.gameRoom}`,
+        room: `${this.gameRoom}`,
       };
     },
     // stock emit.
     snatchBankEmit() {
       const data = {
         id: this.ownself,
-        room: `blackjack/${this.gameRoom}`,
+        room: `${this.gameRoom}`,
         bank: true,
       };
       this.socket.emit('bj', data);
@@ -492,10 +495,8 @@ export default {
     this.ownself = this.$store.state.userStore.userName;
     this.gameRoom = this.$store.state.userStore.userRoom;
   },
-  unmounted() {
-    window.removeEventListener('resize', this.detectWindowWidth);
-  },
   mounted() {
+    this.$store.commit('updateUserRoom', this.gameRoom);
     this.detectWindowWidth();
     window.addEventListener('resize', this.detectWindowWidth);
 
@@ -503,6 +504,16 @@ export default {
 
     if (this.state.activeGameRoom != null)
       this.$store.state.userStore.loading = true;
+
+    this.socket.emit('id_check', {
+      id: this.$store.state.userStore.userName,
+      room: this.$store.state.userStore.userRoom,
+    });
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.detectWindowWidth);
+    this.$store.state.userStore.loading = false;
+    this.$store.commit('clearUserRoom');
   },
 };
 </script>
