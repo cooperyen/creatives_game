@@ -69,9 +69,6 @@ socket.on('re_act', function (data) {
   state.loginError = null;
   state.activeGameRoom = null;
 
-  const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
-  state.activeGameRoom = gameRoom;
-
   switch (data.way) {
 
     case 'id_check':
@@ -94,7 +91,10 @@ socket.on('re_act', function (data) {
       break;
 
     case 'id_check_in_game':
-      if (data.url != 'lobby') state.gameDataFirstLoad = data.page;
+      if (data.url != 'lobby') {
+        state.gameDataFirstLoad = data.page;
+        state.goUrl = data.url;
+      };
       if (data.url === 'lobby') state.loginError = 'fail';
       break;
 
@@ -118,11 +118,11 @@ socket.on('re_act', function (data) {
 
       if (data.url === null || data.url === undefined) break;
 
-      // const gameRoom = data.url.substring(data.url.indexOf('/') + 1)
+      // const gameRoom = data.url.string(data.url.indexOf('/') + 1)
       // state.activeGameRoom = gameRoom
       const userData = JSON.parse(localStorage.getItem('userData'));
-      userData.userRoom = gameRoom
-
+      userData.userRoom = data.url;
+      state.activeGameRoom = data.url;
       state.goUrl = data.url;
 
       localStorage.setItem('userData', JSON.stringify(userData));

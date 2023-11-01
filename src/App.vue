@@ -76,7 +76,7 @@ export default {
     const userName = this.$store.state.userStore.userName;
     const userRoom = this.$store.state.userStore.userRoom;
     if (userName === null || userName === undefined || userRoom === undefined)
-      this.$router.push('/');
+      this.$router.replace('/');
     if (this.$route.path === '/') return;
     // this.socket.emit('id_check', { id: userName, room: userRoom });
   },

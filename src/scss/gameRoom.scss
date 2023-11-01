@@ -1,4 +1,5 @@
 @import './color.scss';
+@import './rwd.scss';
 
 .game-container {
   position: relative;
@@ -107,11 +108,18 @@
 }
 .name {
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  // right: 20px;
+  // bottom: 5px;
+  left: 0;
+  bottom: 0;
   top: unset;
   > .content {
     position: unset;
+  }
+  :deep(.content) {
+    font-size: 0.8rem;
+    bottom: 10px;
+    top: unset;
   }
 }
 
@@ -174,16 +182,22 @@
 }
 
 #dart {
+  width: 100%;
+  max-width: calc(100% - 60px);
   position: absolute;
   left: 50%;
-  top: 35%;
+  top: 45%;
   transform: translate(-50%, -50%);
   text-align: center;
+
   img {
     margin: 0 auto;
     width: 100%;
     max-width: 200px;
     margin-bottom: 15px;
+    @include sm {
+      max-width: 150px;
+    }
   }
   .title {
     margin-bottom: 20px;
@@ -192,6 +206,11 @@
   }
   .click-btn {
     margin-top: 35px;
+    @include xs {
+      button:first-child {
+        margin-bottom: 20px;
+      }
+    }
     > p {
       margin-bottom: 15px;
       color: $text;
@@ -258,52 +277,59 @@
   }
 }
 
-.click-btn button {
-  cursor: pointer;
-  background-color: rgb(224, 216, 204);
-  padding: 10px 15px;
-  border-radius: 4px;
-  border: unset;
-  font-size: 1rem;
-  font-weight: bold;
-  margin: 0 15px;
-  box-shadow: 4px 4px 8px rgba($color: $shadowcolor, $alpha: 0.4);
-  &.agree,
-  &.reject {
-    position: relative;
-    &::before,
-    &::after {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: -5;
-      animation: moving 1.2s infinite;
-      border-radius: 4px;
-    }
-    &::before {
-      animation-delay: 0.2s;
-    }
-    &.disabled {
-      background-color: rgb(124, 124, 124);
+.click-btn {
+  &.unclick {
+    button {
+      cursor: default;
     }
   }
-  &.reject {
-    background-color: rgb(182, 87, 87);
-    &::before,
-    &::after {
+  button {
+    cursor: pointer;
+    background-color: rgb(224, 216, 204);
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: unset;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0 15px;
+    box-shadow: 4px 4px 8px rgba($color: $shadowcolor, $alpha: 0.4);
+    &.agree,
+    &.reject {
+      position: relative;
+      &::before,
+      &::after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -5;
+        animation: moving 1.2s infinite;
+        border-radius: 4px;
+      }
+      &::before {
+        animation-delay: 0.2s;
+      }
+      &.disabled {
+        background-color: rgb(124, 124, 124);
+      }
+    }
+    &.reject {
       background-color: rgb(182, 87, 87);
+      &::before,
+      &::after {
+        background-color: rgb(182, 87, 87);
+      }
     }
-  }
-  &.agree {
-    background-color: $agree;
-    &::before,
-    &::after {
+    &.agree {
       background-color: $agree;
+      &::before,
+      &::after {
+        background-color: $agree;
+      }
     }
   }
 }
@@ -314,10 +340,19 @@
   top: 20px;
   color: $text;
   img {
-    max-width: 40px;
+    max-width: 30px;
   }
   .dart {
     margin-top: 5px;
+  }
+  .img-box {
+    margin-right: 5px;
+  }
+  .num-box {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

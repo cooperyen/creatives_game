@@ -66,7 +66,7 @@ export default {
       handler(el) {
         console.log('url', el);
         if (el === null) return;
-        this.$router.push(el);
+        this.$router.replace(el);
         // this.state.goUrl = null;
       },
       deep: true,

@@ -97,6 +97,13 @@ body {
   }
 }
 
+.t-countdown {
+  color: $text;
+  position: fixed;
+  right: 15px;
+  bottom: 15px;
+}
+
 @keyframes ttt {
   from {
     width: 0;

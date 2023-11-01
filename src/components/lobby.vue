@@ -143,6 +143,7 @@ export default {
       this.loadLoop = setInterval(() => {
         const result = doCheck();
         this.$store.commit('connectedTimePlus');
+        this.$store.state.userStore.connectedTime += 1;
         if (result) {
           this.$store.state.userStore.connectedTime = 0;
           clearInterval(this.loadLoop);
@@ -152,7 +153,7 @@ export default {
             this.showPage = true;
           }, 500);
         }
-        if (this.$store.state.userStore.connectedTime >= 10) {
+        if (this.$store.state.userStore.connectedTime >= 5) {
           this.$store.commit('clearUserRoom');
         }
       }, 2000);

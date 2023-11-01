@@ -315,7 +315,7 @@ export default {
     this.selfPlayer = userName;
 
     if (userRoom === null || userRoom === undefined)
-      this.$router.push('/lobby');
+      this.$router.replace('/lobby');
 
     this.loadCheck();
   },
