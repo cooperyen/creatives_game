@@ -59,7 +59,7 @@ export default {
       handler(el) {
         // console.log(el);
         this.connected = el;
-        this.$store.state.userStore.loading = el;
+        if (el) this.$store.state.userStore.loading = el;
       },
     },
     'state.goUrl': {
