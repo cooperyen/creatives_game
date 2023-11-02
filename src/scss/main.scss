@@ -12,7 +12,10 @@ img {
   display: block;
   -webkit-user-drag: none;
 }
-
+a,
+button {
+  color: black;
+}
 a {
   text-decoration: none;
 }

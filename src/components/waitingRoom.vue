@@ -255,7 +255,7 @@ export default {
     countDown() {
       this.time -= 1;
       if (this.time <= 0) {
-        this.$router.push('/lobby');
+        this.$router.replace('/lobby');
       }
       if (this.time > 0) {
         this.countDownFun = setTimeout(() => {

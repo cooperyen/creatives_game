@@ -101,10 +101,9 @@
           <button @click="gameOverToLobby()">leave</button>
         </div>
       </div>
-
-      <div class="t-countdown" v-show="this.gameOver.time != 0">
-        will return to LOBBY in {{ this.gameOver.time }} s
-      </div>
+    </div>
+    <div class="t-countdown" v-show="this.gameOver.time != 0">
+      will return to LOBBY in {{ this.gameOver.time }} s
     </div>
   </div>
 
@@ -135,6 +134,15 @@
             <img src="./../image/card/01.svg" />
           </div>
         </div>
+        <div
+          class="card-box card-style wait"
+          v-for="i in 5 - currentCard.length"
+          :key="i"
+        >
+          <div class="card-bg">
+            <img src="./../image/card/01.svg" />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -153,9 +161,19 @@
         </div>
       </div>
       <div class="card-play" v-if="!drawVote.state">
-        <div id="play" class="click-btn">
-          <button @click="playcard()">我覺得應該輪到我</button>
-          <button @click="start_dart()" :disabled="dart === 0 || dart === null">
+        <div class="click-btn">
+          <button
+            @click="playcard()"
+            :class="{ disabled: handCard.length === 0 }"
+            :disabled="handCard.length === 0"
+          >
+            我覺得應該輪到我
+          </button>
+          <button
+            @click="start_dart()"
+            :class="{ disabled: dart === 0 }"
+            :disabled="dart === 0 || dart === null"
+          >
             {{ dart === 0 || dart === null ? '飛鏢不足' : '丟飛鏢' }}
           </button>
         </div>
@@ -183,9 +201,12 @@
       </div>
     </div>
   </div>
+
+  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script>
+import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 export default {
   data() {
@@ -194,7 +215,7 @@ export default {
       player: null,
       gameRoom: null,
       gameData: false,
-      handCard: null,
+      handCard: [],
       hp: null,
       dieHp: 4,
       dart: null,
@@ -212,7 +233,7 @@ export default {
       voteFail: false,
     };
   },
-  components: { userNameBox },
+  components: { userNameBox, transferPageCountDown },
   props: ['socket', 'state'],
   watch: {
     passNotice(el) {

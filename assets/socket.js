@@ -68,7 +68,7 @@ socket.on('re_act', function (data) {
   state.gameDataFirstLoad = null;
   state.loginError = null;
   state.activeGameRoom = null;
-
+  console.log(data);
   switch (data.way) {
 
     case 'id_check':

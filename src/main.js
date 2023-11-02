@@ -15,6 +15,7 @@ import { faChevronLeft, faMobileScreenButton } from '@fortawesome/free-solid-svg
 /* add icons to the library */
 library.add(faChevronLeft, faMobileScreenButton)
 
+
 const store = createStore({
   modules: {
     userStore

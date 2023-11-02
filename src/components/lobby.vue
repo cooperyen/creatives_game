@@ -3,8 +3,10 @@
     <p @click="$router.replace('/')">change ID</p>
   </userNameBox>
 
+  <!-- content -->
   <transition name="content-ready">
-    <div v-show="showPage">
+    <div v-show="$store.state.userStore.loading">
+      <!-- swiper game rooms -->
       <div class="container pd-side room-box">
         <swiper-container
           init="false"
@@ -34,6 +36,7 @@
         </swiper-container>
       </div>
 
+      <!-- current players in lobby -->
       <div id="user" class="container pd-side current-users">
         <div class="content">
           <div class="title">
@@ -50,6 +53,7 @@
       </div>
     </div>
   </transition>
+
   <transferPageCountDown></transferPageCountDown>
 </template>
 
@@ -91,7 +95,6 @@ export default {
       userRoom: null,
       gameRooms: null,
       lobbyPlayerList: null,
-      showPage: false,
       chGameName: { game01: '心靈同步', game02: '21點' },
     };
   },
@@ -147,10 +150,11 @@ export default {
         if (result) {
           this.$store.state.userStore.connectedTime = 0;
           clearInterval(this.loadLoop);
-          this.gameRooms = this.state.gameRooms.gameList;
-          this.$store.state.userStore.loading = true;
+          this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
+            if (this.chGameName[x] != undefined) return x;
+          });
           setTimeout(() => {
-            this.showPage = true;
+            this.$store.state.userStore.loading = true;
           }, 500);
         }
         if (this.$store.state.userStore.connectedTime >= 5) {
@@ -226,7 +230,6 @@ export default {
     clearInterval(this.conetectLoop);
     clearInterval(this.loadLoop);
     this.$store.state.userStore.loading = false;
-    this.showPage = false;
   },
 };
 </script>
