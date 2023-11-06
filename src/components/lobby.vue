@@ -7,8 +7,8 @@
   <transition name="content-ready">
     <div v-show="$store.state.userStore.loading">
       <!-- swiper game rooms -->
-      <div class="container pd-side room-box">
-        <swiper-container
+      <div class="container room-box flex">
+        <!-- <swiper-container
           init="false"
           :slides-per-view="1"
           :space-between="spaceBetween"
@@ -33,10 +33,25 @@
               </div>
             </div>
           </swiper-slide>
-        </swiper-container>
+        </swiper-container> -->
+
+        <div class="rooms" v-for="i in gameRooms" :key="i">
+          <div class="room-layout">
+            <div class="room-content" :class="[i]" @click="joinRoom(i)">
+              <div class="content flex">
+                <div class="title">
+                  <p>{{ chGameName[i] ? chGameName[i] : i }}</p>
+                </div>
+              </div>
+              <div class="img-box">
+                <img :src="getRoomUrl(i)" :alt="i" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- current players in lobby -->
+      <!-- current not in game or room players in lobby -->
       <div id="user" class="container pd-side current-users">
         <div class="content">
           <div class="title">
@@ -45,7 +60,7 @@
           <div>
             <ul>
               <li v-for="i in lobbyPlayerList" :key="i">
-                {{ i }}
+                {{ i.user_id }}
               </li>
             </ul>
           </div>
@@ -88,8 +103,8 @@ export default {
   },
   data() {
     return {
-      conetectLoop: null,
-      loadLoop: null,
+      socketConetectLoop: null,
+      loadRoomDataLoop: null,
       connectedTime: 0,
       userName: null,
       userRoom: null,
@@ -100,6 +115,9 @@ export default {
   },
   components: { userNameBox, transferPageCountDown },
   methods: {
+    getRoomUrl(name) {
+      return new URL(`/src/image/lobby/${name}.png`, import.meta.url).href;
+    },
     swipierInit() {
       const swiperEl = document.querySelector('swiper-container');
       const params = {
@@ -121,38 +139,27 @@ export default {
       swiperEl.initialize();
     },
     doIdCheck() {
-      this.socket.emit('id_check', {
-        id: this.userName,
-        room: this.userRooms,
-      });
+      // this.socket.emit('id_check', {
+      //   id: this.userName,
+      //   room: this.userRooms,
+      // });
     },
-    checkRoom() {
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      // if (userData.userRoom != null && userData.userRoom.indexOf('game') != -1)
-      //   this.$store.commit('clearUserRoom');
-      // const state = userData.userRoom === null ? true : false;
-      // console.log(state);
-      // if (state) this.doIdCheck();
-      this.socket.emit('id_check', {
-        id: userData.userName,
-        room: userData.userRoom,
-      });
-    },
-    load() {
+    loadRoomData() {
       if (this.userName === null) return;
 
       const that = this;
 
-      this.loadLoop = setInterval(() => {
+      this.loadRoomDataLoop = setInterval(() => {
         const result = doCheck();
         this.$store.commit('connectedTimePlus');
         this.$store.state.userStore.connectedTime += 1;
         if (result) {
           this.$store.state.userStore.connectedTime = 0;
-          clearInterval(this.loadLoop);
-          this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
-            if (this.chGameName[x] != undefined) return x;
-          });
+          clearInterval(this.loadRoomDataLoop);
+          this.gameRooms = this.state.gameRooms.gameList;
+          // this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
+          //   if (this.chGameName[x] != undefined) return x;
+          // });
           setTimeout(() => {
             this.$store.state.userStore.loading = true;
           }, 500);
@@ -164,7 +171,11 @@ export default {
 
       function doCheck() {
         // make sure backEnd data same as frontEnd.
-        that.checkRoom();
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        that.socket.emit('id_check', {
+          id: userData.userName,
+          room: userData.userRoom,
+        });
 
         if (that.state.gameRooms.state) return true;
         if (!that.state.gameRooms.state) return false;
@@ -180,16 +191,16 @@ export default {
         alert('未指定房間 ID');
       }
     },
-    loadCheck() {
+    socketConnectCheck() {
       const that = this;
-      this.conetectLoop = setInterval(() => {
+      this.socketConetectLoop = setInterval(() => {
         const result = doCheck(this);
-        if (result) clearInterval(this.conetectLoop);
+        if (result) clearInterval(this.socketConetectLoop);
       }, 1000);
 
       function doCheck() {
         if (that.state.connected) {
-          that.load();
+          that.loadRoomData();
           return true;
         } else return false;
       }
@@ -199,6 +210,7 @@ export default {
     'state.goUrl': {
       handler(el) {
         if (el === null) return;
+        // update user room before redirect.
         this.$store.commit('updateUserRoom', el.substring(el.indexOf('game')));
         this.$router.replace(el);
       },
@@ -206,7 +218,8 @@ export default {
     },
     'state.lobbyPlayerList': {
       handler(el) {
-        this.lobbyPlayerList = Object.values(el).map((vl) => {
+        // Leave a player that room vlaue is null.
+        this.lobbyPlayerList = Object.values(el).filter((vl) => {
           if (vl.room != null) return;
           return vl.user_id;
         });
@@ -220,20 +233,19 @@ export default {
     this.userRoom =
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
-  beforeMount() {},
   mounted() {
-    this.swipierInit();
-    this.loadCheck();
+    // this.swipierInit();
+    this.socketConnectCheck();
   },
 
   beforeUnmount() {
-    clearInterval(this.conetectLoop);
-    clearInterval(this.loadLoop);
+    clearInterval(this.socketConetectLoop);
+    clearInterval(this.loadRoomDataLoop);
     this.$store.state.userStore.loading = false;
   },
 };
 </script>
 
 <style lang="scss">
-@import '@/scss/loby.scss';
+@import '@/scss/lobby.scss';
 </style>

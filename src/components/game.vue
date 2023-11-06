@@ -26,34 +26,36 @@
         <h2>有人現在要使用飛鏢, 同意使用嗎?</h2>
       </div>
       <img src="./../image/ui/gem_large.png" />
-      <div class="click-btn" v-if="isDrawVote === null">
+      <!-- vote option -->
+      <div class="click-btn" v-if="isDrawVoted === null">
         <button
           class="agree"
-          :class="{ disabled: isDrawVote === 'no' }"
-          :disabled="isDrawVote === 'no'"
-          @click="voiteDart('yes')"
+          :class="{ disabled: isDrawVoted === 'no' }"
+          :disabled="isDrawVoted === 'no'"
+          @click="votedDart('yes')"
         >
           <p>&nbsp;&nbsp;同意&nbsp;&nbsp;</p>
         </button>
         <button
           class="reject"
-          :class="{ disabled: isDrawVote === 'yes' }"
-          @click="voiteDart('no')"
-          :disabled="isDrawVote === 'yes'"
+          :class="{ disabled: isDrawVoted === 'yes' }"
+          @click="votedDart('no')"
+          :disabled="isDrawVoted === 'yes'"
         >
           不要咧
         </button>
       </div>
+      <!-- waiting other player vote -->
       <div v-else class="click-btn unclick">
         <p>你已投票, 等待其他玩家中</p>
         <button
           unclick
           :class="{
-            agree: this.isDrawVote === 'yes',
-            reject: this.isDrawVote === 'no',
+            agree: this.isDrawVoted === 'yes',
+            reject: this.isDrawVoted === 'no',
           }"
         >
-          {{ this.isDrawVote }}
+          {{ this.isDrawVoted }}
         </button>
       </div>
     </div>
@@ -98,7 +100,7 @@
           </div>
         </div>
         <div class="click-btn">
-          <button @click="gameOverToLobby()">leave</button>
+          <button @click="goLobby()">leave</button>
         </div>
       </div>
     </div>
@@ -170,7 +172,7 @@
             我覺得應該輪到我
           </button>
           <button
-            @click="start_dart()"
+            @click="startDart()"
             :class="{ disabled: dart === 0 }"
             :disabled="dart === 0 || dart === null"
           >
@@ -211,24 +213,21 @@ import userNameBox from '@/../src/components/layout/userNameBox.vue';
 export default {
   data() {
     return {
-      conetectLoop: null,
+      socketConetectLoop: null,
       player: null,
       gameRoom: null,
       gameData: false,
       handCard: [],
       hp: null,
-      dieHp: 4,
       dart: null,
-      dieDart: 4,
       remain: null,
       level: null,
       currentCard: [],
-      num: 10,
-      drawVote: { state: false, countTime: null, time: 20 },
-      isDrawVote: null,
+      drawVote: { state: false, countTimer: null, time: 20 },
+      isDrawVoted: null,
       passNotice: false,
       backGameTime: 5,
-      gameOver: { state: null, countTime: null, time: 60 },
+      gameOver: { state: null, countTimer: null, time: 60 },
       players: null,
       voteFail: false,
     };
@@ -240,7 +239,7 @@ export default {
       // console.log(el);
       if (el.msg != null && el.states === 'msg') {
         this.backGameTime = 5;
-        this.countDown();
+        this.countDownInGameAction();
       }
     },
     'state.loginError': {
@@ -262,7 +261,7 @@ export default {
         if (el === null) {
           this.drawVote.state = false;
         }
-        this.isDrawVote = null;
+        this.isDrawVoted = null;
       },
       deep: true,
     },
@@ -314,11 +313,11 @@ export default {
 
         this.gameOver.time = 10;
 
-        this.gameOver.countTime = setInterval(() => {
+        this.gameOver.countTimer = setInterval(() => {
           this.gameOver.time -= 1;
           if (this.gameOver.time <= 0) {
             this.gameOver.time = 0;
-            this.gameOverToLobby();
+            this.goLobby();
           }
         }, 1000);
       },
@@ -326,17 +325,17 @@ export default {
     'drawVote.state'(el) {
       this.drawVote.time = 5;
       if (el)
-        this.drawVote.countTime = setInterval(() => {
+        this.drawVote.countTimer = setInterval(() => {
           if (this.drawVote.time <= 0) this.drawVote.time = 0;
           if (this.drawVote.time > 0) this.drawVote.time -= 1;
           console.log(this.drawVote.time);
         }, 1000);
-      if (!el) clearInterval(this.drawVote.countTime);
+      if (!el) clearInterval(this.drawVote.countTimer);
     },
     'drawVote.time'(time) {
       if (time > 0) return;
-      this.voiteDart('no');
-      clearInterval(this.drawVote.countTime);
+      this.votedDart('no');
+      clearInterval(this.drawVote.countTimer);
     },
     handCard(el) {
       this.$nextTick(() => {
@@ -345,18 +344,14 @@ export default {
     },
   },
   methods: {
-    large(el) {
-      // console.log(String(el).length);
-      return el.length >= 2 ? true : false;
-    },
-    countDown() {
+    countDownInGameAction() {
       this.backGameTime -= 1;
       if (this.backGameTime <= 0) {
         this.passNotice = false;
       }
       if (this.backGameTime != 0) {
         this.countDownFun = setTimeout(() => {
-          this.countDown();
+          this.countDownInGameAction();
         }, 1000);
       }
     },
@@ -399,7 +394,7 @@ export default {
         }
       }
     },
-    start_dart() {
+    startDart() {
       const userRoom = this.$store.state.userStore.userRoom;
 
       if (this.dart > 0) {
@@ -411,32 +406,37 @@ export default {
         alert('沒飛鏢啊!!按屁按逆!!');
       }
     },
-    voiteDart(data) {
-      if (this.isDrawVote != null) return;
+    votedDart(data) {
+      if (this.isDrawVoted != null) return;
+      if (data != 'yes' || data != 'no') return;
 
       const userRoom = this.$store.state.userStore.userRoom;
+      const room = userRoom.substring(userRoom.indexOf('/') + 1);
 
+      // { message:value, room:value }
       this.socket.emit('draw', {
         message: data,
-        room: userRoom.substring(userRoom.indexOf('/') + 1),
+        room,
       });
 
-      // if (data === 'no') this.drawVote = false;
-
-      this.isDrawVote = data;
+      this.isDrawVoted = data;
     },
-    gameOverToLobby() {
-      this.$store.commit('clearUserRoom');
-      this.$router.replace('/lobby');
-    },
-    loadCheck() {
+    socketConnectCheck() {
       const that = this;
-      this.conetectLoop = setInterval(() => {
+      this.socketConetectLoop = setInterval(() => {
         const result = doCheck(this);
         this.$store.state.userStore.connectedTime += 1;
+
+        if (this.$store.state.userStore.connectedTime >= 15) {
+          alert('Connection failed, will return to lobby.');
+          clearInterval(this.socketConetectLoop);
+          this.$store.state.userStore.connectedTime = 0;
+          this.goLobby();
+        }
+
         if (result) {
           this.$store.state.userStore.connectedTime = 0;
-          clearInterval(this.conetectLoop);
+          clearInterval(this.socketConetectLoop);
         }
       }, 1000);
 
@@ -449,10 +449,14 @@ export default {
         return that.$store.state.userStore.loading;
       }
     },
+    goLobby() {
+      this.$store.commit('clearUserRoom');
+      this.$router.replace('/lobby');
+    },
     isGoLobby() {
       setTimeout(() => {
-        if (this.$store.state.userStore.userRoom === null)
-          this.$router.replace('/lobby');
+        if (this.$store.state.userStore.userRoom != null) return;
+        this.goLobby();
       }, 500);
     },
     updateUserRoom() {
@@ -464,15 +468,15 @@ export default {
     this.player = this.$store.state.userStore.userName;
   },
   mounted() {
-    this.loadCheck();
+    this.socketConnectCheck();
     this.isGoLobby();
     this.updateUserRoom();
     this.cardAnimate();
   },
   beforeUnmount() {
-    clearInterval(this.conetectLoop);
-    clearInterval(this.drawVote.countTime);
-    clearInterval(this.gameOver.countTime);
+    clearInterval(this.socketConetectLoop);
+    clearInterval(this.drawVote.countTimer);
+    clearInterval(this.gameOver.countTimer);
     this.$store.state.userStore.userRoom = null;
     this.$store.state.userStore.loading = false;
   },

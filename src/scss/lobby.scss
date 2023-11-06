@@ -87,6 +87,38 @@ $text: rgb(198, 190, 149);
       }
     }
   }
+
+  .rooms {
+    .room-layout {
+      // background-color: black;
+      // padding: 15px;
+      .room-content {
+        // min-width: 150px;
+        // min-height: 80px;
+        position: relative;
+        // padding: 0 10px;
+        &.game01 {
+          background-color: red;
+        }
+        .content {
+          position: absolute;
+          left: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 1.3rem;
+          color: $text;
+          max-width: 50%;
+          // align-items: center;
+          // justify-content: center;
+        }
+        .img-box {
+          // position: absolute;
+          // right: 0;
+          // top: 0;
+        }
+      }
+    }
+  }
 }
 
 .current-users {
