@@ -7,7 +7,7 @@
   <transition name="content-ready">
     <div v-show="$store.state.userStore.loading">
       <!-- swiper game rooms -->
-      <div class="container room-box flex">
+      <div class="container room-container flex">
         <!-- <swiper-container
           init="false"
           :slides-per-view="1"
@@ -35,12 +35,15 @@
           </swiper-slide>
         </swiper-container> -->
 
-        <div class="rooms" v-for="i in gameRooms" :key="i">
+        <div class="room-box" v-for="i in gameRooms" :key="i">
           <div class="room-layout">
             <div class="room-content" :class="[i]" @click="joinRoom(i)">
               <div class="content flex">
                 <div class="title">
-                  <p>{{ chGameName[i] ? chGameName[i] : i }}</p>
+                  <p>{{ getRoomDetail(i, 'name') }}</p>
+                </div>
+                <div class="players">
+                  <p>{{ getRoomDetail(i, 'player') }}人</p>
                 </div>
               </div>
               <div class="img-box">
@@ -110,11 +113,28 @@ export default {
       userRoom: null,
       gameRooms: null,
       lobbyPlayerList: null,
-      chGameName: { game01: '心靈同步', game02: '21點' },
+      chGameName: {
+        game01: { name: '心靈同步', ppl: '2-4' },
+        game02: { name: '21點', ppl: '2-4' },
+      },
     };
   },
   components: { userNameBox, transferPageCountDown },
   methods: {
+    getRoomDetail(el, item = null) {
+      if (item === null) return false;
+      const data = this.chGameName[el];
+
+      if (data === null || data === undefined) {
+        if (item === 'name') return el;
+        if (item === 'player') return 1;
+      }
+
+      if (data !== null || data != undefined) {
+        if (item === 'name') return data.name;
+        if (item === 'player') return data.ppl;
+      }
+    },
     getRoomUrl(name) {
       return new URL(`/src/image/lobby/${name}.png`, import.meta.url).href;
     },
@@ -156,10 +176,10 @@ export default {
         if (result) {
           this.$store.state.userStore.connectedTime = 0;
           clearInterval(this.loadRoomDataLoop);
-          this.gameRooms = this.state.gameRooms.gameList;
-          // this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
-          //   if (this.chGameName[x] != undefined) return x;
-          // });
+          // this.gameRooms = this.state.gameRooms.gameList;
+          this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
+            if (this.chGameName[x] != undefined) return x;
+          });
           setTimeout(() => {
             this.$store.state.userStore.loading = true;
           }, 500);

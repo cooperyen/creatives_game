@@ -56,6 +56,10 @@ export default {
         font-size: 1rem;
       }
     }
+    a,
+    p {
+      cursor: pointer;
+    }
   }
 }
 </style>
