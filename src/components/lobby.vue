@@ -5,9 +5,9 @@
 
   <!-- content -->
   <transition name="content-ready">
-    <div v-show="$store.state.userStore.loading">
-      <!-- swiper game rooms -->
-      <div class="container room-container flex">
+    <div class="lobby-container" v-show="$store.state.userStore.loading">
+      <div class="room-container flex">
+        <!-- swiper game rooms -->
         <!-- <swiper-container
           init="false"
           :slides-per-view="1"
@@ -35,7 +35,7 @@
           </swiper-slide>
         </swiper-container> -->
 
-        <div class="room-box" v-for="i in gameRooms" :key="i">
+        <div class="room-box exist" v-for="i in gameRooms" :key="i">
           <div class="room-layout">
             <div class="room-content" :class="[i]" @click="joinRoom(i)">
               <div class="content flex">
@@ -48,6 +48,21 @@
               </div>
               <div class="img-box">
                 <img :src="getRoomUrl(i)" :alt="i" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="room-box" v-for="i in unGameRooms" :key="i">
+          <div class="room-layout">
+            <div class="room-content">
+              <div class="content flex">
+                <div class="title">
+                  <p>soon</p>
+                </div>
+              </div>
+              <div class="img-box">
+                <img :src="getRoomUrl('unroom')" loading="lazy" />
               </div>
             </div>
           </div>
@@ -112,6 +127,7 @@ export default {
       userName: null,
       userRoom: null,
       gameRooms: null,
+      unGameRooms: 0,
       lobbyPlayerList: null,
       chGameName: {
         game01: { name: '心靈同步', ppl: '2-4' },
@@ -158,12 +174,6 @@ export default {
 
       swiperEl.initialize();
     },
-    doIdCheck() {
-      // this.socket.emit('id_check', {
-      //   id: this.userName,
-      //   room: this.userRooms,
-      // });
-    },
     loadRoomData() {
       if (this.userName === null) return;
 
@@ -177,9 +187,12 @@ export default {
           this.$store.state.userStore.connectedTime = 0;
           clearInterval(this.loadRoomDataLoop);
           // this.gameRooms = this.state.gameRooms.gameList;
+
+          // display particular room with "chGameName".
           this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
             if (this.chGameName[x] != undefined) return x;
           });
+
           setTimeout(() => {
             this.$store.state.userStore.loading = true;
           }, 500);
@@ -244,6 +257,9 @@ export default {
           return vl.user_id;
         });
       },
+    },
+    gameRooms(el) {
+      this.unGameRooms = 9 - el.length;
     },
   },
   props: ['socket', 'state'],

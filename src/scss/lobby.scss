@@ -3,24 +3,36 @@ $light_yellow: rgb(234, 184, 56);
 $text: rgb(198, 190, 149);
 @import './rwd.scss';
 
-.container {
+.lobby-container {
+  display: flex;
+  margin: 0 auto;
   user-select: none;
+  width: calc(100% - 60px);
   max-width: 1400px;
   overflow: hidden;
+  @include L {
+    width: calc(100% - 15px);
+  }
+  @include med {
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
 }
 
 .room-container {
-  width: calc(100% - 60px);
-  margin-top: 100px;
+  width: calc(100% - 15px);
   margin-left: auto;
   margin-right: auto;
+  flex-wrap: wrap;
+  @include min-med {
+    flex: 3;
+  }
 
   @include L {
-    flex-wrap: wrap;
-  }
-  @include med {
-    margin-top: 50px;
     width: calc(100% - 10px);
+  }
+  @include sm {
+    flex: unset;
   }
 
   .room {
@@ -47,7 +59,6 @@ $text: rgb(198, 190, 149);
     }
 
     .room-content {
-      cursor: pointer;
       position: relative;
       border-radius: $imgborder;
       border: 8px solid transparent; /*2*/
@@ -94,20 +105,23 @@ $text: rgb(198, 190, 149);
   }
 
   .room-box {
-    // flex: 1;
-    width: 25%;
-    flex-wrap: wrap;
-
-    @include L {
-      width: 50%;
+    width: 50%;
+    &.exist {
+      cursor: pointer;
     }
+
+    flex-wrap: wrap;
+    @include min-xl {
+      width: 33.3%;
+    }
+
     .room-layout {
       padding-left: 15px;
       margin-right: 10px;
       margin-bottom: 30px;
       @include med {
-        padding-left: 5px;
-        margin-right: 5px;
+        padding-left: 10px;
+        margin-right: 0px;
       }
       .room-content {
         position: relative;
@@ -122,10 +136,17 @@ $text: rgb(198, 190, 149);
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
+          @include sm {
+            margin-top: 1px;
+            font-size: 1rem;
+          }
           .players {
             margin-top: 8px;
-            font-size: 1rem;
+            font-size: 0.8rem;
             letter-spacing: 5px;
+            @include sm {
+              margin-top: 1px;
+            }
           }
           div {
             width: 100%;
@@ -143,22 +164,47 @@ $text: rgb(198, 190, 149);
 
 .current-users {
   color: $text;
-  padding: 0 30px;
-  margin: 0 auto;
+  margin-right: auto;
+  margin-left: auto;
+  max-height: 200px;
+  overflow-y: auto;
+
+  @include min-L {
+    flex: 1;
+  }
+  @include L {
+    width: 100%;
+    flex: 1;
+  }
+  @include min-sm {
+    margin-top: 17px;
+  }
+  @include sm {
+    width: 100%;
+    max-height: 100px;
+  }
   .content {
     border-radius: 8px;
     background-color: rgba($color: $mainBg, $alpha: 0.7);
     padding: 10px 15px;
+    min-height: 200px;
+    @include sm {
+      max-height: 100px;
+    }
   }
   p {
     font-size: 1.2rem;
     font-weight: bold;
+    @include sm {
+      font-size: 1rem;
+    }
   }
   ul {
     list-style-type: none;
     margin-top: 5px;
+
     li {
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
   }
 }
