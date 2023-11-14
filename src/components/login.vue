@@ -51,15 +51,10 @@ export default {
       }
     },
   },
-  created() {
-    // this.$store.commit('clearUserRoom');
-  },
   watch: {
     'state.connected': {
       handler(el) {
-        // console.log(el);
         this.connected = el;
-        this.$store.state.userStore.loading = el;
       },
     },
     'state.goUrl': {
@@ -88,7 +83,6 @@ export default {
   },
   beforeUnmount() {
     localStorage.removeItem('reloaded');
-    this.$store.state.userStore.loading = false;
   },
   mounted() {
     // this.$emit('waitPageTrLoop', true);
@@ -101,7 +95,7 @@ export default {
         this.connectedTime = 0;
         clearInterval(conetectLoop);
         setTimeout(() => {
-          this.$store.state.userStore.loading = true;
+          this.$store.commit('updateLoading', true);
         }, 1000);
       }
       if (this.connectedTime >= 10) this.$router.go(0);

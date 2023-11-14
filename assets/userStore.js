@@ -8,15 +8,11 @@ const userStore = {
       userName,
       userRoom,
       loading: false,
-      connectedTime: 0,
     };
   },
   mutations: {
-    connectedTimePlus(state) {
-      state.connectedTime += 1;
-    },
-    connectedTimeMinus(state) {
-      state.connectedTime -= 1;
+    updateLoading(state, el) {
+      state.loading = el;
     },
     updateUserRoom(state, data) {
       state.userRoom = data;
@@ -31,4 +27,39 @@ const userStore = {
   },
 }
 
-export { userStore }
+
+const loopStore = {
+  state() {
+    return {
+      socketConnect: null,
+      loadRoomLoop: null,
+      connectedTime: 0,
+    }
+  },
+  mutations: {
+    socketConnect(state, el) {
+      state.socketConnect = el;
+    },
+    socketDelete(state) {
+      clearInterval(state.socketConnect);
+      state.socketConnect = null;
+      state.connectedTime = 0;
+    },
+    loadRoomLoop(state, el) {
+      state.loadRoomLoop = el;
+    },
+    loadRoomLoopDelete(state) {
+      clearInterval(state.loadRoomLoop);
+      state.loadRoomLoop = null;
+      state.connectedTime = 0;
+    },
+    connectedTimePlus(state) {
+      state.connectedTime += 1;
+    },
+    connectedTimeMinus(state) {
+      state.connectedTime -= 1;
+    },
+  }
+}
+
+export { userStore, loopStore }

@@ -99,16 +99,12 @@
       </div>
     </div>
   </div>
-  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script>
-import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 export default {
   data() {
     return {
-      conetectLoop: null,
-      connectedTime: 0,
       otherPlayers: null,
       otherPlayerSetroom: 3,
       selfPlayer: null,
@@ -123,7 +119,7 @@ export default {
       readyToGo: false,
     };
   },
-  components: { transferPageCountDown },
+  components: {},
   watch: {
     'state.loginError': {
       handler(el) {
@@ -139,7 +135,6 @@ export default {
     },
     'state.goUrl': {
       handler(el) {
-        console.log(el);
         if (this.state.activeGameRoom != null) {
           // this.$store.commit('updateUserRoom', el);
           this.$store.state.userStore.userRoom = el;
@@ -278,21 +273,20 @@ export default {
     },
     loadCheck() {
       const that = this;
-      this.conetectLoop = setInterval(() => {
-        const result = doCheck();
-        this.$store.commit('connectedTimePlus');
-        if (result) {
-          this.$store.state.userStore.connectedTime = 0;
-          clearInterval(this.conetectLoop);
-          setTimeout(() => {
-            this.$store.state.userStore.loading = true;
-          }, 500);
-        }
+      this.$store.commit(
+        'socketConnect',
+        setInterval(() => {
+          const result = doCheck();
+          this.$store.commit('connectedTimePlus');
+          if (result) {
+            this.$store.commit('socketDelete');
+            this.$store.commit('updateLoading', true);
+          }
 
-        if (this.$store.state.userStore.connectedTime >= 10) {
-          this.$router.replace('/lobby');
-        }
-      }, 1000);
+          if (this.$store.state.loopStore.connectedTime >= 10)
+            this.$router.replace('/lobby');
+        }, 1000)
+      );
 
       function doCheck() {
         // make sure backEnd data same as frontEnd.
@@ -320,11 +314,9 @@ export default {
     this.loadCheck();
   },
   beforeUnmount() {
-    clearInterval(this.conetectLoop);
     clearTimeout(this.countDownFun);
     clearTimeout(this.countDownStart);
     this.$store.commit('clearUserRoom');
-    this.$store.state.userStore.loading = false;
   },
 };
 </script>

@@ -17,6 +17,9 @@ $text: rgb(198, 190, 149);
     flex-wrap: wrap;
     margin-top: 28px;
   }
+  @include min-sm {
+    margin-top: 17px;
+  }
 }
 
 .room-container {
@@ -27,7 +30,6 @@ $text: rgb(198, 190, 149);
   @include min-med {
     flex: 3;
   }
-
   @include L {
     width: calc(100% - 10px);
   }
@@ -105,7 +107,20 @@ $text: rgb(198, 190, 149);
   }
 
   .room-box {
+    @include med {
+      &:nth-child(even) {
+        .room-layout {
+          padding-left: 5px;
+        }
+      }
+      &:nth-child(odd) {
+        .room-layout {
+          padding-right: 5px;
+        }
+      }
+    }
     width: 50%;
+    cursor: no-drop;
     &.exist {
       cursor: pointer;
     }
@@ -120,7 +135,7 @@ $text: rgb(198, 190, 149);
       margin-right: 10px;
       margin-bottom: 30px;
       @include med {
-        padding-left: 10px;
+        padding-left: 0px;
         margin-right: 0px;
       }
       .room-content {
@@ -153,6 +168,25 @@ $text: rgb(198, 190, 149);
           }
         }
         .img-box {
+          .bg {
+            // max-width: 269px;
+            padding-right: 15px;
+          }
+          .right {
+            position: absolute;
+            transform: translateY(-50%);
+            right: -30px;
+            top: 50%;
+            width: 100%;
+            max-width: 53%;
+
+            @include min-xl {
+              right: -22px;
+            }
+            @include med {
+              right: -10px;
+            }
+          }
           // position: absolute;
           // right: 0;
           // top: 0;
@@ -162,7 +196,7 @@ $text: rgb(198, 190, 149);
   }
 }
 
-.current-users {
+.current-users-container {
   color: $text;
   margin-right: auto;
   margin-left: auto;
@@ -176,9 +210,7 @@ $text: rgb(198, 190, 149);
     width: 100%;
     flex: 1;
   }
-  @include min-sm {
-    margin-top: 17px;
-  }
+
   @include sm {
     width: 100%;
     max-height: 100px;

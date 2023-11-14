@@ -37,7 +37,30 @@
 
         <div class="room-box exist" v-for="i in gameRooms" :key="i">
           <div class="room-layout">
-            <div class="room-content" :class="[i]" @click="joinRoom(i)">
+            <div class="room-content" @click="joinRoom(i)">
+              <div class="content flex">
+                <div class="title">
+                  <p>{{ getRoomDetail(i, 'name') }}</p>
+                </div>
+                <div class="players">
+                  <p>{{ getRoomDetail(i, 'player') }}人</p>
+                </div>
+              </div>
+              <div class="img-box">
+                <div class="bg">
+                  <img :src="getRoomUrl(i)" :alt="i" loading="lazy" />
+                </div>
+                <div class="right">
+                  <img :src="getRoomUrl(`${i}_icon`)" :alt="i" loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="room-box exist" v-for="i in gameRooms" :key="i">
+          <div class="room-layout">
+            <div class="room-content" @click="joinRoom(i)">
               <div class="content flex">
                 <div class="title">
                   <p>{{ getRoomDetail(i, 'name') }}</p>
@@ -51,7 +74,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <div class="room-box" v-for="i in unGameRooms" :key="i">
           <div class="room-layout">
@@ -62,7 +85,12 @@
                 </div>
               </div>
               <div class="img-box">
-                <img :src="getRoomUrl('unroom')" loading="lazy" />
+                <div class="bg">
+                  <img :src="getRoomUrl('unroom')" loading="lazy" />
+                </div>
+                <div class="right">
+                  <img :src="getRoomUrl('unroom_icon')" loading="lazy" />
+                </div>
               </div>
             </div>
           </div>
@@ -70,7 +98,7 @@
       </div>
 
       <!-- current not in game or room players in lobby -->
-      <div id="user" class="container pd-side current-users">
+      <div id="user" class="container pd-side current-users-container">
         <div class="content">
           <div class="title">
             <p>當前玩家</p>
@@ -86,17 +114,13 @@
       </div>
     </div>
   </transition>
-
-  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script>
-import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
-import { register } from 'swiper/element/bundle';
 // Import Swiper styles
-
-register();
+// import { register } from 'swiper/element/bundle';
+// register();
 
 export default {
   setup() {
@@ -121,9 +145,6 @@ export default {
   },
   data() {
     return {
-      socketConetectLoop: null,
-      loadRoomDataLoop: null,
-      connectedTime: 0,
       userName: null,
       userRoom: null,
       gameRooms: null,
@@ -135,7 +156,7 @@ export default {
       },
     };
   },
-  components: { userNameBox, transferPageCountDown },
+  components: { userNameBox },
   methods: {
     getRoomDetail(el, item = null) {
       if (item === null) return false;
@@ -179,28 +200,29 @@ export default {
 
       const that = this;
 
-      this.loadRoomDataLoop = setInterval(() => {
-        const result = doCheck();
-        this.$store.commit('connectedTimePlus');
-        this.$store.state.userStore.connectedTime += 1;
-        if (result) {
-          this.$store.state.userStore.connectedTime = 0;
-          clearInterval(this.loadRoomDataLoop);
-          // this.gameRooms = this.state.gameRooms.gameList;
+      this.$store.commit(
+        'loadRoomLoop',
+        setInterval(() => {
+          const result = doCheck();
+          this.$store.commit('connectedTimePlus');
+          if (result) {
+            this.$store.commit('loadRoomLoopDelete');
 
-          // display particular room with "chGameName".
-          this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
-            if (this.chGameName[x] != undefined) return x;
-          });
+            // display particular room with "chGameName".
+            this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
+              if (this.chGameName[x] != undefined) return x;
+            });
 
-          setTimeout(() => {
-            this.$store.state.userStore.loading = true;
-          }, 500);
-        }
-        if (this.$store.state.userStore.connectedTime >= 5) {
-          this.$store.commit('clearUserRoom');
-        }
-      }, 2000);
+            setTimeout(() => {
+              this.$store.commit('updateLoading', true);
+            }, 500);
+          }
+
+          // next run will return looby by "id_check" by backEnd after clearUserRoom;
+          if (this.$store.state.loopStore.connectedTime >= 5)
+            this.$store.commit('clearUserRoom');
+        }, 2000)
+      );
 
       function doCheck() {
         // make sure backEnd data same as frontEnd.
@@ -226,10 +248,14 @@ export default {
     },
     socketConnectCheck() {
       const that = this;
-      this.socketConetectLoop = setInterval(() => {
-        const result = doCheck(this);
-        if (result) clearInterval(this.socketConetectLoop);
-      }, 1000);
+
+      this.$store.commit(
+        'socketConnect',
+        setInterval(() => {
+          const result = doCheck(this);
+          if (result) this.$store.commit('socketDelete');
+        }, 1000)
+      );
 
       function doCheck() {
         if (that.state.connected) {
@@ -259,7 +285,7 @@ export default {
       },
     },
     gameRooms(el) {
-      this.unGameRooms = 9 - el.length;
+      this.unGameRooms = 8 - el.length;
     },
   },
   props: ['socket', 'state'],
@@ -274,11 +300,7 @@ export default {
     this.socketConnectCheck();
   },
 
-  beforeUnmount() {
-    clearInterval(this.socketConetectLoop);
-    clearInterval(this.loadRoomDataLoop);
-    this.$store.state.userStore.loading = false;
-  },
+  beforeUnmount() {},
 };
 </script>
 

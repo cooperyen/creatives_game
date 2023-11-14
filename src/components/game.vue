@@ -203,17 +203,13 @@
       </div>
     </div>
   </div>
-
-  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script>
-import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 export default {
   data() {
     return {
-      socketConetectLoop: null,
       player: null,
       gameRoom: null,
       gameData: false,
@@ -232,7 +228,7 @@ export default {
       voteFail: false,
     };
   },
-  components: { userNameBox, transferPageCountDown },
+  components: { userNameBox },
   props: ['socket', 'state'],
   watch: {
     passNotice(el) {
@@ -275,7 +271,7 @@ export default {
         this.remain = el.remain;
         this.level = el.level;
         this.handCard = el[this.player];
-        this.$store.state.userStore.loading = true;
+        this.$store.commit('updateLoading', true);
       },
       deep: true,
     },
@@ -423,22 +419,26 @@ export default {
     },
     socketConnectCheck() {
       const that = this;
-      this.socketConetectLoop = setInterval(() => {
-        const result = doCheck(this);
-        this.$store.state.userStore.connectedTime += 1;
 
-        if (this.$store.state.userStore.connectedTime >= 15) {
-          alert('Connection failed, will return to lobby.');
-          clearInterval(this.socketConetectLoop);
-          this.$store.state.userStore.connectedTime = 0;
-          this.goLobby();
-        }
+      this.$store.commit(
+        'socketConnect',
+        setInterval(() => {
+          const result = doCheck(this);
+          this.$store.state.loopStore.connectedTime += 1;
 
-        if (result) {
-          this.$store.state.userStore.connectedTime = 0;
-          clearInterval(this.socketConetectLoop);
-        }
-      }, 1000);
+          if (this.$store.state.loopStore.connectedTime >= 15) {
+            alert('Connection failed, will return to lobby.');
+            this.$store.commit('socketDelete');
+            this.$store.state.loopStore.connectedTime = 0;
+            this.goLobby();
+          }
+
+          if (result) {
+            this.$store.state.loopStore.connectedTime = 0;
+            this.$store.commit('socketDelete');
+          }
+        }, 1000)
+      );
 
       function doCheck() {
         that.socket.emit('id_check', {
@@ -474,11 +474,9 @@ export default {
     this.cardAnimate();
   },
   beforeUnmount() {
-    clearInterval(this.socketConetectLoop);
     clearInterval(this.drawVote.countTimer);
     clearInterval(this.gameOver.countTimer);
     this.$store.state.userStore.userRoom = null;
-    this.$store.state.userStore.loading = false;
   },
 };
 </script>

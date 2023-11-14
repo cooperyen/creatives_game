@@ -1,4 +1,6 @@
 <template>
+  <!-- <h1 style="color: white">{{ $store.state.userStore.loading }}</h1>
+  <h1 style="color: white">{{ $store.state.loopStore.connectedTime }}</h1> -->
   <transition name="connect">
     <div id="connect" v-show="!$store.state.userStore.loading">
       <div class="loading-box flex">
@@ -17,6 +19,8 @@
       </div>
     </transition>
   </router-view>
+
+  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script setup></script>
@@ -24,6 +28,7 @@
 <script>
 import { state, socket } from '@/../assets/socket';
 import loadingLoop from '@/../src/ui/loadingLoop.vue';
+import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 export default {
   data() {
     return {
@@ -33,8 +38,13 @@ export default {
       clickLoading: false,
     };
   },
-  components: { loadingLoop },
+  components: { loadingLoop, transferPageCountDown },
   watch: {
+    $route(el) {
+      this.$store.commit('socketDelete');
+      this.$store.commit('loadRoomLoopDelete');
+      this.$store.commit('updateLoading', false);
+    },
     // 'state.connected': {
     //   handler(el) {
     //     // this.connectedCheck();

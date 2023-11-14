@@ -503,7 +503,7 @@ export default {
     if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
 
     if (this.state.activeGameRoom != null)
-      this.$store.state.userStore.loading = true;
+      this.$store.commit('updateLoading', true);
 
     this.socket.emit('id_check', {
       id: this.$store.state.userStore.userName,
@@ -512,7 +512,6 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.detectWindowWidth);
-    this.$store.state.userStore.loading = false;
     this.$store.commit('clearUserRoom');
   },
 };

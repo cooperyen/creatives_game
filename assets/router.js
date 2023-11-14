@@ -44,10 +44,12 @@ router.beforeEach((to, from, next) => {
 
   const reloaded = window.localStorage.getItem('reloaded') || '';
   if (reloaded === '' && to.name === 'login') {
+    console.log(reloaded);
     window.location.reload();
     window.localStorage.setItem('reloaded', 'yes');
   }
-  next()
+  next();
+
 })
 
 export default router;

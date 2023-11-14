@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import router from '@/../assets/router.js';
-import { userStore } from '@/../assets/userStore.js';
+import { userStore, loopStore } from '@/../assets/userStore.js';
 import readyIcon from '@/../src/ui/ready.vue';
 import App from '@/App.vue'
 import { createStore } from 'vuex';
@@ -18,7 +18,8 @@ library.add(faChevronLeft, faMobileScreenButton)
 
 const store = createStore({
   modules: {
-    userStore
+    userStore,
+    loopStore
   }
 });
 
