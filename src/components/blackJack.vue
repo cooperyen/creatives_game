@@ -206,6 +206,7 @@ export default {
       gameRoom: null,
       isBankHit: false,
       windowSize: false,
+      windowMaxSize: window.matchMedia('(max-width: 700px)'),
       hit: {
         isPlayerStand: false,
       },
@@ -514,7 +515,7 @@ export default {
     // this.windowSizeListener();
     const mediaQuery = '(max-width: 700px)';
     const mediaQueryList = window.matchMedia('(max-width: 700px)');
-    mediaQueryList.addEventListener('change', this.handler);
+    this.windowMaxSize.addEventListener('change', this.handler);
 
     this.$store.commit('updateUserRoom', this.gameRoom);
     this.detectWindowWidth();
@@ -534,7 +535,7 @@ export default {
     const mediaQuery = '(max-width: 700px)';
     const mediaQueryList = window.matchMedia('(max-width: 700px)');
 
-    mediaQueryList.removeEventListener('change', this.handler);
+    this.windowMaxSize.removeEventListener('change', this.handler);
 
     window.removeEventListener('resize', this.detectWindowWidth);
     // window.removeEventListener('change', this.detectWindowWidth);

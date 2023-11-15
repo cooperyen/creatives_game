@@ -41,6 +41,7 @@ export const socket = io(URL);
 // export const conntect = () => {
 
 socket.on("connect", (el) => {
+  // alert(el);
   state.connected = true;
   state.socketId = socket.id;
 

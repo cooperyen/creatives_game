@@ -1,4 +1,5 @@
 <template>
+  <h1>{{ $store.state.userStore.loading }}</h1>
   <transition name="connect">
     <div id="connect" v-show="!$store.state.userStore.loading">
       <div class="loading-box flex">

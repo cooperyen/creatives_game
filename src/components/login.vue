@@ -1,4 +1,5 @@
 <template>
+  <h1>{{ state.connected }}</h1>
   <transition name="login">
     <div class="login-container" v-show="$store.state.userStore.loading">
       <div class="title">
