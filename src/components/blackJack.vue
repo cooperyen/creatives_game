@@ -473,21 +473,36 @@ export default {
     windowSizeListener() {
       const mediaQuery = '(max-width: 700px)';
       const mediaQueryList = window.matchMedia(mediaQuery);
-
-      mediaQueryList.addEventListener('change', (event) => {
-        console.log(window.innerWidth);
+      mediaQueryList.addEventListener('change', this.handler);
+    },
+    handler(event) {
+      if (event.matches) {
+        alert('The window is now 700px or under');
+        this.windowSize = true;
+      } else {
+        alert('The window is now over 700px');
+        this.windowSize = false;
+      }
+    },
+    windowRSizeListener() {
+      const mediaQuery = '(max-width: 700px)';
+      const mediaQueryList = window.matchMedia(mediaQuery);
+      mediaQueryList.removeEventListener('change', (event) => {
         if (event.matches) {
-          console.log('The window is now 700px or under');
+          // alert('The window is now 700px or under');
+          this.windowSize = true;
         } else {
-          console.log('The window is now over 700px');
+          // alert('The window is now over 700px');
+          this.windowSize = false;
         }
       });
+      // window.addEventListener('change', this.detectWindowWidth);
     },
     detectWindowWidth(e) {
-      if (window.innerWidth < 768 && window.innerWidth < window.innerHeight)
+      if (window.innerWidth < 700 && window.innerWidth < window.innerHeight)
         this.windowSize = true;
 
-      if (window.innerWidth >= 768 && window.innerWidth > window.innerHeight)
+      if (window.innerWidth >= 700 && window.innerWidth > window.innerHeight)
         this.windowSize = false;
     },
   },
@@ -496,6 +511,11 @@ export default {
     this.gameRoom = this.$store.state.userStore.userRoom;
   },
   mounted() {
+    // this.windowSizeListener();
+    const mediaQuery = '(max-width: 700px)';
+    const mediaQueryList = window.matchMedia('(max-width: 700px)');
+    mediaQueryList.addEventListener('change', this.handler);
+
     this.$store.commit('updateUserRoom', this.gameRoom);
     this.detectWindowWidth();
     window.addEventListener('resize', this.detectWindowWidth);
@@ -511,7 +531,13 @@ export default {
     });
   },
   beforeUnmount() {
+    const mediaQuery = '(max-width: 700px)';
+    const mediaQueryList = window.matchMedia('(max-width: 700px)');
+
+    mediaQueryList.removeEventListener('change', this.handler);
+
     window.removeEventListener('resize', this.detectWindowWidth);
+    // window.removeEventListener('change', this.detectWindowWidth);
     this.$store.commit('clearUserRoom');
   },
 };

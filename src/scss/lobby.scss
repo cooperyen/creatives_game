@@ -9,7 +9,7 @@ $text: rgb(198, 190, 149);
   user-select: none;
   width: calc(100% - 60px);
   max-width: 1400px;
-  overflow: hidden;
+  // overflow: hidden;
   @include L {
     width: calc(100% - 15px);
   }
@@ -23,6 +23,8 @@ $text: rgb(198, 190, 149);
 }
 
 .room-container {
+  padding: 17px 0;
+  overflow: hidden;
   width: calc(100% - 15px);
   margin-left: auto;
   margin-right: auto;
@@ -120,9 +122,27 @@ $text: rgb(198, 190, 149);
       }
     }
     width: 50%;
-    cursor: no-drop;
+
     &.exist {
-      cursor: pointer;
+      .room-layout,
+      .room-layout:hover {
+        .img-box {
+          .right {
+            transition: 0.4s;
+          }
+        }
+      }
+      .room-layout:hover {
+        .room-content {
+          cursor: pointer;
+        }
+        .img-box {
+          .right {
+            top: 35%;
+            transform: rotate(5deg) translateY(-50%);
+          }
+        }
+      }
     }
 
     flex-wrap: wrap;
@@ -137,8 +157,10 @@ $text: rgb(198, 190, 149);
       @include med {
         padding-left: 0px;
         margin-right: 0px;
+        margin-bottom: 15px;
       }
       .room-content {
+        cursor: no-drop;
         position: relative;
         .content {
           position: absolute;
@@ -201,7 +223,6 @@ $text: rgb(198, 190, 149);
   margin-right: auto;
   margin-left: auto;
   max-height: 200px;
-  overflow-y: auto;
 
   @include min-L {
     flex: 1;
@@ -216,10 +237,11 @@ $text: rgb(198, 190, 149);
     max-height: 100px;
   }
   .content {
+    overflow-y: auto;
     border-radius: 8px;
     background-color: rgba($color: $mainBg, $alpha: 0.7);
     padding: 10px 15px;
-    min-height: 200px;
+    min-height: 100px;
     @include sm {
       max-height: 100px;
     }

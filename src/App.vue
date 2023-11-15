@@ -1,6 +1,4 @@
 <template>
-  <!-- <h1 style="color: white">{{ $store.state.userStore.loading }}</h1>
-  <h1 style="color: white">{{ $store.state.loopStore.connectedTime }}</h1> -->
   <transition name="connect">
     <div id="connect" v-show="!$store.state.userStore.loading">
       <div class="loading-box flex">

@@ -85,7 +85,7 @@
                 </div>
               </div>
               <div class="img-box">
-                <div class="bg">
+                <div class="bg" style="opacity: 0.4">
                   <img :src="getRoomUrl('unroom')" loading="lazy" />
                 </div>
                 <div class="right">
@@ -99,10 +99,10 @@
 
       <!-- current not in game or room players in lobby -->
       <div id="user" class="container pd-side current-users-container">
+        <div class="title">
+          <p>當前玩家</p>
+        </div>
         <div class="content">
-          <div class="title">
-            <p>當前玩家</p>
-          </div>
           <div>
             <ul>
               <li v-for="i in lobbyPlayerList" :key="i">
