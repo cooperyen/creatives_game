@@ -2,7 +2,7 @@
   <div class="end game">
     <router-link to="/lobby">END GAME</router-link>
   </div>
-  <div v-if="windowSize" class="window">
+  <!-- <div v-if="windowSize" class="window">
     <div class="content">
       <div class="icon">
         <font-awesome-icon icon="fa-solid fa-mobile-screen-button" />
@@ -11,8 +11,8 @@
         <p>rotate your phone.</p>
       </div>
     </div>
-  </div>
-  <div class="bg">
+  </div> -->
+  <div id="game" class="bg">
     <userNameBox :userName="ownself" class="name"></userNameBox>
     <div class="container">
       <!-- snatch bank  -->
@@ -472,33 +472,29 @@ export default {
       return this.game.bank === this.ownself ? true : false;
     },
     windowSizeListener() {
-      const mediaQuery = '(max-width: 700px)';
+      const mediaQuery = '(min-height: 500px)';
       const mediaQueryList = window.matchMedia(mediaQuery);
       mediaQueryList.addEventListener('change', this.handler);
     },
     handler(event) {
-      if (event.matches) {
-        alert('The window is now 700px or under');
-        this.windowSize = true;
-      } else {
-        alert('The window is now over 700px');
-        this.windowSize = false;
-      }
-    },
-    windowRSizeListener() {
-      const mediaQuery = '(max-width: 700px)';
-      const mediaQueryList = window.matchMedia(mediaQuery);
-      mediaQueryList.removeEventListener('change', (event) => {
+      setTimeout(() => {
+        const game = document.getElementById('game');
         if (event.matches) {
-          // alert('The window is now 700px or under');
           this.windowSize = true;
+          game.style.height = `${getHeight()}px`;
+          // alert(getHeight());
         } else {
-          // alert('The window is now over 700px');
           this.windowSize = false;
+          game.style.height = `${getHeight()}px`;
+          // alert(getHeight());
         }
-      });
-      // window.addEventListener('change', this.detectWindowWidth);
+
+        function getHeight() {
+          return window.innerHeight;
+        }
+      }, 200);
     },
+
     detectWindowWidth(e) {
       if (window.innerWidth < 700 && window.innerWidth < window.innerHeight)
         this.windowSize = true;
@@ -512,14 +508,15 @@ export default {
     this.gameRoom = this.$store.state.userStore.userRoom;
   },
   mounted() {
-    // this.windowSizeListener();
-    const mediaQuery = '(max-width: 700px)';
-    const mediaQueryList = window.matchMedia('(max-width: 700px)');
+    const game = document.getElementById('game');
+    game.style.height = `${window.innerHeight}px`;
+    console.log(window.innerHeight);
+
     this.windowMaxSize.addEventListener('change', this.handler);
 
     this.$store.commit('updateUserRoom', this.gameRoom);
     this.detectWindowWidth();
-    window.addEventListener('resize', this.detectWindowWidth);
+    // window.addEventListener('resize', this.detectWindowWidth);
 
     if (this.state.activeGameRoom === null) this.$router.replace('/lobby');
 
@@ -532,13 +529,8 @@ export default {
     });
   },
   beforeUnmount() {
-    const mediaQuery = '(max-width: 700px)';
-    const mediaQueryList = window.matchMedia('(max-width: 700px)');
-
     this.windowMaxSize.removeEventListener('change', this.handler);
-
-    window.removeEventListener('resize', this.detectWindowWidth);
-    // window.removeEventListener('change', this.detectWindowWidth);
+    // window.removeEventListener('resize', this.detectWindowWidth);
     this.$store.commit('clearUserRoom');
   },
 };

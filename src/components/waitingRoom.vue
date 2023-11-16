@@ -278,6 +278,7 @@ export default {
         setInterval(() => {
           const result = doCheck();
           this.$store.commit('connectedTimePlus');
+
           if (result) {
             this.$store.commit('socketDelete');
             this.$store.commit('updateLoading', true);
