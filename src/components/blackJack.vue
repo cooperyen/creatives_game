@@ -2,7 +2,7 @@
   <div class="end game">
     <router-link to="/lobby">END GAME</router-link>
   </div>
-  <!-- <div v-if="windowSize" class="window">
+  <div v-if="windowSize" class="window">
     <div class="content">
       <div class="icon">
         <font-awesome-icon icon="fa-solid fa-mobile-screen-button" />
@@ -11,7 +11,7 @@
         <p>rotate your phone.</p>
       </div>
     </div>
-  </div> -->
+  </div>
   <div id="game" class="bg">
     <userNameBox :userName="ownself" class="name"></userNameBox>
     <div class="container">
@@ -106,7 +106,6 @@
                       : bankBetMaxEmit()
                   "
                 >
-                  BET<br />
                   MAX
                 </button>
               </div>
@@ -137,7 +136,7 @@
                       : (bet.playerBeted = [])
                   "
                 >
-                  RESET
+                  RES
                 </button>
               </div>
             </div>
@@ -206,7 +205,8 @@ export default {
       gameRoom: null,
       isBankHit: false,
       windowSize: false,
-      windowMaxSize: window.matchMedia('(max-width: 700px)'),
+      windowMaxWidth: 650,
+      windowMaxSize: window.matchMedia(`(max-width: ${this.windowMaxWidth}px)`),
       hit: {
         isPlayerStand: false,
       },
@@ -496,11 +496,29 @@ export default {
     },
 
     detectWindowWidth(e) {
-      if (window.innerWidth < 700 && window.innerWidth < window.innerHeight)
-        this.windowSize = true;
+      // if (
+      //   window.innerWidth < this.windowMaxWidth &&
+      //   window.innerWidth < window.innerHeight
+      // )
+      //   this.windowSize = true;
 
-      if (window.innerWidth >= 700 && window.innerWidth > window.innerHeight)
-        this.windowSize = false;
+      // if (
+      //   window.innerWidth >= this.windowMaxWidth &&
+      //   window.innerWidth > window.innerHeight
+      // )
+      //   this.windowSize = false;
+      console.log(window.innerHeight, this.windowMaxWidth);
+      if (window.innerHeight < this.windowMaxWidth) this.windowSize = true;
+
+      if (window.innerHeight >= this.windowMaxWidth) this.windowSize = false;
+      setTimeout(() => {
+        const game = document.getElementById('game');
+        game.style.height = `${getHeight()}px`;
+
+        function getHeight() {
+          return window.innerHeight;
+        }
+      }, 200);
     },
   },
   created() {
@@ -513,6 +531,7 @@ export default {
     console.log(window.innerHeight);
 
     this.windowMaxSize.addEventListener('change', this.handler);
+    window.addEventListener('resize', this.detectWindowWidth);
 
     this.$store.commit('updateUserRoom', this.gameRoom);
     this.detectWindowWidth();
@@ -530,7 +549,7 @@ export default {
   },
   beforeUnmount() {
     this.windowMaxSize.removeEventListener('change', this.handler);
-    // window.removeEventListener('resize', this.detectWindowWidth);
+    window.removeEventListener('resize', this.detectWindowWidth);
     this.$store.commit('clearUserRoom');
   },
 };

@@ -44,11 +44,14 @@ export default {
     right: 20px;
     top: 20px;
     position: absolute;
-    h2 {
-      @include sm {
-        font-size: 1.2rem;
+    @include sm {
+      right: 10px;
+      top: 10px;
+      h2 {
+        font-size: 1rem;
       }
     }
+
     a {
       color: $text;
       float: right;

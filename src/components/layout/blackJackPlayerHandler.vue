@@ -1,11 +1,14 @@
 <template>
   <!-- players -->
   <div class="flex" v-if="players">
-    <div class="hand-card-box players-box" v-for="i in players" :key="i">
+    <div
+      class="hand-card-box players-box"
+      v-for="(i, index) in players"
+      :key="index"
+    >
       <!-- bet coins -->
       <div v-show="i.name != bank" class="coin-box flex">
         <div class="item" v-for="i in sort(i.bet)" :key="i">
-          <!-- <img :src="'/src/image/poker/coin_' + i + '.png'" /> -->
           <img :src="getCoinUrl(i)" />
         </div>
       </div>
@@ -24,9 +27,9 @@
           class="hand-card player"
           v-for="(card, index) in i.handCard"
           :key="index"
+          :style="{ 'z-index': index }"
         >
           <div :class="{ 'card-shdow': card === 'card_back' }">
-            <!-- <img :src="'/src/image/poker/card/' + card + '.png'" alt="" /> -->
             <img :src="getPorkerUrl(card)" alt="" />
           </div>
         </div>
@@ -61,9 +64,9 @@
         class="hand-card self"
         v-for="(card, index) in self.handCard"
         :key="index"
+        :style="{ 'z-index': index }"
       >
         <div :class="{ 'card-shdow': card === 'card_back' }">
-          <!-- <img :src="'/src/image/poker/card/' + card + '.png'" alt="" /> -->
           <img :src="getPorkerUrl(card)" alt="" />
         </div>
       </div>

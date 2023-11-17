@@ -79,6 +79,9 @@ button {
     @include min-L {
       bottom: 120px;
     }
+    @include med {
+      bottom: 150px;
+    }
     .bank-box {
       justify-content: center;
     }
@@ -161,7 +164,7 @@ button {
       background-color: rgb(62, 87, 146);
       border: 2px solid rgba(255, 255, 255, 0.5);
       position: absolute;
-      z-index: 1;
+      z-index: 30;
       top: 50%;
       left: -15px;
       transform: translateY(-50%);
@@ -179,6 +182,14 @@ button {
         &:nth-child(2) {
           margin-left: unset;
         }
+        img {
+          min-width: 90px;
+          max-width: 90px;
+          @include sm {
+            max-width: 60px;
+            min-width: 60px;
+          }
+        }
       }
       &.self {
         transition: transform 0.2s;
@@ -187,18 +198,23 @@ button {
           margin-left: unset;
         }
         img {
-          min-width: 105px;
+          @include L {
+            min-width: 105px;
+            max-width: 105px;
+          }
           @include min-L {
             min-width: 120px;
+            max-width: 120px;
           }
           @include min-xl {
             min-width: 150px;
+            max-width: 150px;
+          }
+          @include sm {
+            min-width: 100%;
+            max-width: 100%;
           }
         }
-      }
-      img {
-        min-width: 90px;
-        max-width: 90px;
       }
     }
   }
@@ -220,15 +236,13 @@ button {
 :deep(.game-ctrl) {
   width: 100%;
   position: absolute;
-  // right: 0;
   left: 0;
   bottom: 0px;
-  padding: px 0 15px 0;
-  // transform: translate(-50%, -50%);
+
   background-color: rgb(44 9 77);
   animation: card-shdow 5s infinite;
-  .content {
-    flex: 1;
+  @include sm {
+    padding-bottom: 10px;
   }
   .flex {
     justify-content: center;
@@ -251,11 +265,23 @@ button {
   }
   .game-option {
     padding: 5px 0 10px 0;
-
+    @include med {
+      &.flex {
+        flex-wrap: wrap;
+      }
+      .hit,
+      .coin,
+      .info {
+        width: 100%;
+      }
+    }
     .hit {
       &.content {
         width: 100%;
         flex: 1;
+        @include sm {
+          margin-top: 4px;
+        }
         button {
           margin: 0 10px;
           border-radius: 8px;
@@ -265,6 +291,13 @@ button {
           @include min-L {
             min-width: 100px;
             font-size: 1.2rem;
+          }
+          @include med {
+            width: 50%;
+            padding: 3px 0;
+          }
+          @include sm {
+            margin: 0 5px;
           }
 
           &.hit {
@@ -284,12 +317,20 @@ button {
     }
     .coin {
       &.content {
-        flex: 2;
+        @include min-med {
+          flex: 2;
+        }
+        @include sm {
+          margin: 0 5px;
+        }
         .coin-box {
           .item {
             cursor: pointer;
             margin: 8px;
             display: flex;
+            @include sm {
+              margin: 3px;
+            }
             @include min-L {
               margin: 15px;
             }
@@ -310,9 +351,7 @@ button {
                 background-color: rgb(145, 112, 215);
                 color: white;
               }
-              &.bet {
-                font-size: 1rem;
-              }
+
               &.bet-max {
                 font-size: 0.9rem;
               }
@@ -320,6 +359,13 @@ button {
               &.bet-max {
                 background-color: rgb(215, 220, 170);
                 font-weight: bold;
+              }
+              @include sm {
+                &.bet-max,
+                &.bet,
+                &.reset {
+                  font-size: 0.7rem;
+                }
               }
             }
           }
@@ -329,6 +375,9 @@ button {
     .info {
       &.content {
         flex: 1;
+        @include sm {
+          margin-bottom: 4px;
+        }
         .info-box {
           margin-right: 15px;
           margin-left: 15px;
@@ -354,6 +403,9 @@ button {
               color: white;
               font-size: 0.5rem;
               flex: 2;
+              @include sm {
+                padding: 5px;
+              }
             }
             .num {
               flex: 3;
@@ -361,6 +413,9 @@ button {
               color: $text;
               display: flex;
               align-items: center;
+              @include sm {
+                font-size: 0.7rem;
+              }
             }
           }
         }
@@ -391,10 +446,13 @@ button {
     padding: 15px 40px;
     border-radius: 8px;
     border: unset;
-    font-size: 1rem;
     font-weight: bold;
     box-shadow: 4px 4px 8px rgba($color: $text, $alpha: 0.4);
     font-size: 2rem;
+    @include sm {
+      padding: 10px 20px;
+      font-size: 1rem;
+    }
     &::after,
     &::before {
       content: '';
