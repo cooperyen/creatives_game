@@ -106,12 +106,18 @@ export default {
     },
     cardTranform() {
       const handCard = document.querySelector('.self-box .hand-cards');
+      const handCardEach = document.querySelectorAll(
+        '.self-box .hand-cards .self'
+      );
       const self = handCard.querySelectorAll('.hand-card.self');
 
       let move = 0;
       let num = 90;
+      let mover = 0;
+
       if ((window.innerWidth >= 992) & (window.innerWidth < 1139)) num = 100;
       if (window.innerWidth >= 1140) num = 130;
+      if (window.innerWidth <= 576) num = 60;
 
       setTimeout(() => {
         self.forEach((el) => {
@@ -119,27 +125,32 @@ export default {
           if (self.length > 2) move += num;
         });
 
-        let mover = 0;
-        if (self.length > 2) mover = (move - 100) / 2;
-        handCard.style.transform = `translateX(${mover}px)`;
+        if (self.length > 2) {
+          const swith = handCardEach[0].getBoundingClientRect().width;
+          mover = (swith * self.length - move) * 2;
+          handCard.style.transform = `translateX(${mover}px)`;
+        }
+        if (self.length <= 2) {
+          handCard.style.transform = '';
+        }
       }, 100);
     },
     playersCardTranform() {
+      console.log('object');
       const handCardBox = document.querySelectorAll(
         '.hand-card-box.players-box'
       );
       let move = 0;
       let num = 80;
       if (window.innerWidth >= 992) num = 65;
+      if (window.innerWidth <= 576) num = 55;
 
       handCardBox.forEach((el) => {
-        // setTimeout(() => {
         const handCard = el.querySelectorAll('.hand-card');
         handCard.forEach((s) => {
           s.style.transform = `translateX(-${move}px)`;
           if (handCard.length > 2) move += num;
         });
-        // }, 50);
       });
     },
     coinsTranform() {
@@ -159,11 +170,17 @@ export default {
     },
   },
   mounted() {
-    // this.cardTranform();
     this.$nextTick(() => {
-      // this.cardTranform();
-      // this.coinsTranform();
-      // this.playersCardTranform();
+      () => {
+        this.cardTranform();
+        this.coinsTranform();
+        this.playersCardTranform();
+      };
+    });
+    window.addEventListener('resize', () => {
+      this.cardTranform();
+      this.coinsTranform();
+      this.playersCardTranform();
     });
   },
 };

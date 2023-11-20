@@ -215,7 +215,7 @@ export default {
 
             setTimeout(() => {
               this.$store.commit('updateLoading', true);
-            }, 500);
+            }, 200);
           }
 
           // next run will return looby by "id_check" by backEnd after clearUserRoom;

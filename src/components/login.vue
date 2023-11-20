@@ -19,7 +19,7 @@
           />
         </div>
         <div class="login btn">
-          <button @click.prevent="login()">登入</button>
+          <button @click.prevent="connected ? login() : ' '">登入</button>
         </div>
       </div>
     </div>
@@ -86,8 +86,6 @@ export default {
     localStorage.removeItem('reloaded');
   },
   mounted() {
-    // this.$emit('waitPageTrLoop', true);
-
     const that = this;
     const conetectLoop = setInterval(() => {
       const result = doCheck();
@@ -97,14 +95,14 @@ export default {
         clearInterval(conetectLoop);
         setTimeout(() => {
           this.$store.commit('updateLoading', true);
-        }, 1000);
+        }, 200);
       }
       if (this.connectedTime >= 10) this.$router.go(0);
-    }, 1000);
+    }, 2000);
 
     function doCheck(el) {
-      if (that.state.connected || that.connected) return true;
-      if (!that.state.connected || !that.connected) return false;
+      if (that.state.connected) return true;
+      if (!that.state.connected) return false;
     }
   },
 };

@@ -123,6 +123,7 @@ export default {
   watch: {
     'state.loginError': {
       handler(el) {
+        console.log(el);
         if (this.state.activeGameRoom != 'fail') return;
         this.$router.replace(`/${el}`);
       },
