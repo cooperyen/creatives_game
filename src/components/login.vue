@@ -57,6 +57,7 @@ export default {
       handler(el) {
         this.connected = el;
       },
+      deep: true,
     },
     'state.goUrl': {
       handler(el) {
@@ -80,17 +81,15 @@ export default {
       'userData',
       JSON.stringify({ userName: null, userRoom: null })
     );
-    this.state.connected = false;
+    // this.state.connected = false;
   },
   beforeUnmount() {
     localStorage.removeItem('reloaded');
   },
   mounted() {
-    const that = this;
     const conetectLoop = setInterval(() => {
-      const result = doCheck();
       this.connectedTime += 1;
-      if (result) {
+      if (this.connected) {
         this.connectedTime = 0;
         clearInterval(conetectLoop);
         setTimeout(() => {
@@ -99,11 +98,6 @@ export default {
       }
       if (this.connectedTime >= 10) this.$router.go(0);
     }, 2000);
-
-    function doCheck(el) {
-      if (that.state.connected) return true;
-      if (!that.state.connected) return false;
-    }
   },
 };
 </script>
