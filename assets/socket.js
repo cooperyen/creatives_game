@@ -38,6 +38,7 @@ const URL = testURL;
 
 export const socket = io(URL);
 
+
 // export const conntect = () => {
 
 socket.on("connect", (el) => {
@@ -47,10 +48,16 @@ socket.on("connect", (el) => {
 
 });
 
-socket.on("connected", (el) => {
-  state.connected = true;
+async function ans() {
+  const cos = await new Promise(res => {
+    socket.on("connected", (el) => {
+      res()
+    });
+  })
 
-});
+  state.connected = true;
+}
+ans();
 
 socket.on("disconnect", () => {
   state.connected = false;
@@ -63,13 +70,15 @@ state.gameDataUpdate = null;
 state.gameOne.readyList = null;
 state.currentPlayers = null;
 
-socket.on('re_act', function (data) {
-
+socket.on('re_act', function (datas) {
   state.goUrl = null;
   state.gameDataFirstLoad = null;
   state.loginError = null;
   state.activeGameRoom = null;
-  console.log(data);
+  router(datas);
+});
+
+function router(data) {
   switch (data.way) {
 
     case 'id_check':
@@ -142,9 +151,7 @@ socket.on('re_act', function (data) {
       state.loginError = 'fail';
       break;
   }
-
-});
-
+}
 
 socket.on('updata_watingroom_ready', function (data) {
   state.currentPlayers = data.room_data

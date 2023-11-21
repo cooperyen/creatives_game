@@ -5,6 +5,7 @@ import game from '@/components/game.vue';
 import blackJack from '@/components/blackJack.vue';
 import login from '@/components/login.vue';
 import waitingRoom from '@/components/waitingRoom.vue';
+import { socket } from '@/../assets/socket.js';
 
 const router = createRouter({
   history: createWebHistory(),

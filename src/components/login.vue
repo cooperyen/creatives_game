@@ -1,5 +1,7 @@
 <template>
-  <h1>{{ state.connected }}</h1>
+  <h1>{{ connecteds }}</h1>
+  <h1>{{ state.socketId }}</h1>
+
   <transition name="login">
     <div class="login-container" v-show="$store.state.userStore.loading">
       <div class="title">
@@ -52,6 +54,11 @@ export default {
       }
     },
   },
+  computed: {
+    connecteds() {
+      return this.state.connected;
+    },
+  },
   watch: {
     'state.connected': {
       handler(el) {
@@ -81,23 +88,29 @@ export default {
       'userData',
       JSON.stringify({ userName: null, userRoom: null })
     );
+
     // this.state.connected = false;
   },
   beforeUnmount() {
     localStorage.removeItem('reloaded');
   },
   mounted() {
-    const conetectLoop = setInterval(() => {
-      this.connectedTime += 1;
-      if (this.connected) {
-        this.connectedTime = 0;
-        clearInterval(conetectLoop);
-        setTimeout(() => {
-          this.$store.commit('updateLoading', true);
-        }, 200);
-      }
-      if (this.connectedTime >= 10) this.$router.go(0);
-    }, 2000);
+    setTimeout(() => {
+      const conetectLoop = setInterval(() => {
+        this.connectedTime += 1;
+        if (this.connected) {
+          this.connectedTime = 0;
+          clearInterval(conetectLoop);
+          setTimeout(() => {
+            this.$store.commit('updateLoading', true);
+          }, 200);
+        }
+        // if (this.connectedTime >= 5) this.socket.emit('isConnect');
+        if (this.connectedTime >= 10) {
+          this.$router.go(0);
+        }
+      }, 1000);
+    }, 200);
   },
 };
 </script>
