@@ -31,7 +31,8 @@ export const state = reactive({
 // const testURL = 'http://200.69.21.59:88'
 const testURL = 'https://user.creatives.ink'
 // const testURL = 'http://127.0.0.1:5000/'
-// const testURL = 'http://200.69.21.59:9527'
+// const testURL = 'http://200.69.21.59:1144'
+// const testURL = 'https://bkgame.creatives.ink'
 // const testURL = 'https://6d09-60-251-61-249.ngrok-free.app'
 
 // "undefined" means the URL will be computed from the `window.location` object
