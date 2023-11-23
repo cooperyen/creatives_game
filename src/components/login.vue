@@ -1,7 +1,4 @@
 <template>
-  <h1>{{ connecteds }}</h1>
-  <h1>{{ state.socketId }}</h1>
-
   <transition name="login">
     <div class="login-container" v-show="$store.state.userStore.loading">
       <div class="title">
@@ -107,7 +104,7 @@ export default {
         }
         // if (this.connectedTime >= 5) this.socket.emit('isConnect');
         if (this.connectedTime >= 10) {
-          this.$router.go(0);
+          // this.$router.go(0);
         }
       }, 1000);
     }, 200);

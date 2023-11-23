@@ -21,19 +21,22 @@
   <transferPageCountDown></transferPageCountDown>
 </template>
 
-<script setup></script>
+<script setup>
+import { state, socket } from '@/../assets/socket';
+</script>
 
 <script>
-import { state, socket } from '@/../assets/socket';
+import { io } from 'socket.io-client';
 import loadingLoop from '@/../src/ui/loadingLoop.vue';
 import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 export default {
   data() {
     return {
-      socket,
-      state,
+      // socket,
+      // state,
       loading: false,
       clickLoading: false,
+      sockets: null,
     };
   },
   components: { loadingLoop, transferPageCountDown },
@@ -43,13 +46,12 @@ export default {
       this.$store.commit('loadRoomLoopDelete');
       this.$store.commit('updateLoading', false);
     },
-    // 'state.connected': {
-    //   handler(el) {
-    //     // this.connectedCheck();
-    //   },
-    // },
   },
-
+  computed: {
+    connected() {
+      return state.connected;
+    },
+  },
   methods: {
     loadingLoopFun(el) {
       this.clickLoading = el;
@@ -77,7 +79,9 @@ export default {
     window.onpopstate = function () {
       history.go(1);
     };
-    // this.connectedCheck();
+
+    const testURL = 'https://user.creatives.ink';
+    const URL = testURL;
   },
   created() {
     this.cookieCheck();
@@ -87,6 +91,9 @@ export default {
       this.$router.replace('/');
     if (this.$route.path === '/') return;
     // this.socket.emit('id_check', { id: userName, room: userRoom });
+  },
+  beforeUnmount() {
+    this.socket.off();
   },
 };
 </script>

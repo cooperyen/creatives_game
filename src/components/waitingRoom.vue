@@ -292,13 +292,15 @@ export default {
 
       function doCheck() {
         // make sure backEnd data same as frontEnd.
-        that.socket.emit('id_check', {
-          id: that.selfPlayer,
-          room: that.userRoom,
-        });
 
         if (that.otherPlayers != null) return true;
-        if (that.otherPlayers === null) return false;
+        if (that.otherPlayers === null) {
+          that.socket.emit('id_check', {
+            id: that.selfPlayer,
+            room: that.userRoom,
+          });
+          return false;
+        }
       }
     },
   },

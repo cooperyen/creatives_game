@@ -56,12 +56,14 @@ socket.on("connect", (el) => {
 });
 
 async function ans() {
+  let id;
   const cos = await new Promise(res => {
     socket.on("connected", (el) => {
+      id = el.id;
       res()
     });
   })
-
+  console.log(id);
   state.connected = true;
 }
 ans();
