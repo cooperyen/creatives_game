@@ -26,14 +26,13 @@ import { state, socket } from '@/../assets/socket';
 </script>
 
 <script>
-import { io } from 'socket.io-client';
 import loadingLoop from '@/../src/ui/loadingLoop.vue';
 import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
 export default {
   data() {
     return {
-      // socket,
-      // state,
+      socket,
+      state,
       loading: false,
       clickLoading: false,
       sockets: null,
@@ -93,7 +92,7 @@ export default {
     // this.socket.emit('id_check', { id: userName, room: userRoom });
   },
   beforeUnmount() {
-    this.socket.off();
+    // this.socket.off();
   },
 };
 </script>

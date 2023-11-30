@@ -246,7 +246,7 @@ export default {
     },
     'state.drawVote': {
       handler(el) {
-        // console.log(el);
+        console.log(el);
         if (el != null && el.isPass) this.drawVote.state = el;
         if (el != null && !el.isPass) {
           this.drawVote.state = false;
@@ -320,6 +320,7 @@ export default {
     },
     'drawVote.state'(el) {
       this.drawVote.time = 5;
+      console.log(el);
       if (el)
         this.drawVote.countTimer = setInterval(() => {
           if (this.drawVote.time <= 0) this.drawVote.time = 0;
@@ -404,7 +405,7 @@ export default {
     },
     votedDart(data) {
       if (this.isDrawVoted != null) return;
-      if (data != 'yes' || data != 'no') return;
+      if (data != 'yes' && data != 'no') return;
 
       const userRoom = this.$store.state.userStore.userRoom;
       const room = userRoom.substring(userRoom.indexOf('/') + 1);
@@ -415,6 +416,8 @@ export default {
         room,
       });
 
+      clearInterval(this.drawVote.countTimer);
+      this.drawVote.time = 0;
       this.isDrawVoted = data;
     },
     socketConnectCheck() {

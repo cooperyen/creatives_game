@@ -207,6 +207,9 @@ export default {
         case 'game02':
           toGame('lunch_bj');
           break;
+        case 'game03':
+          toGame('lunch_yc');
+          break;
         default:
           alert('no game');
       }

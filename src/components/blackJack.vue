@@ -528,7 +528,6 @@ export default {
   mounted() {
     const game = document.getElementById('game');
     game.style.height = `${window.innerHeight}px`;
-    console.log(window.innerHeight);
 
     this.windowMaxSize.addEventListener('change', this.handler);
     window.addEventListener('resize', this.detectWindowWidth);

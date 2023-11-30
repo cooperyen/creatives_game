@@ -89,8 +89,8 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
-  switch (data.way) {
 
+  switch (data.way) {
     case 'id_check':
       if (data.game_list != null || data.game_list != undefined) {
         state.gameRooms = null;
@@ -135,11 +135,10 @@ function router(data) {
 
     case 'lunch_bj':
     case 'lunch_mind':
+    case 'lunch_yc':
 
       if (data.url === null || data.url === undefined) break;
 
-      // const gameRoom = data.url.string(data.url.indexOf('/') + 1)
-      // state.activeGameRoom = gameRoom
       const userData = JSON.parse(localStorage.getItem('userData'));
       userData.userRoom = data.url;
       state.activeGameRoom = data.url;
@@ -147,8 +146,6 @@ function router(data) {
 
       localStorage.setItem('userData', JSON.stringify(userData));
       state.gameDataFirstLoad = data
-
-
       break;
 
     case 'lunch_start':
@@ -194,10 +191,12 @@ socket.on('re_flash', function (data) {
 })
 
 socket.on('re_draw', function (data) {
+
   state.drawVote = null;
   if (data.message === 'draw') state.drawVote = { isPass: true }
   if (data.message === 'play') state.drawVote = { isPass: false, card: data.card };
 
+  console.log(state.drawVote);
 
 })
 

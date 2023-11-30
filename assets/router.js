@@ -3,6 +3,7 @@ import lobby from '@/components/lobby.vue';
 import NotFound from '@/components/404.vue';
 import game from '@/components/game.vue';
 import blackJack from '@/components/blackJack.vue';
+import yellowCard from '@/components/yellowCard.vue';
 import login from '@/components/login.vue';
 import waitingRoom from '@/components/waitingRoom.vue';
 import { socket } from '@/../assets/socket.js';
@@ -36,6 +37,11 @@ const router = createRouter({
       path: '/blackjack/:room',
       name: 'blackJack',
       component: blackJack,
+    },
+    {
+      path: '/yellow_cards/:room',
+      name: 'yellowCards',
+      component: yellowCard,
     },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
   ],
