@@ -1,6 +1,7 @@
 <template>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
   <h1>state.gameDataFirstLoad {{ state.gameDataFirstLoad }}</h1>
+  <hr />
   <h1>{{ gameData.hp }}</h1>
   <h1>{{ gameData.quest }}</h1>
   <h1>{{ gameData.selfHand }}</h1>
@@ -64,13 +65,19 @@ export default {
       this.socket.emit('yc', {
         id: this.getUserName,
         room: this.getUserRoom,
-        used: [used],
+        used: [used, this.gameData.selfHand[1]],
       });
     },
   },
   mounted() {
-    console.log(this.state.gameDataFirstLoad.page);
-    this.gameDataLayout(this.state.gameDataFirstLoad.page);
+    if (
+      this.state.gameDataFirstLoad != undefined &&
+      this.state.gameDataFirstLoad != null
+    ) {
+      this.$store.commit('updateLoading', true);
+      this.gameDataLayout(this.state.gameDataFirstLoad.page);
+    }
+
     this.updateUserRoom();
     // this.socket.emit('id_check', {
     //   id: this.getUserName,
