@@ -25,7 +25,8 @@ export const state = reactive({
     gameOver: null,
     readyToGo: false
   },
-  blackJack: null
+  blackJack: null,
+  yellowCard: null,
 });
 
 // const testURL = 'http://200.69.21.59:88'
@@ -208,12 +209,23 @@ socket.on('re_lunch', function (data) {
 })
 
 
+// blackjack
 socket.on('re_bj', function (data) {
   // console.log(data);
   if (data === null || data === undefined) return;
   state.blackJack = null;
 
   state.blackJack = data
+})
+
+// yellow card
+socket.on('re_yc', function (data) {
+  // console.log(data);
+  if (data === null || data === undefined) return;
+  state.yellowCard = null;
+  state.yellowCard = data.page;
+
+
 })
 
 socket.on('re_no_game', function (data) {
