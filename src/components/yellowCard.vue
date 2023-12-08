@@ -1,10 +1,29 @@
 <template>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
-  <h1>state.gameDataFirstLoad {{ state.gameDataFirstLoad }}</h1>
+  <!-- <h1>state.gameDataFirstLoad {{ state.gameDataFirstLoad }}</h1> -->
   <hr />
+  <div id="vote" v-if="playerMove.currentStep === 'vote'">
+    <template v-for="(val, index) in gameData.tableCard" :key="index">
+      <div
+        class="item"
+        :class="{ check: playerMove.voteNumber === index }"
+        @click="playerMove.voteNumber = index"
+      >
+        <p>{{ val }}</p>
+      </div>
+    </template>
+    <div>
+      <div>
+        <button @click="vote()" :disabled="!playerMove.voteNumber">vote</button>
+      </div>
+      <div>
+        <button @click="drop()">drop</button>
+      </div>
+    </div>
+  </div>
   <h1>{{ gameData.hp }}</h1>
   <h1 id="quest">{{ gameData.quest }}</h1>
-  <div id="hand-card">
+  <div id="hand-card" v-if="playerMove.currentStep === 'used'">
     <div class="flex">
       <div
         class="card item"
@@ -13,17 +32,23 @@
       >
         <div
           class="option"
-          @click="gameData.chooseCard.includes(val) ? '' : chooseCard(val)"
+          @click="playerMove.pickCard.includes(val) ? '' : pickCard(val)"
         >
           {{ val }}
-          <!-- <div v-show="gameData.chooseCard[index]">{{ index }}</div> -->
+          <template
+            v-for="(pickCard, cardIndex) in playerMove.pickCard"
+            :key="cardIndex"
+          >
+            <div class="num" v-if="val === pickCard">
+              {{ cardIndex + 1 }}
+            </div>
+          </template>
         </div>
       </div>
     </div>
+    <button @click="used">出牌</button>
+    <button @click="repickCard">re</button>
   </div>
-  <!-- <button @click="chooseCard">選牌</button> -->
-  <button @click="used">出牌</button>
-  <button @click="reChooseCard">re</button>
 </template>
 
 <script>
@@ -41,7 +66,15 @@ export default {
         questLength: 0,
         show: [],
         vote: [],
-        chooseCard: [],
+        tableCard: [],
+        ownself: [],
+      },
+      playerMove: {
+        currentStep: null,
+        voteNumber: false,
+        pickCard: [],
+        pickCardclickQueue: 0,
+        sendUsed: false,
       },
     };
   },
@@ -68,52 +101,74 @@ export default {
     this.gameRoom = this.getUserRoom;
   },
   methods: {
+    drop() {
+      this.socket.emit('yc', {
+        id: this.getUserName,
+        room: this.getUserRoom,
+        drop: [
+          this.gameData.selfHand[0],
+          this.gameData.selfHand[1],
+          this.gameData.selfHand[2],
+        ],
+      });
+    },
+    vote() {
+      this.socket.emit('yc', {
+        id: this.getUserName,
+        room: this.getUserRoom,
+        vote: this.gameData.tableCard[this.playerMove.voteNumber],
+      });
+    },
     checkQuestLength(el) {
       return [...el.matchAll('{}')].length;
     },
-    reChooseCard() {
+    repickCard() {
       this.questInnerHTML(this.gameData.quest);
-      this.gameData.chooseCard = [];
+      this.playerMove.pickCard = [];
+      this.playerMove.pickCardclickQueue = 0;
     },
     questInnerHTML(el) {
       const target = document.getElementById('quest');
       target.innerHTML = el;
     },
-    chooseCard(el) {
+    pickCard(el) {
       let span,
         result = this.gameData.quest;
 
-      if (this.gameData.chooseCard.length >= this.gameData.questLength) return;
-      this.gameData.chooseCard.push(el);
-      this.gameData.chooseCard.forEach((el) => {
-        result = result.replace('{}', `<span style="color:red;">${el}</span>`);
+      if (this.playerMove.pickCard.length >= this.gameData.questLength) return;
+      this.playerMove.pickCardclickQueue += 1;
+      this.playerMove.pickCard.push(el);
+      this.playerMove.pickCard.forEach((el) => {
+        result = result.replace('__', `<span style="color:red;">${el}</span>`);
       });
 
       this.questInnerHTML(result);
     },
     gameDataLayoutFirstLoad(el) {
       if (el === null || el === undefined) return;
-      console.log(el);
+      this.playerMove.currentStep = 'used';
       this.gameData.hp = el.hp;
-      this.gameData.quest = el.quest;
+      this.gameData.quest = el.quest.replace(/{}/g, '__');
       this.gameData.questLength = this.checkQuestLength(el.quest);
       this.gameData.selfHand = el[this.getUserName].hand;
     },
     gameDataLayout(el) {
       if (el === null || el === undefined) return;
-      console.log(el);
+      this.gameData.tableCard = el['檯面上'];
+      this.gameData.ownself = el['我的資訊'];
     },
     updateUserRoom() {
       if (this.state.activeGameRoom != null)
         this.$store.commit('updateUserRoom', this.state.activeGameRoom);
     },
     used() {
-      const used = this.gameData.selfHand[0];
       this.socket.emit('yc', {
         id: this.getUserName,
         room: this.getUserRoom,
-        used: this.gameData.chooseCard,
+        used: this.playerMove.pickCard,
       });
+      this.playerMove.sendUsed = true;
+      this.playerMove.currentStep = 'vote';
     },
   },
   mounted() {
@@ -149,6 +204,21 @@ export default {
 h1 {
   color: white;
 }
+#vote {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 500px;
+  // color: white;
+  .item {
+    padding: 5px 15px;
+    background-color: white;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+  }
+  .check {
+    background-color: green;
+  }
+}
 #hand-card {
   max-width: 500px;
   width: 100%;
@@ -166,6 +236,21 @@ h1 {
       padding: 10px 0;
       margin: 5px 5px;
       background-color: rgb(240, 188, 66);
+      position: relative;
+
+      .num {
+        display: flex;
+        width: 30px;
+        height: 30px;
+        background-color: rgb(70, 183, 106);
+        border-radius: 100%;
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+      }
     }
   }
 }
