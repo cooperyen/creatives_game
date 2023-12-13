@@ -1,8 +1,10 @@
 <template>
+  <h1>{{ playerMove.currentStep }}</h1>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
   <!-- <h1>state.gameDataFirstLoad {{ state.gameDataFirstLoad }}</h1> -->
   <hr />
-  <div id="vote" v-if="playerMove.currentStep === 'vote'">
+  <div id="vote" v-show="playerMove.currentStep === 'vote'">
+    123
     <template v-for="(val, index) in gameData.tableCard" :key="index">
       <div
         class="item"
@@ -23,7 +25,7 @@
   </div>
   <h1>{{ gameData.hp }}</h1>
   <h1 id="quest">{{ gameData.quest }}</h1>
-  <div id="hand-card" v-if="playerMove.currentStep === 'used'">
+  <div id="hand-card" v-show="playerMove.currentStep === 'used'">
     <div class="flex">
       <div
         class="card item"
@@ -118,6 +120,7 @@ export default {
         room: this.getUserRoom,
         vote: this.gameData.tableCard[this.playerMove.voteNumber],
       });
+      this.playerMove.currentStep = 'used';
     },
     checkQuestLength(el) {
       return [...el.matchAll('{}')].length;
@@ -153,6 +156,7 @@ export default {
       this.gameData.selfHand = el[this.getUserName].hand;
     },
     gameDataLayout(el) {
+      console.log('gameDataLayout', el);
       if (el === null || el === undefined) return;
       this.gameData.tableCard = el['檯面上'];
       this.gameData.ownself = el['我的資訊'];
