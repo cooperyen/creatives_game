@@ -117,11 +117,7 @@ export default {
       this.socket.emit('yc', {
         id: this.getUserName,
         room: this.getUserRoom,
-        drop: [
-          this.gameData.selfHand[0],
-          this.gameData.selfHand[1],
-          this.gameData.selfHand[2],
-        ],
+        drop: [this.gameData.selfHand[0]],
       });
 
       this.playerMove.currentStep = 'used';
@@ -148,7 +144,6 @@ export default {
       target.innerHTML = el;
     },
     pickCard(el) {
-      console.log(el);
       let span,
         result = this.gameData.quest;
 
