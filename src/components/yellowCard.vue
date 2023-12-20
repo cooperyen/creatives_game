@@ -2,7 +2,8 @@
   <h1>{{ this.playerMove.pickCard.length }}</h1>
   <h1>{{ this.gameData.questLength }}</h1>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
-  <!-- <h1>state.gameDataFirstLoad {{ state.gameDataFirstLoad }}</h1> -->
+  <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
+  <h1>{{ playerMove.currentStep }}</h1>
   <hr />
   <div id="vote">
     <div v-show="playerMove.currentStep === 'vote'">
@@ -13,24 +14,26 @@
           @click="playerMove.voteNumber = index"
         >
           <p>{{ val }}</p>
-          {{ playerMove.voteNumber }}
         </div>
       </template>
-    </div>
-    <div>
-      <div v-show="playerMove.currentStep === 'vote'">
+      <div class="move_btn" v-if="playerMove.voteOpen">
         <button @click="vote()" :disabled="playerMove.voteNumber === false">
           vote
         </button>
       </div>
-      <div v-show="playerMove.currentStep === 'drop'">
+      <div class="await" v-if="!playerMove.voteOpen">等待其他人出牌...</div>
+    </div>
+    <div v-show="playerMove.currentStep === 'drop'">
+      <div v-if="playerMove.dropOpen">
         <button @click="drop()">drop</button>
       </div>
+      <div class="await" v-if="!playerMove.dropOpen">等待其他人出牌...</div>
     </div>
   </div>
   <h1>{{ gameData.hp }}</h1>
   <h1 id="quest">{{ gameData.quest }}</h1>
   <div id="hand-card" v-show="playerMove.currentStep === 'used'">
+    {{ gameData.selfHand }}
     <div class="flex">
       <div
         class="card item"
@@ -65,6 +68,7 @@
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
+import { nextTick } from 'vue';
 export default {
   data() {
     return {
@@ -87,6 +91,8 @@ export default {
         pickCard: [],
         pickCardclickQueue: 0,
         sendUsed: false,
+        voteOpen: false,
+        dropOpen: false,
       },
     };
   },
@@ -113,11 +119,31 @@ export default {
     this.gameRoom = this.getUserRoom;
   },
   methods: {
+    currentStep() {
+      const el = this.playerMove.currentStep;
+
+      switch (el) {
+        case 'vote':
+          this.playerMove.voteOpen =
+            this.gameData.tableCard.length >= this.gameData.player.length
+              ? true
+              : false;
+          break;
+        case 'drop':
+          console.log(this.gameData.vote);
+          this.playerMove.dropOpen =
+            this.gameData.vote.length >= this.gameData.player.length
+              ? true
+              : false;
+          break;
+      }
+    },
     drop() {
+      console.log(this.gameData.selfHand[1]);
       this.socket.emit('yc', {
         id: this.getUserName,
         room: this.getUserRoom,
-        drop: [this.gameData.selfHand[0]],
+        drop: [this.gameData.selfHand[1]],
       });
 
       this.playerMove.currentStep = 'used';
@@ -173,6 +199,10 @@ export default {
       this.gameData.quest = el['題目'].replace(/{}/g, '__');
       this.gameData.questLength = this.checkQuestLength(el['題目']);
       this.gameData.selfHand = this.gameData.ownself['手牌'];
+      this.gameData.player = el['玩家列表'];
+      this.gameData.vote = el['投票欄'];
+
+      this.currentStep();
     },
     updateUserRoom() {
       if (this.state.activeGameRoom != null)
@@ -223,11 +253,16 @@ export default {
 h1 {
   color: white;
 }
+.move_btn {
+  color: white;
+}
 #vote {
   margin: 0 auto;
   width: 100%;
   max-width: 500px;
-  // color: white;
+  .await {
+    color: white;
+  }
   .item {
     padding: 5px 15px;
     background-color: white;
