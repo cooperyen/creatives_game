@@ -223,7 +223,7 @@ socket.on('re_yc', function (data) {
   console.log(data);
   if (data === null || data === undefined) return;
   state.yellowCard = null;
-  state.yellowCard = data.page;
+  state.yellowCard = data;
 
 
 })

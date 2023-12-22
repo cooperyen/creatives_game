@@ -4,9 +4,14 @@
   <userNameBox :userName="getUserName" class="name"></userNameBox>
   <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
   <h1>{{ playerMove.currentStep }}</h1>
+  <h1>used {{ playerMove.usedOpen }}</h1>
+  <h1>vote {{ playerMove.voteOpen }}</h1>
+  <h1>drop {{ playerMove.dropOpen }}</h1>
   <hr />
-  <div id="vote">
-    <div v-show="playerMove.currentStep === 'vote'">
+
+  <!-- vote -->
+  <div id="vote" v-if="playerMove.currentStep === 'vote'">
+    <div v-if="playerMove.voteOpen">
       <template v-for="(val, index) in gameData.tableCard" :key="index">
         <div
           class="item"
@@ -16,53 +21,58 @@
           <p>{{ val }}</p>
         </div>
       </template>
-      <div class="move_btn" v-if="playerMove.voteOpen">
+      <div class="move_btn">
         <button @click="vote()" :disabled="playerMove.voteNumber === false">
           vote
         </button>
       </div>
-      <div class="await" v-if="!playerMove.voteOpen">等待其他人出牌...</div>
     </div>
-    <div v-show="playerMove.currentStep === 'drop'">
-      <div v-if="playerMove.dropOpen">
-        <button @click="drop()">drop</button>
-      </div>
-      <div class="await" v-if="!playerMove.dropOpen">等待其他人出牌...</div>
-    </div>
+    <div class="await" v-if="!playerMove.voteOpen">等待其他人出牌...</div>
   </div>
-  <h1>{{ gameData.hp }}</h1>
-  <h1 id="quest">{{ gameData.quest }}</h1>
+
+  <!-- drop -->
+  <div id="drop" v-if="playerMove.currentStep === 'drop'">
+    <div v-if="playerMove.dropOpen">
+      <button @click="drop()">drop</button>
+    </div>
+    <div class="await" v-if="!playerMove.dropOpen">等待其他人出牌...</div>
+  </div>
+
+  <!-- used -->
   <div id="hand-card" v-show="playerMove.currentStep === 'used'">
-    {{ gameData.selfHand }}
-    <div class="flex">
-      <div
-        class="card item"
-        v-for="(val, index) in gameData.selfHand"
-        :key="index"
-      >
+    <div v-if="playerMove.usedOpen">
+      <h1 id="quest">{{ gameData.quest }}</h1>
+      <div class="flex">
         <div
-          class="option"
-          @click="playerMove.pickCard.includes(val) ? '' : pickCard(val)"
+          class="card item"
+          v-for="(val, index) in gameData.selfHand"
+          :key="index"
         >
-          {{ val }}
-          <template
-            v-for="(pickCard, cardIndex) in playerMove.pickCard"
-            :key="cardIndex"
+          <div
+            class="option"
+            @click="playerMove.pickCard.includes(val) ? '' : pickCard(val)"
           >
-            <div class="num" v-if="val === pickCard">
-              {{ cardIndex + 1 }}
-            </div>
-          </template>
+            {{ val }}
+            <template
+              v-for="(pickCard, cardIndex) in playerMove.pickCard"
+              :key="cardIndex"
+            >
+              <div class="num" v-if="val === pickCard">
+                {{ cardIndex + 1 }}
+              </div>
+            </template>
+          </div>
         </div>
       </div>
+      <button
+        @click="used"
+        :disabled="playerMove.pickCard.length != gameData.questLength"
+      >
+        出牌
+      </button>
+      <button @click="repickCard">re</button>
     </div>
-    <button
-      @click="used"
-      :disabled="playerMove.pickCard.length != gameData.questLength"
-    >
-      出牌
-    </button>
-    <button @click="repickCard">re</button>
+    <div class="await" v-if="!playerMove.usedOpen">等待其他人棄牌...</div>
   </div>
 </template>
 
@@ -93,6 +103,7 @@ export default {
         sendUsed: false,
         voteOpen: false,
         dropOpen: false,
+        usedOpen: false,
       },
     };
   },
@@ -101,7 +112,10 @@ export default {
   watch: {
     'state.yellowCard': {
       handler(el) {
-        this.gameDataLayout(el);
+        this.playerMove.usedOpen = false;
+        this.playerMove.voteOpen = false;
+        this.playerMove.dropOpen = false;
+        if (el.message.action) this.gameDataLayout(el.message.action, el.page);
       },
       deep: true,
     },
@@ -121,8 +135,13 @@ export default {
   methods: {
     currentStep() {
       const el = this.playerMove.currentStep;
-
       switch (el) {
+        case 'used':
+          this.playerMove.usedOpen =
+            this.gameData.tableCard.length <= this.gameData.player.length
+              ? true
+              : false;
+          break;
         case 'vote':
           this.playerMove.voteOpen =
             this.gameData.tableCard.length >= this.gameData.player.length
@@ -130,7 +149,6 @@ export default {
               : false;
           break;
         case 'drop':
-          console.log(this.gameData.vote);
           this.playerMove.dropOpen =
             this.gameData.vote.length >= this.gameData.player.length
               ? true
@@ -139,14 +157,14 @@ export default {
       }
     },
     drop() {
-      console.log(this.gameData.selfHand[1]);
       this.socket.emit('yc', {
         id: this.getUserName,
         room: this.getUserRoom,
         drop: [this.gameData.selfHand[1]],
       });
 
-      this.playerMove.currentStep = 'used';
+      // this.playerMove.currentStep = 'used';
+      this.playerMove.currentStep = '';
       this.playerMove.pickCard = [];
     },
     vote() {
@@ -155,7 +173,8 @@ export default {
         room: this.getUserRoom,
         vote: this.gameData.tableCard[this.playerMove.voteNumber],
       });
-      this.playerMove.currentStep = 'drop';
+      this.playerMove.voteNumber = false;
+      // this.playerMove.currentStep = 'drop';
     },
     checkQuestLength(el) {
       return [...el.matchAll('{}')].length;
@@ -185,15 +204,17 @@ export default {
     gameDataLayoutFirstLoad(el) {
       if (el === null || el === undefined) return;
       this.playerMove.currentStep = 'used';
+      this.playerMove.usedOpen = true;
       this.gameData.hp = el.hp;
       this.gameData.quest = el.quest.replace(/{}/g, '__');
       this.gameData.questLength = this.checkQuestLength(el.quest);
       this.gameData.selfHand = el[this.getUserName].hand;
     },
     // receive each data from bkend after first in game.
-    gameDataLayout(el) {
+    gameDataLayout(action = null, el) {
       console.log('gameDataLayout', el);
       if (el === null || el === undefined) return;
+
       this.gameData.tableCard = el['檯面上'];
       this.gameData.ownself = el['我的資訊'];
       this.gameData.quest = el['題目'].replace(/{}/g, '__');
@@ -201,6 +222,25 @@ export default {
       this.gameData.selfHand = this.gameData.ownself['手牌'];
       this.gameData.player = el['玩家列表'];
       this.gameData.vote = el['投票欄'];
+
+      switch (action) {
+        case 'used':
+          // check is play cards and go next.
+          if (this.gameData.ownself['出牌'].length != 0)
+            this.playerMove.currentStep = 'vote';
+          break;
+        case 'vote':
+          if (this.gameData.ownself['投給'] != '')
+            this.playerMove.currentStep = 'drop';
+          break;
+        case 'drop':
+          if (
+            this.gameData.tableCard.length === 0 &&
+            this.gameData.vote.length === 0
+          )
+            this.playerMove.currentStep = 'used';
+          break;
+      }
 
       this.currentStep();
     },
@@ -217,7 +257,7 @@ export default {
         used: this.playerMove.pickCard,
       });
       this.playerMove.sendUsed = true;
-      this.playerMove.currentStep = 'vote';
+      // this.playerMove.currentStep = 'vote';
     },
   },
   mounted() {
@@ -256,13 +296,14 @@ h1 {
 .move_btn {
   color: white;
 }
+.await {
+  color: white;
+}
 #vote {
   margin: 0 auto;
   width: 100%;
   max-width: 500px;
-  .await {
-    color: white;
-  }
+
   .item {
     padding: 5px 15px;
     background-color: white;
