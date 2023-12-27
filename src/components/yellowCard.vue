@@ -7,6 +7,7 @@
   <h1>used {{ playerMove.usedOpen }}</h1>
   <h1>vote {{ playerMove.voteOpen }}</h1>
   <h1>drop {{ playerMove.dropOpen }}</h1>
+  <h1>{{ timer.time }}</h1>
   <hr />
 
   <!-- vote -->
@@ -74,16 +75,25 @@
     </div>
     <div class="await" v-if="!playerMove.usedOpen">等待其他人棄牌...</div>
   </div>
+
+  <!-- new game await other player -->
+  <div v-if="playerMove.currentStep === ''">
+    <h1>newGameOpen</h1>
+  </div>
 </template>
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
-import { nextTick } from 'vue';
 export default {
   data() {
     return {
       gameRoom: null,
       ownself: null,
+      timer: {
+        countTimer: null,
+        time: 15,
+        default: 15,
+      },
       gameData: {
         selfHand: null,
         hp: [],
@@ -115,6 +125,7 @@ export default {
         this.playerMove.usedOpen = false;
         this.playerMove.voteOpen = false;
         this.playerMove.dropOpen = false;
+
         if (el.message.action) this.gameDataLayout(el.message.action, el.page);
       },
       deep: true,
@@ -135,26 +146,36 @@ export default {
   methods: {
     currentStep() {
       const el = this.playerMove.currentStep;
+      console.log(this.timer.countTimer);
+
       switch (el) {
         case 'used':
           this.playerMove.usedOpen =
             this.gameData.tableCard.length <= this.gameData.player.length
               ? true
               : false;
+          this.checkToCreatTimer(this.playerMove.usedOpen);
           break;
+
         case 'vote':
           this.playerMove.voteOpen =
             this.gameData.tableCard.length >= this.gameData.player.length
               ? true
               : false;
+          this.checkToCreatTimer(this.playerMove.voteOpen);
           break;
+
         case 'drop':
           this.playerMove.dropOpen =
             this.gameData.vote.length >= this.gameData.player.length
               ? true
               : false;
+          this.checkToCreatTimer(this.playerMove.dropOpen);
           break;
       }
+    },
+    checkToCreatTimer(el) {
+      this.timer.countTimer === null && el ? this.creatTimer() : '';
     },
     drop() {
       this.socket.emit('yc', {
@@ -166,6 +187,7 @@ export default {
       // this.playerMove.currentStep = 'used';
       this.playerMove.currentStep = '';
       this.playerMove.pickCard = [];
+      this.cleanTimer();
     },
     vote() {
       this.socket.emit('yc', {
@@ -174,6 +196,7 @@ export default {
         vote: this.gameData.tableCard[this.playerMove.voteNumber],
       });
       this.playerMove.voteNumber = false;
+      this.cleanTimer();
       // this.playerMove.currentStep = 'drop';
     },
     checkQuestLength(el) {
@@ -200,6 +223,19 @@ export default {
       });
 
       this.questInnerHTML(result);
+    },
+    creatTimer() {
+      this.timer.countTimer = setInterval(() => {
+        this.timer.time -= 1;
+        if (this.timer.time <= 0) {
+          this.cleanTimer();
+        }
+      }, 1000);
+    },
+    cleanTimer() {
+      this.timer.time = this.timer.default;
+      clearInterval(this.timer.countTimer);
+      this.timer.countTimer = null;
     },
     gameDataLayoutFirstLoad(el) {
       if (el === null || el === undefined) return;
@@ -257,6 +293,8 @@ export default {
         used: this.playerMove.pickCard,
       });
       this.playerMove.sendUsed = true;
+
+      this.cleanTimer();
       // this.playerMove.currentStep = 'vote';
     },
   },
