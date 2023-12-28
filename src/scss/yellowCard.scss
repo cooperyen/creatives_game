@@ -1,0 +1,164 @@
+@import './rwd.scss';
+
+#player_list {
+  color: white;
+  .title {
+    margin: 0 10px;
+  }
+  .items {
+    display: flex;
+    .item {
+      margin: 5px 10px;
+    }
+  }
+}
+
+h1 {
+  color: white;
+}
+.move_btn {
+  color: white;
+}
+#await {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: calc(100% - 50px);
+  width: 100%;
+  margin: 0 auto;
+  @include min-med {
+    max-width: calc(100% - 200px);
+  }
+  @include xs {
+    max-width: calc(100% - 15px);
+  }
+  .content {
+    padding: 25px 0;
+    border-radius: 8px;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    background-color: rgb(234, 194, 101);
+    text-align: center;
+    font-weight: bold;
+  }
+  .text {
+    font-size: 1.4rem;
+    margin-top: 5vh;
+    color: white;
+    text-align: center;
+
+    span {
+      // width: 100%;
+      // // display: flex;
+      // animation: sss 1s infinite ease-in-out;
+      // overflow: hidden;
+      float: right;
+      &::after {
+        content: '...';
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        // animation: sss 1s infinite ease-in-out;
+      }
+    }
+  }
+}
+#vote {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 500px;
+
+  .item {
+    padding: 5px 15px;
+    background-color: white;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+  }
+  .check {
+    background-color: green;
+  }
+}
+
+#hand-card {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+
+  .flex {
+    flex-wrap: wrap;
+  }
+  .card.item {
+    text-align: center;
+    width: 50%;
+    @include min-sm {
+      width: 33%;
+    }
+    @include xs {
+      width: 100%;
+    }
+
+    @include sm {
+      &:nth-child(odd) {
+        .option {
+          margin: 5px 5px 5px 15px;
+        }
+      }
+      &:nth-child(even) {
+        .option {
+          margin: 5px 15px 5px 5px;
+        }
+      }
+    }
+    @include xs {
+      &:nth-child(odd) {
+        .option {
+          margin: 3px 15px;
+        }
+      }
+      &:nth-child(even) {
+        .option {
+          margin: 3px 15px;
+        }
+      }
+    }
+    .option {
+      border-radius: 2px;
+      padding: 10px 0;
+      margin: 5px 5px;
+      background-color: rgb(240, 188, 66);
+      position: relative;
+      @include sm {
+        padding: 4px 0;
+      }
+      .num {
+        display: flex;
+        width: 30px;
+        height: 30px;
+        background-color: rgb(70, 183, 106);
+        border-radius: 100%;
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+      }
+    }
+  }
+}
+#quest {
+  margin: 5px 5px 15px 5px;
+  color: white;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  @include sm {
+    margin: 5px 5px 15px 15px;
+  }
+  @include xs {
+  }
+}
+
+@keyframes sss {
+  100% {
+    width: 100%;
+  }
+}
