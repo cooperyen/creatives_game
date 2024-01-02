@@ -27,15 +27,20 @@
       <template v-for="(val, index) in gameData.tableCard" :key="index">
         <div
           class="item"
-          :class="{ check: playerMove.voteNumber === index }"
+          :class="[playerMove.voteNumber === index ? 'check' : 'default']"
           @click="playerMove.voteNumber = index"
         >
           <p>{{ val }}</p>
         </div>
       </template>
-      <div class="move_btn">
-        <button @click="vote()" :disabled="playerMove.voteNumber === false">
-          vote
+      <div class="btn-box">
+        <button
+          class="btn"
+          :class="{ selected: playerMove.voteNumber != null }"
+          @click="vote()"
+          :disabled="playerMove.voteNumber === null"
+        >
+          投票
         </button>
       </div>
     </div>
@@ -44,17 +49,7 @@
   <!-- drop -->
   <div id="drop" v-if="playerMove.currentStep === 'drop'">
     <div v-if="playerMove.dropOpen">
-      <button @click="drop()">drop</button>
-    </div>
-  </div>
-
-  <!-- used -->
-  <div id="hand-card" v-show="playerMove.currentStep === 'used'">
-    <div v-if="playerMove.usedOpen">
-      <div id="quest">
-        <p>{{ gameData.quest }}</p>
-      </div>
-      <div class="flex">
+      <div class="conetnt flex">
         <div
           class="card item"
           v-for="(val, index) in gameData.selfHand"
@@ -62,7 +57,11 @@
         >
           <div
             class="option"
-            @click="playerMove.pickCard.includes(val) ? '' : pickCard(val)"
+            @click="
+              playerMove.pickCard.includes(val)
+                ? pickDropCardRemove(val)
+                : pickDropCard(val)
+            "
           >
             {{ val }}
             <template
@@ -76,13 +75,73 @@
           </div>
         </div>
       </div>
-      <button
-        @click="used"
-        :disabled="playerMove.pickCard.length != gameData.questLength"
-      >
-        出牌
-      </button>
-      <button @click="repickCard">re</button>
+
+      <div class="btn-box flex">
+        <button class="btn" @click="drop()">
+          棄牌{{ this.playerMove.pickCard }}
+        </button>
+        <button
+          class="btn"
+          @click="repickCard"
+          :disabled="playerMove.pickCard.length === 0"
+        >
+          取消
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- used -->
+  <!-- hand card -->
+  <div id="hand-card" v-show="playerMove.currentStep === 'used'">
+    <div v-if="playerMove.usedOpen">
+      <!-- quest -->
+      <div id="quest">
+        <p>{{ gameData.quest }}</p>
+      </div>
+      <!-- content -->
+      <div class="conetnt flex">
+        <div
+          class="card item"
+          v-for="(val, index) in gameData.selfHand"
+          :key="index"
+        >
+          <div
+            class="option"
+            @click="playerMove.pickCard.includes(val) ? '' : pickUsedCard(val)"
+          >
+            {{ val }}
+            <template
+              v-for="(pickCard, cardIndex) in playerMove.pickCard"
+              :key="cardIndex"
+            >
+              <div class="num" v-if="val === pickCard">
+                {{ cardIndex + 1 }}
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+      <!-- btn -->
+      <div class="btn-box flex">
+        <button
+          class="btn"
+          :class="{
+            selected: playerMove.pickCard.length === gameData.questLength,
+          }"
+          @click="used"
+          :disabled="playerMove.pickCard.length != gameData.questLength"
+        >
+          出牌
+        </button>
+        <button
+          class="btn"
+          @click="rePickUsedCard"
+          :disabled="playerMove.pickCard.length === 0"
+        >
+          取消
+        </button>
+      </div>
     </div>
   </div>
 
@@ -106,7 +165,9 @@
       class="await"
       v-else-if="!playerMove.dropOpen && playerMove.currentStep === 'drop'"
     >
-      等待其他人出牌...
+      <div class="text">
+        <p>等待其他人投票<span></span></p>
+      </div>
     </div>
   </section>
 
@@ -121,6 +182,7 @@ import userNameBox from '@/../src/components/layout/userNameBox.vue';
 export default {
   data() {
     return {
+      xxxx: null,
       gameRoom: null,
       ownself: null,
       timer: {
@@ -142,7 +204,7 @@ export default {
       },
       playerMove: {
         currentStep: null,
-        voteNumber: false,
+        voteNumber: null,
         pickCard: [],
         pickCardclickQueue: 0,
         sendUsed: false,
@@ -233,24 +295,14 @@ export default {
         room: this.getUserRoom,
         vote: this.gameData.tableCard[this.playerMove.voteNumber],
       });
-      this.playerMove.voteNumber = false;
+      this.playerMove.voteNumber = null;
       this.cleanTimer();
       // this.playerMove.currentStep = 'drop';
     },
     checkQuestLength(el) {
       return [...el.matchAll('{}')].length;
     },
-    repickCard() {
-      this.questInnerHTML(this.gameData.quest);
-      this.playerMove.pickCard = [];
-      this.playerMove.pickCardclickQueue = 0;
-    },
-    questInnerHTML(el) {
-      const target = document.getElementById('quest');
-      target.innerHTML = el;
-      this.wait.quest = target.innerHTML;
-    },
-    pickCard(el) {
+    pickUsedCard(el) {
       let span,
         result = this.gameData.quest;
 
@@ -263,6 +315,29 @@ export default {
 
       this.questInnerHTML(result);
     },
+    rePickUsedCard() {
+      this.questInnerHTML(this.gameData.quest);
+      this.repickCard();
+    },
+    questInnerHTML(el) {
+      const target = document.getElementById('quest');
+      target.innerHTML = el;
+      this.wait.quest = target.innerHTML;
+    },
+    pickDropCard(el) {
+      if (this.playerMove.pickCard.length >= 3) return;
+      this.playerMove.pickCardclickQueue += 1;
+      this.playerMove.pickCard.push(el);
+    },
+    pickDropCardRemove(el) {
+      this.playerMove.pickCardclickQueue -= 1;
+      this.playerMove.pickCard.splice(this.playerMove.pickCard.indexOf(el), 1);
+    },
+    repickCard() {
+      this.playerMove.pickCard = [];
+      this.playerMove.pickCardclickQueue = 0;
+    },
+
     creatTimer() {
       this.timer.countTimer = setInterval(() => {
         this.timer.time -= 1;
@@ -346,7 +421,7 @@ export default {
         used: this.playerMove.pickCard,
       });
       this.playerMove.sendUsed = true;
-
+      this.repickCard();
       this.cleanTimer();
       // this.playerMove.currentStep = 'vote';
     },
