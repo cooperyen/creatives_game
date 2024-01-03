@@ -108,7 +108,12 @@
         >
           <div
             class="option"
-            @click="playerMove.pickCard.includes(val) ? '' : pickUsedCard(val)"
+            :class="{ selected: playerMove.pickCard.includes(val) }"
+            @click="
+              playerMove.pickCard.includes(val)
+                ? pickUsedCardRemove(val)
+                : pickUsedCard(val)
+            "
           >
             {{ val }}
             <template
@@ -309,8 +314,20 @@ export default {
       if (this.playerMove.pickCard.length >= this.gameData.questLength) return;
       this.playerMove.pickCardclickQueue += 1;
       this.playerMove.pickCard.push(el);
-      this.playerMove.pickCard.forEach((el) => {
-        result = result.replace('__', `<span style="color:red;">${el}</span>`);
+      this.playerMove.pickCard.forEach((val) => {
+        result = result.replace('__', `<span class="insert">${val}</span>`);
+      });
+
+      this.questInnerHTML(result);
+    },
+    pickUsedCardRemove(el) {
+      let result = this.gameData.quest;
+
+      this.playerMove.pickCardclickQueue -= 1;
+      this.playerMove.pickCard.splice(this.playerMove.pickCard.indexOf(el), 1);
+
+      this.playerMove.pickCard.forEach((val) => {
+        result = result.replace('__', `<span class="insert">${val}</span>`);
       });
 
       this.questInnerHTML(result);
