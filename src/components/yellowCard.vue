@@ -5,6 +5,7 @@
 
   <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
   <h1>{{ ownself }}</h1> -->
+  <h1>{{ timer.time }}</h1>
   <h1>{{ playerMove.currentStep }}</h1>
   <h1>used {{ playerMove.usedOpen }}</h1>
   <h1>vote {{ playerMove.voteOpen }}</h1>
