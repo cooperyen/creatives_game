@@ -5,7 +5,6 @@
 
   <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
   <h1>{{ ownself }}</h1> -->
-  <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
   <h1>{{ timer.time }}</h1>
   <h1>{{ playerMove.currentStep }}</h1>
   <h1>used {{ playerMove.usedOpen }}</h1>
@@ -23,8 +22,81 @@
     </div>
   </section>
 
+  <!-- vote -->
+  <div id="vote" v-if="playerMove.currentStep === 'vote'">
+    <div v-if="playerMove.voteOpen">
+      <template v-for="(val, index) in gameData.tableCard" :key="index">
+        <div
+          class="item"
+          :class="[playerMove.voteNumber === index ? 'check' : 'default']"
+          @click="playerMove.voteNumber = index"
+        >
+          <p>{{ val }}</p>
+        </div>
+      </template>
+      <div class="btn-box">
+        <button
+          class="btn"
+          :class="{ selected: playerMove.voteNumber != null }"
+          @click="vote()"
+          :disabled="playerMove.voteNumber === null"
+        >
+          投票
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- drop -->
+  <div id="drop" v-if="playerMove.currentStep === 'drop'">
+    <div v-if="playerMove.dropOpen">
+      <div class="conetnt flex">
+        <div
+          class="card item"
+          v-for="(val, index) in gameData.selfHand"
+          :key="index"
+        >
+          <div
+            class="option"
+            @click="
+              playerMove.pickCard.includes(val)
+                ? pickDropCardRemove(val)
+                : pickDropCard(val)
+            "
+          >
+            {{ val }}
+            <template
+              v-for="(pickCard, cardIndex) in playerMove.pickCard"
+              :key="cardIndex"
+            >
+              <div class="num" v-if="val === pickCard">
+                {{ cardIndex + 1 }}
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-box flex">
+        <button class="btn" @click="drop()">
+          棄牌{{ this.playerMove.pickCard }}
+        </button>
+        <button
+          class="btn"
+          @click="repickCard"
+          :disabled="playerMove.pickCard.length === 0"
+        >
+          取消
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- used -->
   <!-- hand card -->
   <handCardHandler
+    :isShow="playerMove.currentStep"
+    :isOpen="playerMove.usedOpen"
     :gameData="gameData"
     :playerMove="playerMove"
     @pickUsedCard="pickUsedCard"
@@ -32,59 +104,101 @@
     @used="used"
     @rePickUsedCard="rePickUsedCard"
   ></handCardHandler>
+  <!--
+  <div id="hand-card" v-show="playerMove.currentStep === 'used'">
+    <div v-if="playerMove.usedOpen">
 
-  <!-- vote -->
-  <voteHandler
-    :gameData="gameData"
-    :playerMove="playerMove"
-    @vote="vote"
-  ></voteHandler>
+      <div id="quest">
+        <p>{{ gameData.quest }}</p>
+      </div>
 
-  <!-- drop -->
-  <dropHandler
-    :gameData="gameData"
-    :playerMove="playerMove"
-    @pickDropCardRemove="pickDropCardRemove"
-    @pickDropCard="pickDropCard"
-    @drop="drop"
-    @repickCard="repickCard"
-  ></dropHandler>
+      <div class="conetnt flex">
+        <div
+          class="card item"
+          v-for="(val, index) in gameData.selfHand"
+          :key="index"
+        >
+          <div
+            class="option"
+            :class="{ selected: playerMove.pickCard.includes(val) }"
+            @click="
+              playerMove.pickCard.includes(val)
+                ? pickUsedCardRemove(val)
+                : pickUsedCard(val)
+            "
+          >
+            {{ val }}
+            <template
+              v-for="(pickCard, cardIndex) in playerMove.pickCard"
+              :key="cardIndex"
+            >
+              <div class="num" v-if="val === pickCard">
+                {{ cardIndex + 1 }}
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-box flex">
+        <button
+          class="btn"
+          :class="{
+            selected: playerMove.pickCard.length === gameData.questLength,
+          }"
+          @click="used"
+          :disabled="playerMove.pickCard.length != gameData.questLength"
+        >
+          出牌
+        </button>
+        <button
+          class="btn"
+          @click="rePickUsedCard"
+          :disabled="playerMove.pickCard.length === 0"
+        >
+          取消
+        </button>
+      </div>
+    </div>
+  </div>
+-->
 
   <section id="await">
-    <div class="await">
-      <div
-        v-if="!playerMove.voteOpen && playerMove.currentStep === 'vote'"
-        class="content"
-        v-html="wait.quest"
-      ></div>
-
+    <div
+      class="await"
+      v-if="!playerMove.voteOpen && playerMove.currentStep === 'vote'"
+    >
+      <div class="content" v-html="wait.quest"></div>
       <div class="text">
-        <template
-          v-if="!playerMove.voteOpen && playerMove.currentStep === 'vote'"
-        >
-          <p>等待其他人出牌<span></span></p>
-        </template>
-
-        <template
-          v-else-if="!playerMove.dropOpen && playerMove.currentStep === 'drop'"
-        >
-          <p>等待其他人投票<span></span></p>
-        </template>
+        <p>等待其他人出牌<span></span></p>
+      </div>
+    </div>
+    <div
+      class="await"
+      v-else-if="!playerMove.usedOpen && playerMove.currentStep === 'used'"
+    >
+      等待其他人棄牌<span>...</span>
+    </div>
+    <div
+      class="await"
+      v-else-if="!playerMove.dropOpen && playerMove.currentStep === 'drop'"
+    >
+      <div class="text">
+        <p>等待其他人投票<span></span></p>
       </div>
     </div>
   </section>
 
   <!-- new game await other player -->
   <div v-if="playerMove.currentStep === ''">
-    <h1>新局即將開始</h1>
+    <h1>newGameOpen</h1>
   </div>
 </template>
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
+
 import handCardHandler from '@/../src/components/yellowCard/handCardHandler.vue';
-import voteHandler from '@/../src/components/yellowCard/voteHandler.vue';
-import dropHandler from '@/../src/components/yellowCard/dropHandler.vue';
 
 export default {
   data() {
@@ -124,7 +238,7 @@ export default {
       },
     };
   },
-  components: { userNameBox, handCardHandler, voteHandler, dropHandler },
+  components: { userNameBox, handCardHandler },
   props: ['socket', 'state'],
   watch: {
     'state.yellowCard': {
