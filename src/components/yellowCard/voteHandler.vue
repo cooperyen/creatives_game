@@ -5,7 +5,7 @@
         <div
           class="item"
           :class="[playerMove.voteNumber === index ? 'check' : 'default']"
-          @click="playerMove.voteNumber = index"
+          @click="updateVoteNumber(index)"
         >
           <p>{{ val }}</p>
         </div>
@@ -31,6 +31,9 @@ export default {
   methods: {
     vote() {
       this.$emit('vote');
+    },
+    updateVoteNumber(val) {
+      this.$emit('updateVoteNumber', val);
     },
   },
 };

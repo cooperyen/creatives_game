@@ -6,8 +6,8 @@
   <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
   <h1>{{ ownself }}</h1> -->
   <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
-  <h1>{{ timer.time }}</h1>
-  <h1>{{ playerMove.currentStep }}</h1>
+  <h1>playerMove.voteOpen {{ playerMove.awaitOpen }}</h1>
+  <h1>{{ playerMove.voteOpen }}</h1>
   <h1>used {{ playerMove.usedOpen }}</h1>
   <h1>vote {{ playerMove.voteOpen }}</h1>
   <h1>drop {{ playerMove.dropOpen }}</h1>
@@ -38,6 +38,7 @@
     :gameData="gameData"
     :playerMove="playerMove"
     @vote="vote"
+    @updateVoteNumber="updateVoteNumber"
   ></voteHandler>
 
   <!-- drop -->
@@ -50,26 +51,22 @@
     @repickCard="repickCard"
   ></dropHandler>
 
-  <section id="await">
+  <section id="await" v-if="isShowAwait(playerMove.currentStep)">
     <div class="await">
       <div
-        v-if="!playerMove.voteOpen && playerMove.currentStep === 'vote'"
+        v-if="playerMove.currentStep === 'vote'"
         class="content"
         v-html="wait.quest"
       ></div>
 
       <div class="text">
-        <template
-          v-if="!playerMove.voteOpen && playerMove.currentStep === 'vote'"
-        >
-          <p>等待其他人出牌<span></span></p>
-        </template>
+        <p v-if="playerMove.currentStep === 'vote'">
+          等待其他人出牌<span></span>
+        </p>
 
-        <template
-          v-else-if="!playerMove.dropOpen && playerMove.currentStep === 'drop'"
-        >
-          <p>等待其他人投票<span></span></p>
-        </template>
+        <p v-if="playerMove.currentStep === 'drop'">
+          等待其他人投票<span></span>
+        </p>
       </div>
     </div>
   </section>
@@ -151,9 +148,21 @@ export default {
     this.gameRoom = this.getUserRoom;
   },
   methods: {
+    isShowAwait(el) {
+      let result = false;
+      switch (el) {
+        case 'vote':
+          result = !this.playerMove.voteOpen ? true : false;
+          break;
+        case 'drop':
+          result = !this.playerMove.dropOpen ? true : false;
+          break;
+      }
+
+      return result;
+    },
     currentStep() {
       const el = this.playerMove.currentStep;
-      console.log(this.timer.countTimer);
 
       switch (el) {
         case 'used':
@@ -185,16 +194,19 @@ export default {
       this.timer.countTimer === null && el ? this.creatTimer() : '';
     },
     drop() {
-      this.socket.emit('yc', {
-        id: this.getUserName,
-        room: this.getUserRoom,
-        drop: [this.gameData.selfHand[1]],
-      });
+      let leng = this.playerMove.pickCard.length;
 
-      // this.playerMove.currentStep = 'used';
-      this.playerMove.currentStep = '';
-      this.playerMove.pickCard = [];
-      this.cleanTimer();
+      if (leng <= 0) alert('最少棄一張牌，最多3張牌');
+      if (leng > 0 && leng <= 3) {
+        this.socket.emit('yc', {
+          id: this.getUserName,
+          room: this.getUserRoom,
+          drop: this.playerMove.pickCard,
+        });
+        this.playerMove.currentStep = '';
+        this.playerMove.pickCard = [];
+        this.cleanTimer();
+      }
     },
     vote() {
       this.socket.emit('yc', {
@@ -204,7 +216,9 @@ export default {
       });
       this.playerMove.voteNumber = null;
       this.cleanTimer();
-      // this.playerMove.currentStep = 'drop';
+    },
+    updateVoteNumber(val) {
+      this.playerMove.voteNumber = val;
     },
     checkQuestLength(el) {
       return [...el.matchAll('{}')].length;

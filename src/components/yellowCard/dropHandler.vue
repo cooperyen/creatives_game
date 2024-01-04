@@ -9,7 +9,7 @@
         >
           <div
             class="option"
-            @click="
+            @click.stop="
               playerMove.pickCard.includes(val)
                 ? pickDropCardRemove(val)
                 : pickDropCard(val)
