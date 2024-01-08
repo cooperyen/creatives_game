@@ -5,12 +5,14 @@ $yellowCardLight: #e9b844;
 $true: rgb(62, 189, 102);
 
 #player_list {
+  margin-bottom: 50px;
   color: white;
   .title {
     margin: 0 10px;
   }
   .items {
     display: flex;
+    text-align: center;
     .item {
       margin: 5px 10px;
     }
@@ -63,6 +65,11 @@ h1 {
     }
   }
 }
+
+.active {
+  animation: upin 1s forwards;
+}
+
 #vote {
   margin: 0 auto;
   width: 100%;
@@ -188,6 +195,7 @@ h1 {
 }
 
 #quest {
+  min-height: 80px;
   margin: 5px 5px 15px 5px;
   color: white;
   font-size: clamp(1.4rem, 3vw, 2.2rem);
@@ -235,5 +243,16 @@ h1 {
 @keyframes loading {
   100% {
     width: 100%;
+  }
+}
+
+@keyframes upin {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }

@@ -1,24 +1,13 @@
 <template>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
-  <!-- <h1>{{ this.playerMove.pickCard.length }}</h1>
-  <h1>{{ this.gameData.questLength }}</h1>
-
-  <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
-  <h1>{{ ownself }}</h1> -->
-  <h1>{{ gameData.tableCard }} {{ gameData.player }}</h1>
-  <h1>playerMove.voteOpen {{ playerMove.awaitOpen }}</h1>
-  <h1>{{ playerMove.voteOpen }}</h1>
-  <h1>used {{ playerMove.usedOpen }}</h1>
-  <h1>vote {{ playerMove.voteOpen }}</h1>
-  <h1>drop {{ playerMove.dropOpen }}</h1>
-  <hr />
   <section id="player_list">
     <div class="title">
-      <p>黃牌</p>
+      <p>Players</p>
     </div>
     <div class="items">
       <div v-for="i in gameData.yellowCard" :key="i" class="item">
-        <p>{{ Object.keys(i)[0] }} : {{ Object.values(i)[0] }}</p>
+        <p>{{ Object.keys(i)[0] }}</p>
+        <p>{{ Object.values(i)[0] }}</p>
       </div>
     </div>
   </section>
@@ -27,6 +16,7 @@
   <handCardHandler
     :gameData="gameData"
     :playerMove="playerMove"
+    :class="{ active: playerMove.usedOpen }"
     @pickUsedCard="pickUsedCard"
     @pickUsedCardRemove="pickUsedCardRemove"
     @used="used"
@@ -35,6 +25,7 @@
 
   <!-- vote -->
   <voteHandler
+    :class="{ active: playerMove.voteOpen }"
     :gameData="gameData"
     :playerMove="playerMove"
     @vote="vote"
@@ -45,6 +36,7 @@
   <dropHandler
     :gameData="gameData"
     :playerMove="playerMove"
+    :class="{ active: playerMove.dropOpen }"
     @pickDropCardRemove="pickDropCardRemove"
     @pickDropCard="pickDropCard"
     @drop="drop"
@@ -52,7 +44,7 @@
   ></dropHandler>
 
   <section id="await" v-if="isShowAwait(playerMove.currentStep)">
-    <div class="await">
+    <div class="await" :class="{ active: isShowAwait(playerMove.currentStep) }">
       <div
         v-if="playerMove.currentStep === 'vote'"
         class="content"
@@ -72,7 +64,10 @@
   </section>
 
   <!-- new game await other player -->
-  <div v-if="playerMove.currentStep === ''">
+  <div
+    v-if="playerMove.currentStep === ''"
+    :class="{ active: playerMove.currentStep === '' }"
+  >
     <h1>新局即將開始</h1>
   </div>
 </template>

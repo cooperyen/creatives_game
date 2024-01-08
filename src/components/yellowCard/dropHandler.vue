@@ -29,9 +29,7 @@
       </div>
 
       <div class="btn-box flex">
-        <button class="btn" @click="drop">
-          棄牌{{ this.playerMove.pickCard }}
-        </button>
+        <button class="btn" @click="drop">棄牌</button>
         <button
           class="btn"
           @click="repickCard"
