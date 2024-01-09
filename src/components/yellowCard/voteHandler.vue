@@ -7,7 +7,7 @@
           :class="[playerMove.voteNumber === index ? 'check' : 'default']"
           @click="updateVoteNumber(index)"
         >
-          <p>{{ val }}</p>
+          <p>{{ vals(val) }}</p>
         </div>
       </template>
 
@@ -29,6 +29,14 @@
 export default {
   props: ['isShow', 'isOpen', 'gameData', 'playerMove'],
   methods: {
+    vals(el) {
+      const x = this.gameData.quest.split('__');
+      let sub = [];
+      x.forEach((xxx) => {
+        sub.push(el.indexOf(xxx));
+      });
+      console.log(el.substring(0, 23));
+    },
     vote() {
       this.$emit('vote');
     },

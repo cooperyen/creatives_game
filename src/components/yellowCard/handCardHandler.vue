@@ -51,7 +51,7 @@
           @click="rePickUsedCard"
           :disabled="playerMove.pickCard.length === 0"
         >
-          取消
+          重選
         </button>
       </div>
     </div>

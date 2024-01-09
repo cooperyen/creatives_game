@@ -300,6 +300,7 @@ export default {
       if (el === null || el === undefined) return;
 
       let yellowCard = [];
+      console.log(el);
       this.gameData.tableCard = el['檯面上'];
       this.gameData.ownself = el['我的資訊'];
       this.gameData.quest = el['題目'].replace(/{}/g, '__');

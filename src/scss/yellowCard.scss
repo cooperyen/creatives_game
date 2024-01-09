@@ -39,6 +39,9 @@ h1 {
   @include xs {
     max-width: calc(100% - 15px);
   }
+  &::v-deep(.insert) {
+    color: rgb(215, 57, 49);
+  }
   .content {
     padding: 25px 0;
     border-radius: 8px;
@@ -80,6 +83,7 @@ h1 {
     margin: 10px 10px;
     font-size: 1.2rem;
     border-radius: 8px;
+    transition: 0.2s ease-in-out;
     @include sm {
       margin: 10px 15px;
     }
@@ -89,6 +93,8 @@ h1 {
     &.check {
       background-color: $yellowCard;
       font-weight: bold;
+      box-shadow: 5px 5px 1px #6d5317;
+      transform: translate(-1px, -4px);
     }
     &.default {
       background-color: white;
@@ -163,6 +169,8 @@ h1 {
       margin: 5px 5px;
       background-color: $yellowCard;
       position: relative;
+      transition: 0.2s ease-in-out;
+
       @include sm {
         padding: 4px 0;
       }
@@ -172,9 +180,8 @@ h1 {
       &.selected {
         font-weight: bold;
         background-color: $yellowCardLight;
-        box-shadow: 4px 4px 2px #6d5317;
+        box-shadow: 4px 4px 1px #6d5317;
         transform: translate(-1px, -4px);
-        transition: 0.1s ease-in-out;
       }
       .num {
         display: flex;
@@ -205,8 +212,13 @@ h1 {
   @include xs {
   }
   &::v-deep(.insert) {
-    font-weight: bold;
     color: rgb(243, 225, 64);
+  }
+}
+#quest,
+#await {
+  &::v-deep(.insert) {
+    font-weight: bold;
     padding: 0 5px;
   }
 }
@@ -221,10 +233,10 @@ h1 {
     font-weight: bold;
     letter-spacing: 0.3rem;
     border: white 5px solid;
+    transition: 0.6s border, 0.6s background-color;
 
     &.selected {
       animation: flips 1s forwards;
-
       background-color: $true;
       border-color: rgba(255, 223, 128, 0.12);
     }
