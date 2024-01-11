@@ -30,12 +30,32 @@ export default {
   props: ['isShow', 'isOpen', 'gameData', 'playerMove'],
   methods: {
     vals(el) {
+      console.log(this.gameData.quest);
       const x = this.gameData.quest.split('__');
+      let yy = '';
       let sub = [];
+      console.log(x);
       x.forEach((xxx) => {
         sub.push(el.indexOf(xxx));
       });
-      console.log(el.substring(0, 23));
+      // sub.push(el.length);
+      console.log(sub);
+
+      for (let i = 0; i < sub.length; i++) {
+        console.log(yy);
+
+        if (x[i].length === 0) yy += `k${el.substring(sub[i], sub[i + 1])}k`;
+        if (x[i].length != 0 && i + 1 < sub.length) {
+          console.log(sub[i + 1] - sub[i]);
+          yy += `${el.substring(sub[i], sub[i] + x[i].length)}`;
+          yy += `c${el.substring(sub[i] + x[i].length, sub[i + 1])}c`;
+        }
+
+        if (i + 1 === sub.length)
+          yy += `${el.substring(sub[i], sub[i] + x[i].length)}`;
+      }
+
+      return yy;
     },
     vote() {
       this.$emit('vote');
