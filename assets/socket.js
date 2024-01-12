@@ -81,7 +81,7 @@ state.gameOne.readyList = null;
 state.currentPlayers = null;
 
 socket.on('re_act', function (datas) {
-  console.log(datas)
+  // console.log(datas)
   state.goUrl = null;
   state.gameDataFirstLoad = null;
   state.loginError = null;

@@ -4,7 +4,7 @@ $yellowCard: #d5a32e;
 $yellowCardLight: #e9b844;
 $true: rgb(62, 189, 102);
 
-#player_list {
+.player_list {
   margin-bottom: 50px;
   color: white;
   .title {
@@ -24,6 +24,15 @@ h1 {
 }
 .move_btn {
   color: white;
+}
+
+#end_game {
+  .title {
+    color: white;
+  }
+  .result {
+    color: white;
+  }
 }
 #await {
   position: fixed;

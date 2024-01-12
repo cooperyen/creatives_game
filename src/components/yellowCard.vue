@@ -1,74 +1,93 @@
 <template>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
-  <section id="player_list">
-    <div class="title">
-      <p>Players</p>
-    </div>
-    <div class="items">
-      <div v-for="i in gameData.yellowCard" :key="i" class="item">
-        <p>{{ Object.keys(i)[0] }}</p>
-        <p>{{ Object.values(i)[0] }}</p>
+  <div v-if="playerMove.currentStep != 'end'">
+    <div class="player_list">
+      <div class="title">
+        <p>Players</p>
+      </div>
+      <div class="items">
+        <div v-for="i in gameData.yellowCard" :key="i" class="item">
+          <p>{{ Object.keys(i)[0] }}</p>
+          <p>{{ Object.values(i)[0] }}</p>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- hand card -->
-  <handCardHandler
-    :gameData="gameData"
-    :playerMove="playerMove"
-    :class="{ active: playerMove.usedOpen }"
-    @pickUsedCard="pickUsedCard"
-    @pickUsedCardRemove="pickUsedCardRemove"
-    @used="used"
-    @rePickUsedCard="rePickUsedCard"
-  ></handCardHandler>
+    <!-- hand card -->
+    <handCardHandler
+      :gameData="gameData"
+      :playerMove="playerMove"
+      :class="{ active: playerMove.usedOpen }"
+      @pickUsedCard="pickUsedCard"
+      @pickUsedCardRemove="pickUsedCardRemove"
+      @used="used"
+      @rePickUsedCard="rePickUsedCard"
+    ></handCardHandler>
 
-  <!-- vote -->
-  <voteHandler
-    :class="{ active: playerMove.voteOpen }"
-    :gameData="gameData"
-    :playerMove="playerMove"
-    @vote="vote"
-    @updateVoteNumber="updateVoteNumber"
-  ></voteHandler>
+    <!-- vote -->
+    <voteHandler
+      :class="{ active: playerMove.voteOpen }"
+      :gameData="gameData"
+      :playerMove="playerMove"
+      @vote="vote"
+      @updateVoteNumber="updateVoteNumber"
+    ></voteHandler>
 
-  <!-- drop -->
-  <dropHandler
-    :gameData="gameData"
-    :playerMove="playerMove"
-    :class="{ active: playerMove.dropOpen }"
-    @pickDropCardRemove="pickDropCardRemove"
-    @pickDropCard="pickDropCard"
-    @drop="drop"
-    @repickCard="repickCard"
-  ></dropHandler>
+    <!-- drop -->
+    <dropHandler
+      :gameData="gameData"
+      :playerMove="playerMove"
+      :class="{ active: playerMove.dropOpen }"
+      @pickDropCardRemove="pickDropCardRemove"
+      @pickDropCard="pickDropCard"
+      @drop="drop"
+      @repickCard="repickCard"
+    ></dropHandler>
 
-  <section id="await" v-if="isShowAwait(playerMove.currentStep)">
-    <div class="await" :class="{ active: isShowAwait(playerMove.currentStep) }">
+    <div id="await" v-if="isShowAwait(playerMove.currentStep)">
       <div
-        v-if="playerMove.currentStep === 'vote'"
-        class="content"
-        v-html="wait.quest"
-      ></div>
+        class="await"
+        :class="{ active: isShowAwait(playerMove.currentStep) }"
+      >
+        <div
+          v-if="playerMove.currentStep === 'vote'"
+          class="content"
+          v-html="wait.quest"
+        ></div>
 
-      <div class="text">
-        <p v-if="playerMove.currentStep === 'vote'">
-          等待其他人出牌<span></span>
-        </p>
+        <div class="text">
+          <p v-if="playerMove.currentStep === 'vote'">
+            等待其他人出牌<span></span>
+          </p>
 
-        <p v-if="playerMove.currentStep === 'drop'">
-          等待其他人投票<span></span>
-        </p>
+          <p v-if="playerMove.currentStep === 'drop'">
+            等待其他人投票<span></span>
+          </p>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- new game await other player -->
+    <!-- new game await other player -->
+    <div
+      v-if="playerMove.currentStep === ''"
+      :class="{ active: playerMove.currentStep === '' }"
+    >
+      <h1>回合計算中</h1>
+    </div>
+  </div>
+
   <div
-    v-if="playerMove.currentStep === ''"
-    :class="{ active: playerMove.currentStep === '' }"
+    v-if="playerMove.currentStep === 'end'"
+    :class="{ active: playerMove.currentStep === 'end' }"
+    id="end_game"
   >
-    <h1>新局即將開始</h1>
+    <div>
+      <div class="title">END GAME</div>
+
+      <div class="result">
+        <h2>{{ gameFinal }}</h2>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -114,6 +133,7 @@ export default {
       wait: {
         quest: null,
       },
+      gameFinal: null,
     };
   },
   components: { userNameBox, handCardHandler, voteHandler, dropHandler },
@@ -127,7 +147,10 @@ export default {
 
         console.log(el);
 
-        if (el.message.action) this.gameDataLayout(el.message.action, el.page);
+        if (el.action === 'in') this.gameDataLayout(el.message.action, el.page);
+
+        if (el.action === 'lose' || el.action === 'win')
+          this.gameEnd(el.action);
       },
       deep: true,
     },
@@ -145,6 +168,10 @@ export default {
     this.gameRoom = this.getUserRoom;
   },
   methods: {
+    gameEnd(el) {
+      this.playerMove.currentStep = 'end';
+      this.gameFinal = el;
+    },
     isShowAwait(el) {
       let result = false;
       switch (el) {
