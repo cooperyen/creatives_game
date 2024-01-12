@@ -125,6 +125,8 @@ export default {
         this.playerMove.voteOpen = false;
         this.playerMove.dropOpen = false;
 
+        console.log(el);
+
         if (el.message.action) this.gameDataLayout(el.message.action, el.page);
       },
       deep: true,

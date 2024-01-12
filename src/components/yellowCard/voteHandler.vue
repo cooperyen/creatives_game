@@ -7,7 +7,7 @@
           :class="[playerMove.voteNumber === index ? 'check' : 'default']"
           @click="updateVoteNumber(index)"
         >
-          <p>{{ vals(val) }}</p>
+          <p v-html="card(val)"></p>
         </div>
       </template>
 
@@ -29,34 +29,27 @@
 export default {
   props: ['isShow', 'isOpen', 'gameData', 'playerMove'],
   methods: {
-    vals(el) {
-      console.log(this.gameData.quest);
-      const x = this.gameData.quest.split('__');
-      let yy = '';
-      let sub = [];
-      console.log(x);
-      x.forEach((xxx) => {
-        sub.push(el.indexOf(xxx));
+    card(el) {
+      let result = this.gameData.quest;
+      const usedCards = this.splitUsedCard(el);
+
+      usedCards.forEach((card) => {
+        result = result.replace('__', `<span class="insert">${card}</span>`);
       });
-      // sub.push(el.length);
-      console.log(sub);
 
-      for (let i = 0; i < sub.length; i++) {
-        console.log(yy);
-
-        if (x[i].length === 0) yy += `k${el.substring(sub[i], sub[i + 1])}k`;
-        if (x[i].length != 0 && i + 1 < sub.length) {
-          console.log(sub[i + 1] - sub[i]);
-          yy += `${el.substring(sub[i], sub[i] + x[i].length)}`;
-          yy += `c${el.substring(sub[i] + x[i].length, sub[i + 1])}c`;
-        }
-
-        if (i + 1 === sub.length)
-          yy += `${el.substring(sub[i], sub[i] + x[i].length)}`;
-      }
-
-      return yy;
+      return result;
     },
+    splitUsedCard(el) {
+      const quest = this.gameData.quest.split('__');
+      let st = el;
+
+      quest.forEach((els) => {
+        st = st.replace(els, ',');
+      });
+
+      return st.split(',').filter((r) => r != '' && r != ' ');
+    },
+
     vote() {
       this.$emit('vote');
     },

@@ -77,7 +77,9 @@ h1 {
   margin: 0 auto;
   width: 100%;
   max-width: 500px;
-
+  &::v-deep(.insert) {
+    color: rgb(215, 57, 49);
+  }
   .item {
     padding: 10px 15px;
     margin: 10px 10px;
@@ -97,7 +99,7 @@ h1 {
       transform: translate(-1px, -4px);
     }
     &.default {
-      background-color: white;
+      background-color: rgb(233, 233, 233);
     }
   }
   .btn-box {

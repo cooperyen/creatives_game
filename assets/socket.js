@@ -225,7 +225,6 @@ socket.on('re_yc', function (data) {
   state.yellowCard = null;
   state.yellowCard = data;
 
-
 })
 
 socket.on('re_no_game', function (data) {
