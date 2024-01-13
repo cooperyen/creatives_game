@@ -37,7 +37,7 @@ export default {
 .user-container {
   color: $text;
   height: 80px;
-  position: relative;
+  position: fixed;
   width: 100%;
   overflow: hidden;
   > :deep(.content) {

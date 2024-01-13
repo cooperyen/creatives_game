@@ -81,11 +81,11 @@
     :class="{ active: playerMove.currentStep === 'end' }"
     id="end_game"
   >
-    <div>
+    <div class="container">
       <div class="title">END GAME</div>
 
       <div class="result">
-        <h2>{{ gameFinal }}</h2>
+        <h2>YOU {{ gameFinal.toUpperCase() }}</h2>
       </div>
     </div>
   </div>

@@ -27,11 +27,34 @@ h1 {
 }
 
 #end_game {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  .container {
+    background-color: $yellowCardLight;
+    border-radius: 8px;
+    width: calc(100% - 30px);
+    max-width: 800px;
+    padding: 50px;
+    margin: 0 auto;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    @include sm {
+      padding: 50px 5px;
+    }
+  }
+
   .title {
-    color: white;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    // color: white;
   }
   .result {
-    color: white;
+    font-size: clamp(1.8rem, 3vw, 2.2rem);
   }
 }
 #await {
