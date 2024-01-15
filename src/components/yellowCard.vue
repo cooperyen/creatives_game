@@ -1,5 +1,6 @@
 <template>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
+  <h1>{{ timer }}</h1>
   <div v-if="playerMove.currentStep != 'end'">
     <div class="player_list">
       <div class="title">
@@ -194,7 +195,7 @@ export default {
             this.gameData.tableCard.length <= this.gameData.player.length
               ? true
               : false;
-          this.checkToCreatTimer(this.playerMove.usedOpen);
+          this.checkToCreatTimer('used', this.playerMove.usedOpen);
           break;
 
         case 'vote':
@@ -202,7 +203,7 @@ export default {
             this.gameData.tableCard.length >= this.gameData.player.length
               ? true
               : false;
-          this.checkToCreatTimer(this.playerMove.voteOpen);
+          this.checkToCreatTimer('vote', this.playerMove.voteOpen);
           break;
 
         case 'drop':
@@ -210,12 +211,32 @@ export default {
             this.gameData.vote.length >= this.gameData.player.length
               ? true
               : false;
-          this.checkToCreatTimer(this.playerMove.dropOpen);
+          this.checkToCreatTimer('drop', this.playerMove.dropOpen);
           break;
       }
     },
-    checkToCreatTimer(el) {
-      this.timer.countTimer === null && el ? this.creatTimer() : '';
+    checkToCreatTimer(point, open = false) {
+      const x =
+        this.timer.countTimer === null && open
+          ? this.creatTimer(() => {
+              point === 'vote' ? this.vote(true) : '';
+            })
+          : false;
+      console.log(x);
+    },
+    creatTimer(callback) {
+      this.timer.countTimer = setInterval(() => {
+        this.timer.time -= 1;
+        if (this.timer.time <= 0) {
+          this.cleanTimer() ? callback() : '';
+        }
+      }, 1000);
+    },
+    cleanTimer() {
+      this.timer.time = this.timer.default;
+      clearInterval(this.timer.countTimer);
+      this.timer.countTimer = null;
+      return true;
     },
     drop() {
       let leng = this.playerMove.pickCard.length;
@@ -232,14 +253,22 @@ export default {
         this.cleanTimer();
       }
     },
-    vote() {
+    vote(auto = false) {
       this.socket.emit('yc', {
         id: this.getUserName,
         room: this.getUserRoom,
-        vote: this.gameData.tableCard[this.playerMove.voteNumber],
+        vote: auto
+          ? this.gameData.tableCard[
+              getRandom(0, this.gameData.tableCard.length)
+            ]
+          : this.gameData.tableCard[this.playerMove.voteNumber],
       });
       this.playerMove.voteNumber = null;
       this.cleanTimer();
+
+      function getRandom(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
     },
     updateVoteNumber(val) {
       this.playerMove.voteNumber = val;
@@ -295,19 +324,6 @@ export default {
       this.playerMove.pickCardclickQueue = 0;
     },
 
-    creatTimer() {
-      this.timer.countTimer = setInterval(() => {
-        this.timer.time -= 1;
-        if (this.timer.time <= 0) {
-          this.cleanTimer();
-        }
-      }, 1000);
-    },
-    cleanTimer() {
-      this.timer.time = this.timer.default;
-      clearInterval(this.timer.countTimer);
-      this.timer.countTimer = null;
-    },
     gameDataLayoutFirstLoad(el) {
       if (el === null || el === undefined) return;
       console.log(el);
