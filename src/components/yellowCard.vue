@@ -1,6 +1,8 @@
 <template>
   <userNameBox :userName="getUserName" class="name"></userNameBox>
   <h1>{{ timer }}</h1>
+  <h1>{{ playerMove.currentStep }}</h1>
+  <!-- <h1>{{ gameData }}</h1> -->
   <div v-if="playerMove.currentStep != 'end'">
     <div class="player_list">
       <div class="title">
@@ -107,7 +109,7 @@ export default {
       timer: {
         countTimer: null,
         time: 15,
-        default: 15,
+        default: 5,
       },
       gameData: {
         selfHand: null,
@@ -146,12 +148,12 @@ export default {
         this.playerMove.voteOpen = false;
         this.playerMove.dropOpen = false;
 
-        console.log(el);
-
         if (el.action === 'in') this.gameDataLayout(el.message.action, el.page);
 
         if (el.action === 'lose' || el.action === 'win')
-          this.gameEnd(el.action);
+          setTimeout(() => {
+            this.gameEnd(el.action);
+          }, 1000);
       },
       deep: true,
     },
@@ -187,9 +189,7 @@ export default {
       return result;
     },
     currentStep() {
-      const el = this.playerMove.currentStep;
-
-      switch (el) {
+      switch (this.playerMove.currentStep) {
         case 'used':
           this.playerMove.usedOpen =
             this.gameData.tableCard.length <= this.gameData.player.length
@@ -203,6 +203,7 @@ export default {
             this.gameData.tableCard.length >= this.gameData.player.length
               ? true
               : false;
+
           this.checkToCreatTimer('vote', this.playerMove.voteOpen);
           break;
 
@@ -216,15 +217,28 @@ export default {
       }
     },
     checkToCreatTimer(point, open = false) {
-      const x =
-        this.timer.countTimer === null && open
-          ? this.creatTimer(() => {
-              point === 'vote' ? this.vote(true) : '';
-            })
-          : false;
-      console.log(x);
+      let timer;
+
+      switch (point) {
+        case 'used':
+        case 'vote':
+          timer = 15;
+          break;
+        default:
+          timer = this.timer.default;
+          break;
+      }
+
+      this.timer.countTimer === null && open
+        ? this.creatTimer(timer, () => {
+            point === 'used' ? this.used(true) : '';
+            point === 'vote' ? this.vote(true) : '';
+            point === 'drop' ? this.drop(true) : '';
+          })
+        : false;
     },
-    creatTimer(callback) {
+    creatTimer(countTime = this.timer.default, callback) {
+      this.timer.time = countTime;
       this.timer.countTimer = setInterval(() => {
         this.timer.time -= 1;
         if (this.timer.time <= 0) {
@@ -238,20 +252,35 @@ export default {
       this.timer.countTimer = null;
       return true;
     },
-    drop() {
+    drop(auto = false) {
       let leng = this.playerMove.pickCard.length;
 
-      if (leng <= 0) alert('最少棄一張牌，最多3張牌');
-      if (leng > 0 && leng <= 3) {
+      if (auto === false) {
+        if (this.playerMove.pickCard.length <= 0)
+          alert('最少棄一張牌，最多3張牌');
+        if (
+          this.playerMove.pickCard.length > 0 &&
+          this.playerMove.pickCard.length <= 3
+        ) {
+          this.socket.emit('yc', {
+            id: this.getUserName,
+            room: this.getUserRoom,
+            drop: this.playerMove.pickCard,
+          });
+        }
+      }
+
+      if (auto === true) {
         this.socket.emit('yc', {
           id: this.getUserName,
           room: this.getUserRoom,
-          drop: this.playerMove.pickCard,
+          drop: this.gameData.selfHand[0],
         });
-        this.playerMove.currentStep = '';
-        this.playerMove.pickCard = [];
-        this.cleanTimer();
       }
+
+      this.playerMove.currentStep = '';
+      this.playerMove.pickCard = [];
+      this.cleanTimer();
     },
     vote(auto = false) {
       this.socket.emit('yc', {
@@ -326,7 +355,6 @@ export default {
 
     gameDataLayoutFirstLoad(el) {
       if (el === null || el === undefined) return;
-      console.log(el);
       let yellowCard = [];
       this.playerMove.currentStep = 'used';
       this.playerMove.usedOpen = true;
@@ -338,14 +366,16 @@ export default {
         yellowCard.push({ [name]: 0 });
       });
       this.gameData.yellowCard = yellowCard;
+
+      this.checkToCreatTimer('used', true);
     },
     // receive each data from bkend after first in game.
     gameDataLayout(action = null, el) {
-      console.log('gameDataLayout', el);
       if (el === null || el === undefined) return;
 
+      console.log('後端跟我說要進行:', action);
+
       let yellowCard = [];
-      console.log(el);
       this.gameData.tableCard = el['檯面上'];
       this.gameData.ownself = el['我的資訊'];
       this.gameData.quest = el['題目'].replace(/{}/g, '__');
@@ -386,14 +416,33 @@ export default {
       if (this.state.activeGameRoom != null)
         this.$store.commit('updateUserRoom', this.state.activeGameRoom);
     },
-    used() {
-      if (this.playerMove.pickCard.length != this.gameData.questLength) return;
+    used(auto = false) {
+      // const questLength = this.gameData.questLength;
 
-      this.socket.emit('yc', {
-        id: this.getUserName,
-        room: this.getUserRoom,
-        used: this.playerMove.pickCard,
-      });
+      if (!auto) {
+        if (this.playerMove.pickCard.length != this.gameData.questLength)
+          return;
+
+        this.socket.emit('yc', {
+          id: this.getUserName,
+          room: this.getUserRoom,
+          used: this.playerMove.pickCard,
+        });
+      }
+
+      if (auto) {
+        let autoPick = [];
+        for (let i = 0; i < this.gameData.questLength; i++) {
+          autoPick.push(this.gameData.selfHand[i]);
+        }
+
+        this.socket.emit('yc', {
+          id: this.getUserName,
+          room: this.getUserRoom,
+          used: autoPick,
+        });
+      }
+
       this.playerMove.sendUsed = true;
       this.repickCard();
       this.cleanTimer();
