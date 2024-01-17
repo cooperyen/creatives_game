@@ -103,7 +103,6 @@ import dropHandler from '@/../src/components/yellowCard/dropHandler.vue';
 export default {
   data() {
     return {
-      xxxx: null,
       gameRoom: null,
       ownself: null,
       timer: {
@@ -198,6 +197,7 @@ export default {
               ? true
               : false;
           // this.checkToCreatTimer('used', this.playerMove.usedOpen);
+          this.outCheck();
           break;
 
         case 'vote':
@@ -217,6 +217,12 @@ export default {
           // this.checkToCreatTimer('drop', this.playerMove.dropOpen);
           break;
       }
+    },
+    outCheck() {
+      this.socket.emit('yc', {
+        room: this.getUserRoom,
+        out: 'used',
+      });
     },
     checkToCreatTimer(point, open = false) {
       let timer;
