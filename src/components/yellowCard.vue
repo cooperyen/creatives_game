@@ -148,6 +148,8 @@ export default {
         this.playerMove.voteOpen = false;
         this.playerMove.dropOpen = false;
 
+        console.log(el);
+
         if (el.action === 'in') this.gameDataLayout(el.message.action, el.page);
 
         if (el.action === 'lose' || el.action === 'win')
@@ -195,7 +197,7 @@ export default {
             this.gameData.tableCard.length <= this.gameData.player.length
               ? true
               : false;
-          this.checkToCreatTimer('used', this.playerMove.usedOpen);
+          // this.checkToCreatTimer('used', this.playerMove.usedOpen);
           break;
 
         case 'vote':
@@ -204,7 +206,7 @@ export default {
               ? true
               : false;
 
-          this.checkToCreatTimer('vote', this.playerMove.voteOpen);
+          // this.checkToCreatTimer('vote', this.playerMove.voteOpen);
           break;
 
         case 'drop':
@@ -212,7 +214,7 @@ export default {
             this.gameData.vote.length >= this.gameData.player.length
               ? true
               : false;
-          this.checkToCreatTimer('drop', this.playerMove.dropOpen);
+          // this.checkToCreatTimer('drop', this.playerMove.dropOpen);
           break;
       }
     },
@@ -367,7 +369,7 @@ export default {
       });
       this.gameData.yellowCard = yellowCard;
 
-      this.checkToCreatTimer('used', true);
+      // this.checkToCreatTimer('used', true);
     },
     // receive each data from bkend after first in game.
     gameDataLayout(action = null, el) {
