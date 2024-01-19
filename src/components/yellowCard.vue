@@ -1,94 +1,96 @@
 <template>
-  <userNameBox :userName="getUserName" class="name"></userNameBox>
-  <h1>{{ timer }}</h1>
-  <h1>{{ playerMove.currentStep }}</h1>
-  <!-- <h1>{{ gameData }}</h1> -->
-  <div v-if="playerMove.currentStep != 'end'">
-    <div class="player_list">
-      <div class="title">
-        <p>Players</p>
-      </div>
-      <div class="items">
-        <div v-for="i in gameData.yellowCard" :key="i" class="item">
-          <p>{{ Object.keys(i)[0] }}</p>
-          <p>{{ Object.values(i)[0] }}</p>
+  <div id="yellowCard">
+    <userNameBox :userName="getUserName" class="name"></userNameBox>
+    <h1>{{ timer }}</h1>
+    <h1>{{ playerMove.currentStep }}</h1>
+    <!-- <h1>{{ gameData }}</h1> -->
+    <div v-if="playerMove.currentStep != 'end'">
+      <div class="player_list">
+        <div class="title">
+          <p>Players</p>
+        </div>
+        <div class="items">
+          <div v-for="i in gameData.yellowCard" :key="i" class="item">
+            <p>{{ Object.keys(i)[0] }}</p>
+            <p>{{ Object.values(i)[0] }}</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- hand card -->
-    <handCardHandler
-      :gameData="gameData"
-      :playerMove="playerMove"
-      :class="{ active: playerMove.usedOpen }"
-      @pickUsedCard="pickUsedCard"
-      @pickUsedCardRemove="pickUsedCardRemove"
-      @used="used"
-      @rePickUsedCard="rePickUsedCard"
-    ></handCardHandler>
+      <!-- hand card -->
+      <handCardHandler
+        :gameData="gameData"
+        :playerMove="playerMove"
+        :class="{ active: playerMove.usedOpen }"
+        @pickUsedCard="pickUsedCard"
+        @pickUsedCardRemove="pickUsedCardRemove"
+        @used="used"
+        @rePickUsedCard="rePickUsedCard"
+      ></handCardHandler>
 
-    <!-- vote -->
-    <voteHandler
-      :class="{ active: playerMove.voteOpen }"
-      :gameData="gameData"
-      :playerMove="playerMove"
-      @vote="vote"
-      @updateVoteNumber="updateVoteNumber"
-    ></voteHandler>
+      <!-- vote -->
+      <voteHandler
+        :class="{ active: playerMove.voteOpen }"
+        :gameData="gameData"
+        :playerMove="playerMove"
+        @vote="vote"
+        @updateVoteNumber="updateVoteNumber"
+      ></voteHandler>
 
-    <!-- drop -->
-    <dropHandler
-      :gameData="gameData"
-      :playerMove="playerMove"
-      :class="{ active: playerMove.dropOpen }"
-      @pickDropCardRemove="pickDropCardRemove"
-      @pickDropCard="pickDropCard"
-      @drop="drop"
-      @repickCard="repickCard"
-    ></dropHandler>
+      <!-- drop -->
+      <dropHandler
+        :gameData="gameData"
+        :playerMove="playerMove"
+        :class="{ active: playerMove.dropOpen }"
+        @pickDropCardRemove="pickDropCardRemove"
+        @pickDropCard="pickDropCard"
+        @drop="drop"
+        @repickCard="repickCard"
+      ></dropHandler>
 
-    <div id="await" v-if="isShowAwait(playerMove.currentStep)">
-      <div
-        class="await"
-        :class="{ active: isShowAwait(playerMove.currentStep) }"
-      >
+      <div id="await" v-if="isShowAwait(playerMove.currentStep)">
         <div
-          v-if="playerMove.currentStep === 'vote'"
-          class="content"
-          v-html="wait.quest"
-        ></div>
+          class="await"
+          :class="{ active: isShowAwait(playerMove.currentStep) }"
+        >
+          <div
+            v-if="playerMove.currentStep === 'vote'"
+            class="content"
+            v-html="wait.quest"
+          ></div>
 
-        <div class="text">
-          <p v-if="playerMove.currentStep === 'vote'">
-            等待其他人出牌<span></span>
-          </p>
+          <div class="text">
+            <p v-if="playerMove.currentStep === 'vote'">
+              等待其他人出牌<span></span>
+            </p>
 
-          <p v-if="playerMove.currentStep === 'drop'">
-            等待其他人投票<span></span>
-          </p>
+            <p v-if="playerMove.currentStep === 'drop'">
+              等待其他人投票<span></span>
+            </p>
+          </div>
         </div>
+      </div>
+
+      <!-- new game await other player -->
+      <div
+        v-if="playerMove.currentStep === ''"
+        :class="{ active: playerMove.currentStep === '' }"
+      >
+        <h1>回合計算中</h1>
       </div>
     </div>
 
-    <!-- new game await other player -->
     <div
-      v-if="playerMove.currentStep === ''"
-      :class="{ active: playerMove.currentStep === '' }"
+      v-if="playerMove.currentStep === 'end'"
+      :class="{ active: playerMove.currentStep === 'end' }"
+      id="end_game"
     >
-      <h1>回合計算中</h1>
-    </div>
-  </div>
+      <div class="container">
+        <div class="title">END GAME</div>
 
-  <div
-    v-if="playerMove.currentStep === 'end'"
-    :class="{ active: playerMove.currentStep === 'end' }"
-    id="end_game"
-  >
-    <div class="container">
-      <div class="title">END GAME</div>
-
-      <div class="result">
-        <h2>YOU {{ gameFinal.toUpperCase() }}</h2>
+        <div class="result">
+          <h2>YOU {{ gameFinal.toUpperCase() }}</h2>
+        </div>
       </div>
     </div>
   </div>
@@ -324,7 +326,7 @@ export default {
         result = result.replace('__', `<span class="insert">${val}</span>`);
       });
 
-      this.questInnerHTML(result);
+      this.questInnerHTML(`<p>${result}</p>`);
     },
     pickUsedCardRemove(el) {
       let result = this.gameData.quest;
@@ -336,7 +338,7 @@ export default {
         result = result.replace('__', `<span class="insert">${val}</span>`);
       });
 
-      this.questInnerHTML(result);
+      this.questInnerHTML(`<p>${result}</p>`);
     },
     rePickUsedCard() {
       this.questInnerHTML(this.gameData.quest);
