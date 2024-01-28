@@ -35,7 +35,7 @@ export default {
 @import '@/../../../scss/color.scss';
 @import '@/../../../scss/rwd.scss';
 .user-container {
-  color: $text;
+  color: black;
   height: 80px;
   position: relative;
   width: 100%;

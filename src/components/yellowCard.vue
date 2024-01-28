@@ -3,6 +3,7 @@
     <userNameBox :userName="getUserName" class="name"></userNameBox>
     <h1>{{ timer }}</h1>
     <h1>{{ playerMove.currentStep }}</h1>
+    <button @click="outCheck()">123</button>
     <!-- <h1>{{ gameData }}</h1> -->
     <div v-if="playerMove.currentStep != 'end'">
       <div class="player_list">
@@ -199,7 +200,7 @@ export default {
               ? true
               : false;
           // this.checkToCreatTimer('used', this.playerMove.usedOpen);
-          this.outCheck();
+
           break;
 
         case 'vote':
@@ -221,9 +222,10 @@ export default {
       }
     },
     outCheck() {
+      console.log('first');
       this.socket.emit('yc', {
         room: this.getUserRoom,
-        out: 'used',
+        re_player: true,
       });
     },
     checkToCreatTimer(point, open = false) {
@@ -241,9 +243,9 @@ export default {
 
       this.timer.countTimer === null && open
         ? this.creatTimer(timer, () => {
-            point === 'used' ? this.used(true) : '';
-            point === 'vote' ? this.vote(true) : '';
-            point === 'drop' ? this.drop(true) : '';
+            point === 'used' ? this.outCheck() : '';
+            // point === 'vote' ? this.vote(true) : '';
+            // point === 'drop' ? this.drop(true) : '';
           })
         : false;
     },
