@@ -199,7 +199,7 @@ export default {
             this.gameData.tableCard.length <= this.gameData.player.length
               ? true
               : false;
-          // this.checkToCreatTimer('used', this.playerMove.usedOpen);
+          this.checkToCreatTimer('used', this.playerMove.usedOpen);
 
           break;
 
@@ -209,7 +209,7 @@ export default {
               ? true
               : false;
 
-          // this.checkToCreatTimer('vote', this.playerMove.voteOpen);
+          this.checkToCreatTimer('vote', this.playerMove.voteOpen);
           break;
 
         case 'drop':
@@ -217,35 +217,34 @@ export default {
             this.gameData.vote.length >= this.gameData.player.length
               ? true
               : false;
-          // this.checkToCreatTimer('drop', this.playerMove.dropOpen);
+          this.checkToCreatTimer('drop', this.playerMove.dropOpen);
           break;
       }
     },
-    outCheck() {
-      console.log('first');
+    outCheck(el) {
       this.socket.emit('yc', {
         room: this.getUserRoom,
-        re_player: true,
+        re_player: el,
       });
     },
+
     checkToCreatTimer(point, open = false) {
       let timer;
+      console.log(open);
 
       switch (point) {
         case 'used':
         case 'vote':
-          timer = 15;
+          timer = 10;
           break;
         default:
           timer = this.timer.default;
           break;
       }
 
-      this.timer.countTimer === null && open
+      this.timer.countTimer === null
         ? this.creatTimer(timer, () => {
-            point === 'used' ? this.outCheck() : '';
-            // point === 'vote' ? this.vote(true) : '';
-            // point === 'drop' ? this.drop(true) : '';
+            this.outCheck(point);
           })
         : false;
     },
