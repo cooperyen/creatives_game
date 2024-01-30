@@ -223,6 +223,7 @@ export default {
     },
     outCheck(el) {
       this.socket.emit('yc', {
+        id: this.getUserName,
         room: this.getUserRoom,
         re_player: el,
       });
