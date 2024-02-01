@@ -87,10 +87,32 @@
       id="end_game"
     >
       <div class="container">
-        <div class="title">END GAME</div>
+        <template v-if="gameFinal === 'win' || gameFinal === 'lose'">
+          <div class="title">END GAME</div>
+          <div class="result">
+            <h2>YOU {{ gameFinal.toUpperCase() }}</h2>
+          </div>
+        </template>
 
-        <div class="result">
-          <h2>YOU {{ gameFinal.toUpperCase() }}</h2>
+        <template v-if="gameFinal === 'end'">
+          <div class="title">GAME END</div>
+          <div class="result">
+            <p>You exceed game response time</p>
+          </div>
+        </template>
+
+        <template v-if="gameFinal === 'close'">
+          <div class="title">GAME CLOSE</div>
+          <div class="result">
+            <p>The number of players in the game is less than 2</p>
+          </div>
+        </template>
+
+        <div>
+          <router-link to="/lobby">Leave</router-link>
+          <p>
+            leave the game in <span>{{ timer.time }}</span> seconds
+          </p>
         </div>
       </div>
     </div>
@@ -154,12 +176,17 @@ export default {
 
         if (el.action === 'in') this.gameDataLayout(el.message.action, el.page);
 
-        if (el.action === 'lose' || el.action === 'win')
+        if (el.action === 'lose' || el.action === 'win' || el.action === 'end')
           setTimeout(() => {
             this.gameEnd(el.action);
           }, 1000);
       },
       deep: true,
+    },
+    gameFinal(el) {
+      this.creatTimer(10, () => {
+        this.$router.replace('/lobby');
+      });
     },
   },
   computed: {
@@ -236,7 +263,7 @@ export default {
       switch (point) {
         case 'used':
         case 'vote':
-          timer = 10;
+          timer = 15;
           break;
         default:
           timer = this.timer.default;
@@ -378,9 +405,8 @@ export default {
         yellowCard.push({ [name]: 0 });
       });
       this.gameData.yellowCard = yellowCard;
-
-      // this.checkToCreatTimer('used', true);
     },
+
     // receive each data from bkend after first in game.
     gameDataLayout(action = null, el) {
       if (el === null || el === undefined) return;
@@ -429,8 +455,6 @@ export default {
         this.$store.commit('updateUserRoom', this.state.activeGameRoom);
     },
     used(auto = false) {
-      // const questLength = this.gameData.questLength;
-
       if (!auto) {
         if (this.playerMove.pickCard.length != this.gameData.questLength)
           return;
@@ -486,6 +510,9 @@ export default {
     //   id: this.$store.state.userStore.userName,
     //   room: this.$store.state.userStore.userRoom,
     // });
+  },
+  beforeUnmount() {
+    this.$store.commit('clearUserRoom');
   },
 };
 </script>

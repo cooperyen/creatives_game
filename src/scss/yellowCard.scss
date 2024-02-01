@@ -6,6 +6,7 @@ $true: rgb(117, 232, 154);
 
 #yellowCard {
   background-color: rgb(205, 196, 142);
+  overflow: hidden;
   height: 100vh;
   width: 100vw;
 }
@@ -56,11 +57,16 @@ h1 {
   }
 
   .title {
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-size: clamp(1.8rem, 3vw, 2.2rem);
     // color: white;
   }
   .result {
-    font-size: clamp(1.8rem, 3vw, 2.2rem);
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+    p {
+      margin-top: 10px;
+    }
   }
 }
 #await {
