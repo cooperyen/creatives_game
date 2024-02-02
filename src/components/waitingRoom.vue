@@ -65,6 +65,7 @@
       <!-- <transition name="move-up"> -->
       <div class="count-down" :class="{ visible: !isShowCountDown }">
         請準備遊戲，<span>{{ time }}</span> 秒後反回大廳
+        {{ isShowCountDown }}
       </div>
       <!-- </transition> -->
       <div class="ready-container">
@@ -83,6 +84,7 @@
                 "
               >
                 {{ readyList[selfPlayer] ? 'cancel' : 'ready' }}
+                123 {{ readyList }}
               </p>
             </div>
           </div>
@@ -123,7 +125,6 @@ export default {
   watch: {
     'state.loginError': {
       handler(el) {
-        console.log(el);
         if (this.state.activeGameRoom != 'fail') return;
         this.$router.replace(`/${el}`);
       },
@@ -163,7 +164,6 @@ export default {
           if (this.otherPlayers.length === 0) this.readyGameUI(false);
           if (this.otherPlayers.length != 0) this.readyGameUI(true);
         }
-
         this.readyList = el;
       },
     },
@@ -238,20 +238,24 @@ export default {
       const userRoom = userRoomURL.substring(userRoomURL.indexOf('/') + 1);
 
       if (userRoom === null) return;
-      const roomPlayers = el[userRoom].player;
+
+      const ready = el[userRoom]['ready'].indexOf(this.selfPlayer);
+      const playerList = el[userRoom]['player'];
+
       // room players without self.
-      const otherPlayers = roomPlayers.filter((el) => {
+      const otherPlayers = playerList.filter((el) => {
         return el != this.selfPlayer;
       });
 
-      if (roomPlayers.length > 1) this.readyGameUI(true);
-      if (roomPlayers.length <= 1) this.readyGameUI(false);
+      if (ready === -1) this.readyGameUI(false);
+      if (ready === -1 && playerList.length >= 2) this.readyGameUI(true);
 
       this.otherPlayers = otherPlayers;
       this.otherPlayerSetroom = 3 - otherPlayers.length;
     },
 
     countDown() {
+      clearTimeout(this.countDownFun);
       this.time -= 1;
       if (this.time <= 0) {
         this.$router.replace('/lobby');

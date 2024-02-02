@@ -519,6 +519,10 @@ export default {
   },
   beforeUnmount() {
     this.$store.commit('clearUserRoom');
+    // this.socket.emit('id_check', {
+    //   id: this.$store.state.userStore.userName,
+    //   room: this.$store.state.userStore.userRoom,
+    // });
   },
 };
 </script>

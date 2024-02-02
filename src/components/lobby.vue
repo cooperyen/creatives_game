@@ -229,10 +229,11 @@ export default {
         // make sure backEnd data same as frontEnd.
         const userData = JSON.parse(localStorage.getItem('userData'));
 
-        that.socket.emit('id_check', {
-          id: userData.userName,
-          room: userData.userRoom,
-        });
+        if (!that.state.gameRooms.state)
+          that.socket.emit('id_check', {
+            id: userData.userName,
+            room: userData.userRoom,
+          });
 
         if (!that.state.gameRooms.state) return false;
         if (that.state.gameRooms.state) return true;

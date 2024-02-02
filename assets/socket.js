@@ -90,9 +90,10 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
-
+  console.log(data);
   switch (data.way) {
     case 'id_check':
+
       if (data.game_list != null || data.game_list != undefined) {
         state.gameRooms = null;
         state.gameRooms = { state: true, gameList: data.game_list };
@@ -175,6 +176,7 @@ socket.on('update_lobby', function (data) {
 })
 
 socket.on('updata_ready', function (data) {
+  console.log(data);
   state.gameOne.readyToGo = false;
   state.gameOne.readyList = data.reduce((key, val, index) => {
     key[val] = val
@@ -202,10 +204,11 @@ socket.on('re_draw', function (data) {
 })
 
 socket.on('re_lunch', function (data) {
-  state.gameOne.readyToGo = false;
-  if (data.isReady != null || data.isReady != undefined) {
+  console.log(data);
+  // state.gameOne.readyToGo = false;
+  if (data.isReady != null || data.isReady != undefined)
     state.gameOne.readyToGo = data.isReady;
-  }
+
 })
 
 
