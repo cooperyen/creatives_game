@@ -2,7 +2,7 @@
   <div id="yellowCard">
     <userNameBox :userName="getUserName" class="name"></userNameBox>
     <h1>{{ timer }}</h1>
-    <h1>{{ playerMove.currentStep }}</h1>
+    <h1>123{{ gameFinal }}</h1>
     <button @click="outCheck()">123</button>
     <!-- <h1>{{ gameData }}</h1> -->
     <div v-if="playerMove.currentStep != 'end'">
@@ -183,10 +183,16 @@ export default {
       },
       deep: true,
     },
-    gameFinal(el) {
-      this.creatTimer(10, () => {
-        this.$router.replace('/lobby');
-      });
+    gameFinal: {
+      handler(el) {
+        console.log(el);
+        const x = this.cleanTimer();
+        if (x)
+          this.creatTimer(10, () => {
+            this.$router.replace('/lobby');
+          });
+      },
+      deep: true,
     },
   },
   computed: {
@@ -286,7 +292,7 @@ export default {
       }, 1000);
     },
     cleanTimer() {
-      this.timer.time = this.timer.default;
+      this.timer.time = 0;
       clearInterval(this.timer.countTimer);
       this.timer.countTimer = null;
       return true;

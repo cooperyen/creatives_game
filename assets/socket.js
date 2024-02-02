@@ -234,3 +234,7 @@ socket.on('re_no_game', function (data) {
   state.goUrl = 'lobby';
 })
 
+socket.on('update_wait_room', function (data) {
+  console.log(data)
+})
+
