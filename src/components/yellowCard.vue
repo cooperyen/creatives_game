@@ -1,10 +1,6 @@
 <template>
   <div id="yellowCard">
     <userNameBox :userName="getUserName" class="name"></userNameBox>
-    <h1>{{ timer }}</h1>
-    <h1>123{{ gameFinal }}</h1>
-    <button @click="outCheck()">123</button>
-    <!-- <h1>{{ gameData }}</h1> -->
     <div v-if="playerMove.currentStep != 'end'">
       <div class="player_list">
         <div class="title">
@@ -161,6 +157,7 @@ export default {
         quest: null,
       },
       gameFinal: null,
+      backToLobbyTimer: null,
     };
   },
   components: { userNameBox, handCardHandler, voteHandler, dropHandler },
@@ -228,6 +225,7 @@ export default {
     currentStep() {
       switch (this.playerMove.currentStep) {
         case 'used':
+          console.log(this.gameData.tableCard);
           this.playerMove.usedOpen =
             this.gameData.tableCard.length <= this.gameData.player.length
               ? true
@@ -410,14 +408,15 @@ export default {
       el.player.forEach((name) => {
         yellowCard.push({ [name]: 0 });
       });
+
+      this.gameData.player = el.player;
       this.gameData.yellowCard = yellowCard;
+      this.checkToCreatTimer('used');
     },
 
     // receive each data from bkend after first in game.
     gameDataLayout(action = null, el) {
       if (el === null || el === undefined) return;
-
-      console.log('後端跟我說要進行:', action);
 
       let yellowCard = [];
       this.gameData.tableCard = el['檯面上'];
@@ -519,6 +518,7 @@ export default {
   },
   beforeUnmount() {
     this.$store.commit('clearUserRoom');
+    this.cleanTimer();
     // this.socket.emit('id_check', {
     //   id: this.$store.state.userStore.userName,
     //   room: this.$store.state.userStore.userRoom,

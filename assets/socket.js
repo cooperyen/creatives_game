@@ -69,10 +69,7 @@ async function ans() {
 }
 ans();
 
-socket.on("disconnect", () => {
-  state.connected = false;
-});
-// }
+
 
 
 state.connected = false;
@@ -90,7 +87,6 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
-  console.log(data);
   switch (data.way) {
     case 'id_check':
 
@@ -104,8 +100,11 @@ function router(data) {
         state.gameOne.gameOver = data;
       }
 
-      if (data.go === 'waiting_room')
+      if (data.go === 'waiting_room') {
         state.goUrl = `waiting_room/${data.url}`
+        state.gameRooms.state = false;
+      }
+
 
       if (data.backGame != null) {
         state.goUrl = `${data.backGame}/${data.url}`
@@ -158,6 +157,9 @@ function router(data) {
 
     case 'lunch_start_fail':
       state.loginError = 'fail';
+      break;
+
+    case 'return':
       break;
   }
 }

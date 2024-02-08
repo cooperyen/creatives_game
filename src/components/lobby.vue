@@ -226,6 +226,7 @@ export default {
       );
 
       function doCheck() {
+        console.log(that.state.gameRooms.state);
         // make sure backEnd data same as frontEnd.
         const userData = JSON.parse(localStorage.getItem('userData'));
 
@@ -299,7 +300,8 @@ export default {
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
   mounted() {
-    // this.swipierInit();
+    // this.swipierInit();\
+    console.log('123');
     this.socketConnectCheck();
   },
 
