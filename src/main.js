@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import router from '@/../assets/router.js';
 import { userStore, loopStore } from '@/../assets/userStore.js';
+import { style } from '@/../assets/style.js';
 import readyIcon from '@/../src/ui/ready.vue';
 import App from '@/App.vue'
 import { createStore } from 'vuex';
@@ -19,7 +20,8 @@ library.add(faChevronLeft, faMobileScreenButton)
 const store = createStore({
   modules: {
     userStore,
-    loopStore
+    loopStore,
+    style
   }
 });
 
@@ -27,8 +29,8 @@ const store = createStore({
 
 
 const app = createApp(App);
-app.use(router);
 app.use(store);
+app.use(router);
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('readyIcon', readyIcon)
 router.isReady().then(() => app.mount('#app'))

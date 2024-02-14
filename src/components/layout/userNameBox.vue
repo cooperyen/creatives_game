@@ -1,6 +1,6 @@
 <template>
   <transition name="lobby">
-    <div class="user-container" v-show="ani">
+    <div class="user-container" :class="[on ? on : 'light']" v-show="ani">
       <div class="content">
         <h2 id="userid">勇者 : {{ userName }}</h2>
         <slot></slot>
@@ -14,6 +14,7 @@ export default {
   data() {
     return {
       ani: false,
+      on: false,
     };
   },
   props: ['userName'],
@@ -25,6 +26,11 @@ export default {
     },
   },
   mounted() {
+    this.on =
+      this.$route.meta.style?.userName != undefined
+        ? this.$route.meta.style.userName
+        : false;
+    console.log(this.on);
     if (this.userName != null) this.ani = true;
     else this.ani = false;
   },
@@ -35,11 +41,16 @@ export default {
 @import '@/../../../scss/color.scss';
 @import '@/../../../scss/rwd.scss';
 .user-container {
-  color: black;
   height: 80px;
   position: relative;
   width: 100%;
   overflow: hidden;
+  &.dark {
+    color: black;
+  }
+  &.light {
+    color: $text;
+  }
   > :deep(.content) {
     right: 20px;
     top: 20px;

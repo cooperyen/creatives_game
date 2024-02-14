@@ -1,6 +1,8 @@
 <template>
   <div id="yellowCard">
     <userNameBox :userName="getUserName" class="name"></userNameBox>
+    <!-- <h1>{{ timer }}</h1>
+    <h1>{{ playerMove.currentStep }}</h1> -->
     <div v-if="playerMove.currentStep != 'end'">
       <div class="player_list">
         <div class="title">
@@ -128,8 +130,8 @@ export default {
       ownself: null,
       timer: {
         countTimer: null,
-        time: 15,
-        default: 5,
+        time: 30,
+        default: 30,
       },
       gameData: {
         selfHand: null,
@@ -253,21 +255,21 @@ export default {
       }
     },
     outCheck(el) {
-      this.socket.emit('yc', {
-        id: this.getUserName,
-        room: this.getUserRoom,
-        re_player: el,
-      });
+      // this.socket.emit('yc', {
+      //   id: this.getUserName,
+      //   room: this.getUserRoom,
+      //   re_player: el,
+      // });
+      console.log('');
     },
 
     checkToCreatTimer(point, open = false) {
       let timer;
-      console.log(open);
 
       switch (point) {
         case 'used':
         case 'vote':
-          timer = 15;
+          timer = 30 * 1.5;
           break;
         default:
           timer = this.timer.default;
@@ -491,6 +493,8 @@ export default {
     },
   },
   mounted() {
+    console.log(this.$store.state.style.yellowCard);
+
     if (
       this.state.gameDataFirstLoad === null ||
       this.state.gameDataFirstLoad === undefined
@@ -515,6 +519,9 @@ export default {
     //   id: this.$store.state.userStore.userName,
     //   room: this.$store.state.userStore.userRoom,
     // });
+  },
+  beforeMount() {
+    // this.$store.commit('backGorund', 'yellowCard');
   },
   beforeUnmount() {
     this.$store.commit('clearUserRoom');

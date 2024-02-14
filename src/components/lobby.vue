@@ -301,11 +301,12 @@ export default {
   },
   mounted() {
     // this.swipierInit();\
-    console.log('123');
     this.socketConnectCheck();
   },
 
-  beforeUnmount() {},
+  beforeMount() {
+    // this.$store.commit('backGorund', 'default');
+  },
 };
 </script>
 

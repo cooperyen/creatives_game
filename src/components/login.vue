@@ -88,6 +88,9 @@ export default {
 
     // this.state.connected = false;
   },
+  beforeMount() {
+    // this.$store.commit('backGorund', 'default');
+  },
   beforeUnmount() {
     localStorage.removeItem('reloaded');
   },

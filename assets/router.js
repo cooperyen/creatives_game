@@ -7,6 +7,7 @@ import yellowCard from '@/components/yellowCard.vue';
 import login from '@/components/login.vue';
 import waitingRoom from '@/components/waitingRoom.vue';
 import { socket } from '@/../assets/socket.js';
+import { bg_style } from '@/../assets/style.js';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,7 +22,6 @@ const router = createRouter({
       path: '/lobby',
       name: 'lobby',
       component: lobby,
-
     },
     {
       path: '/waiting_room/:room',
@@ -42,6 +42,7 @@ const router = createRouter({
       path: '/yellow_cards/:room',
       name: 'yellowCards',
       component: yellowCard,
+      meta: { style: { body: 'yellowCard', userName: 'dark' } },
     },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
   ],
@@ -51,12 +52,25 @@ router.beforeEach((to, from, next) => {
 
   const reloaded = window.localStorage.getItem('reloaded') || '';
   if (reloaded === '' && to.name === 'login') {
-    console.log(reloaded);
     window.location.reload();
     window.localStorage.setItem('reloaded', 'yes');
   }
   next();
 
+})
+
+router.afterEach(to => {
+  const bg = new bg_style()
+  let body = null;
+  let check = to.meta.style ? to.meta.style.body : null
+  console.log(check);
+  switch (check) {
+    case 'yellowCard':
+      body = 'yellowCard';
+    default:
+      break;
+  }
+  bg.backGorund(body)
 })
 
 export default router;
