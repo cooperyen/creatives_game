@@ -3,11 +3,12 @@
 @import './rwd.scss';
 
 .default {
-  background-image: url('@/image/pc.jpg');
+  // background-image: url('@/image/pc.jpg');
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
+  background-color: rgb(240, 239, 230);
 }
 
 .yellowCard {

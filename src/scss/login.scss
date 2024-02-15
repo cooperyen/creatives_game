@@ -12,7 +12,7 @@
 
   .title {
     h1 {
-      color: white;
+      // color: white;
       font-size: 3rem;
       text-align: center;
       @include sm {
@@ -28,20 +28,29 @@
       }
     }
   }
+
   .content {
+    border: 10px solid rgb(145, 145, 145);
+    // border-image: url(./../../ui/123.svg) 1;
+    // border-image: url('data:image/svg+xml,\
+    //   <svg xmlns="http://www.w3.org/2000/svg" width="3" height="3" fill="rgb(105, 105, 105)">\
+    //     <polygon points="0,1 1,0 2,0 3,1 3,2 2,3 1,3 0,2"/>\
+    //   </svg>')
+    //   1;
+    background: #696969;
+    background-clip: padding-box;
+    // border-image-repeat: round;
+    // clip-path: polygon(2% 0%, 100% 0, 100% 98%, 98% 100%, 0 100%, 0% 2%);
     margin-top: 40px;
-    background-color: #0d172b29;
+    background-color: rgba(255, 255, 255, 0.15);
+    // background-color: rgba(13, 23, 43, 0.15);
+
     padding: 35px 15px 35px 15px;
     border-radius: 12px;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    // box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
     font-size: 3rem;
-    animation: flashing 5s infinite;
+    // animation: flashing 5s infinite;
     text-align: center;
-    // position: absolute;
-    // left: 50%;
-    // z-index: 9999;
-    // width: 500px;
-    // height: 400px;
 
     .login.btn button {
       width: 90%;
@@ -77,21 +86,39 @@
   }
 }
 
+// @keyframes flashing {
+//   0% {
+//     box-shadow: 0 0 20px 4px rgba(250, 73, 217, 0.5);
+//   }
+//   25% {
+//     box-shadow: 0 0 1px rgba(243, 180, 78, 0.2);
+//   }
+//   50% {
+//     box-shadow: 0 0 20px 4px rgba(243, 78, 78, 0.5);
+//   }
+//   75% {
+//     box-shadow: 0 0 1px rgba(130, 243, 78, 0.2);
+//   }
+//   100% {
+//     box-shadow: 0 0 20px 4px rgba(250, 73, 217, 0.5);
+//   }
+// }
+
 @keyframes flashing {
   0% {
-    box-shadow: 0 0 20px 4px rgba(250, 73, 217, 0.5);
+    box-shadow: 0 0 20px 4px rgba(85, 81, 66, 0.5);
   }
   25% {
-    box-shadow: 0 0 1px rgba(243, 180, 78, 0.2);
+    box-shadow: 0 4px 1px rgba(85, 81, 66, 0.5);
   }
   50% {
-    box-shadow: 0 0 20px 4px rgba(243, 78, 78, 0.5);
+    box-shadow: 0 8px 20px 4px rgba(85, 81, 66, 0.3);
   }
   75% {
-    box-shadow: 0 0 1px rgba(130, 243, 78, 0.2);
+    box-shadow: 0 10px 1px rgba(85, 81, 66, 0.2);
   }
   100% {
-    box-shadow: 0 0 20px 4px rgba(250, 73, 217, 0.5);
+    box-shadow: 0 0 20px 4px rgba(85, 81, 66, 0.5);
   }
 }
 @keyframes slash {
