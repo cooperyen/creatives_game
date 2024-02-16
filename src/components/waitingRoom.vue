@@ -9,7 +9,7 @@
       </div>
       <div class="room-box">
         <h2>
-          {{ userRoom }}
+          {{ $store.state.gameData.chGameName[userRoom]?.name }}
         </h2>
       </div>
     </div>
@@ -84,7 +84,6 @@
                 "
               >
                 {{ readyList[selfPlayer] ? 'cancel' : 'ready' }}
-                123 {{ readyList }}
               </p>
             </div>
           </div>

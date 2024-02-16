@@ -12,12 +12,12 @@
 
   .title {
     h1 {
-      // color: white;
-      font-size: 3rem;
+      color: $text_default_title;
+      font-size: clamp(2rem, 8vw, 3rem);
       text-align: center;
       @include sm {
         text-align: justify;
-        font-size: 2.2rem;
+        // font-size: 2rem;
       }
       p {
         color: $titlColor;
@@ -30,31 +30,22 @@
   }
 
   .content {
-    border: 10px solid rgb(145, 145, 145);
-    // border-image: url(./../../ui/123.svg) 1;
-    // border-image: url('data:image/svg+xml,\
-    //   <svg xmlns="http://www.w3.org/2000/svg" width="3" height="3" fill="rgb(105, 105, 105)">\
-    //     <polygon points="0,1 1,0 2,0 3,1 3,2 2,3 1,3 0,2"/>\
-    //   </svg>')
-    //   1;
-    background: #696969;
+    border: 10px rgba(235, 191, 60, 0.7) double;
     background-clip: padding-box;
-    // border-image-repeat: round;
-    // clip-path: polygon(2% 0%, 100% 0, 100% 98%, 98% 100%, 0 100%, 0% 2%);
     margin-top: 40px;
-    background-color: rgba(255, 255, 255, 0.15);
-    // background-color: rgba(13, 23, 43, 0.15);
-
+    background-color: rgba(247, 247, 247, 0.9);
     padding: 35px 15px 35px 15px;
     border-radius: 12px;
-    // box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
     font-size: 3rem;
     // animation: flashing 5s infinite;
     text-align: center;
-
+    @include sm {
+      margin-top: 20px;
+    }
     .login.btn button {
       width: 90%;
-      background-color: #ffc515;
+      background-color: #ebbf3c;
       padding: 10px 5px;
       border: unset;
       border-radius: 6px;
@@ -70,6 +61,7 @@
       width: 90%;
       margin: 0 auto;
       input {
+        box-shadow: inset 2px 2px 1px rgba(0, 0, 0, 0.2);
         font-size: 1.2rem;
         padding: 8px 10px;
         border-radius: 6px;
@@ -81,6 +73,10 @@
         &:focus {
           border: unset;
         }
+      }
+      input,
+      input::placeholder {
+        text-align: center;
       }
     }
   }

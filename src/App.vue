@@ -1,14 +1,18 @@
 <template>
   <transition name="connect">
-    <div id="connect" v-show="!$store.state.userStore.loading">
-      <div class="loading-box flex">
-        <h2>Connecting</h2>
-        <span>......</span>
+    <div id="connect" v-if="!$store.state.userStore.loading">
+      <div class="loading-box">
+        <div class="flex">
+          <h2>Connecting</h2>
+          <span>......</span>
+        </div>
+        <div><p>shouldn't take too long.</p></div>
+        <div class="ani"></div>
       </div>
     </div>
   </transition>
 
-  <loadingLoop v-show="clickLoading"></loadingLoop>
+  <!-- <loadingLoop v-show="clickLoading"></loadingLoop> -->
 
   <router-view :socket="socket" :state="state" v-slot="{ Component }">
     <transition :name="$route.meta.transition || 'fade'">

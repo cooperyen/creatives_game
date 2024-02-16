@@ -1,6 +1,7 @@
 @import './color.scss';
 @import './transition.scss';
 @import './rwd.scss';
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
 
 .default {
   // background-image: url('@/image/pc.jpg');
@@ -8,7 +9,86 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  background-color: rgb(240, 239, 230);
+  background-color: rgb(243 243 243);
+
+  .check {
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    place-content: center;
+    background-color: rgb(244, 244, 244);
+    position: relative;
+    &::after {
+      content: '';
+      --size: 250vmax;
+      --bg-size: 200px;
+      grid-area: body;
+      inline-size: var(--size);
+      block-size: var(--size);
+      background-image: url('./../image/bg/icons_bg.svg');
+      background-size: var(--bg-size);
+      background-repeat: repeat;
+      transform: rotate(45deg);
+      opacity: 0.1;
+      animation: login_bg 10s linear infinite;
+      position: fixed;
+      z-index: -3;
+      // display: none;
+      // animation: open 1s forwards;
+    }
+  }
+}
+
+@keyframes open {
+  to {
+    display: block;
+  }
+}
+
+.login_bd {
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  place-content: center;
+  background-color: rgb(244, 244, 244);
+  position: relative;
+
+  &::after {
+    border: 10px solid rgb(231, 231, 231);
+    content: '';
+    display: block;
+    width: 90vw;
+    max-width: 1400px;
+    height: 90vh;
+    max-height: 800px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    position: fixed;
+    border-radius: 5px;
+  }
+  &::before {
+    content: '';
+    --size: 250vmax;
+    --bg-size: 200px;
+    grid-area: body;
+    inline-size: var(--size);
+    block-size: var(--size);
+    background-image: url('./../image/bg/icons_bg.svg');
+    background-size: var(--bg-size);
+    background-repeat: repeat;
+    transform: rotate(45deg);
+    opacity: 0.1;
+    animation: login_bg 10s linear infinite;
+    z-index: -3;
+  }
+}
+
+@keyframes login_bg {
+  to {
+    background-position: 0 calc(var(--bg-size) * -1);
+  }
 }
 
 .yellowCard {
@@ -44,7 +124,7 @@ body {
 body {
   margin: 0;
   padding: 0;
-  font-family: '微軟正黑體', sans-serif;
+  font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
 }
 
 .flex {
@@ -72,22 +152,42 @@ body {
 }
 
 #connect {
+  overflow: hidden;
   width: 100vw;
   height: 100vh;
-  background-color: rgba($color: $mainColor, $alpha: 0.5);
+  background-color: rgba($color: $bg_light, $alpha: 1);
   position: fixed;
   z-index: 99999999999999999;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  place-content: center;
+  &::before {
+    content: '';
+    --size: 250vmax;
+    --bg-size: 200px;
+    grid-area: body;
+    inline-size: var(--size);
+    block-size: var(--size);
+    background-image: url('./../image/bg/icons_bg.svg');
+    background-size: var(--bg-size);
+    background-repeat: repeat;
+    transform: rotate(45deg);
+    opacity: 0.05;
+    animation: login_bg 15s linear infinite;
+    z-index: -3;
+  }
   .loading-box {
+    color: $text_default_title;
     position: absolute;
     left: 50%;
     top: 30%;
     transform: translate(-50%, -50%);
     h2,
     span {
-      color: white;
       font-size: 3rem;
       @include xs {
         font-size: 1.8rem;
@@ -99,6 +199,36 @@ body {
       animation: ttt 1s infinite ease-in-out;
       overflow: hidden;
     }
+    p {
+      margin-top: 15px;
+      text-align: center;
+    }
+    .flex {
+      @include min-xs {
+        padding-left: 50px;
+      }
+    }
+    .ani {
+      margin-top: 50px;
+      position: relative;
+      height: 65px;
+      width: calc(371px / 5);
+      background-image: url('./../../ui/loading.png');
+      transform: perspective(500px);
+      animation: load-ani 0.4s steps(5) infinite;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+@keyframes load-ani {
+  from {
+    background-position: 0;
+  }
+  to {
+    background-position: 371px;
   }
 }
 

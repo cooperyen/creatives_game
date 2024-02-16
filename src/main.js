@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import router from '@/../assets/router.js';
-import { userStore, loopStore } from '@/../assets/userStore.js';
+import { userStore, loopStore, gameData } from '@/../assets/userStore.js';
 import { style } from '@/../assets/style.js';
 import readyIcon from '@/../src/ui/ready.vue';
 import App from '@/App.vue'
@@ -21,6 +21,7 @@ const store = createStore({
   modules: {
     userStore,
     loopStore,
+    gameData,
     style
   }
 });

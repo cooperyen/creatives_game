@@ -16,6 +16,7 @@ const style = {
         case 'yellowCard':
           document.querySelector('body').classList.add('yellowCard');
           break;
+
       }
     }
   },
@@ -24,21 +25,23 @@ const style = {
 
 class bg_style {
   constructor() {
-    this.class = ['default', 'yellowCard']
+    this.class = ['default', 'yellowCard', 'login_bd']
   }
 
   backGorund(el) {
     const bodyClassHandle = document.querySelector('body').classList
     bodyClassHandle.remove(...bodyClassHandle)
 
-    switch (el) {
-      case 'yellowCard':
-        bodyClassHandle.add('yellowCard');
-        break;
-      default:
-        bodyClassHandle.add('default');
-        break;
-    }
+    this.class.includes(el) ? bodyClassHandle.add(el) : bodyClassHandle.add('default')
+
+    // switch (el) {
+    //   case 'yellowCard':
+    //     bodyClassHandle.add('yellowCard');
+    //     break;
+    //   default:
+    //     bodyClassHandle.add('default');
+    //     break;
+    // }
   }
 }
 

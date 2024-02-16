@@ -2,6 +2,7 @@ $mainBg: rgb(94 139 149);
 $light_yellow: rgb(234, 184, 56);
 $text: rgb(198, 190, 149);
 @import './rwd.scss';
+@import './color.scss';
 
 .lobby-container {
   display: flex;
@@ -9,7 +10,6 @@ $text: rgb(198, 190, 149);
   user-select: none;
   width: calc(100% - 60px);
   max-width: 1400px;
-  // overflow: hidden;
   @include L {
     width: calc(100% - 15px);
   }
@@ -24,7 +24,6 @@ $text: rgb(198, 190, 149);
 
 .room-container {
   padding: 17px 0;
-  overflow: hidden;
   width: calc(100% - 15px);
   margin-left: auto;
   margin-right: auto;
@@ -37,91 +36,35 @@ $text: rgb(198, 190, 149);
   }
   @include sm {
     flex: unset;
-  }
-
-  .room {
-    border-radius: 5px;
-    transition: transform 0.2s;
-    padding-bottom: 40px;
-
-    @include min-med {
-      margin-top: 50px;
-      &:hover {
-        transform: scale(1.05) translateY(-10px) rotate(1deg);
-        transition: transform 0.2s;
-      }
-    }
-    $imgborder: 0px;
-    .room-layout {
-      margin: 5px 25px 0 25px;
-      @include med {
-        margin: 5px 12px 0 12px;
-      }
-      box-shadow: 0px 0px 8px rgba(208, 233, 69, 0.8);
-      animation: boxShadow 3s ease infinite;
-      // margin: 50px;
-    }
-
-    .room-content {
-      position: relative;
-      border-radius: $imgborder;
-      border: 8px solid transparent; /*2*/
-      border-image: linear-gradient(
-          to right,
-          rgb(5, 56, 97),
-          rgba(139, 112, 47, 1),
-          rgba(141, 43, 125, 1)
-        )
-        6;
-      animation: mover 3s ease infinite;
-      @include sm {
-        max-height: 300px;
-        overflow: hidden;
-      }
-      .img-box {
-        img {
-          border-radius: $imgborder;
-          transition: 0.4s;
-          opacity: 0.9;
-        }
-      }
-      .content {
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        margin-top: 10px;
-        width: 100%;
-        .title {
-          font-weight: bold;
-          color: $text;
-          text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
-          margin-bottom: 8px;
-          font-size: 1.3rem;
-          text-align: center;
-          text-transform: uppercase;
-          @include xs {
-            font-size: 1.1rem;
-          }
-        }
-      }
-    }
+    padding: 17px 10px;
   }
 
   .room-box {
+    width: 50%;
     @include med {
       &:nth-child(even) {
         .room-layout {
-          padding-left: 5px;
+          padding-left: 10px;
         }
       }
       &:nth-child(odd) {
         .room-layout {
-          padding-right: 5px;
+          padding-right: 10px;
         }
       }
     }
-    width: 50%;
+    @include xs {
+      &:nth-child(even) {
+        .room-layout {
+          padding-left: 0;
+        }
+      }
+      &:nth-child(odd) {
+        .room-layout {
+          padding-right: 0;
+        }
+      }
+    }
 
     &.exist {
       .room-layout,
@@ -149,6 +92,9 @@ $text: rgb(198, 190, 149);
     @include min-xl {
       width: 33.3%;
     }
+    @include xs {
+      width: 100%;
+    }
 
     .room-layout {
       padding-left: 15px;
@@ -167,14 +113,22 @@ $text: rgb(198, 190, 149);
           left: 20px;
           top: 50%;
           transform: translateY(-50%);
-          font-size: 1.3rem;
-          color: $text;
+
+          color: $text_default_title;
           max-width: 50%;
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
           @include sm {
             margin-top: 1px;
+            font-size: 1rem;
+          }
+          .title {
+            font-weight: bold;
+            font-size: 1.3rem;
+          }
+          .soon {
+            font-weight: 600;
             font-size: 1rem;
           }
           .players {
@@ -190,6 +144,14 @@ $text: rgb(198, 190, 149);
           }
         }
         .img-box {
+          background-color: white;
+          border: 5px solid rgb(70, 70, 70);
+          height: 80px;
+          width: 100%;
+          border-radius: 8px;
+          @include sm {
+            height: 70px;
+          }
           .bg {
             // max-width: 269px;
             padding-right: 15px;
@@ -197,16 +159,16 @@ $text: rgb(198, 190, 149);
           .right {
             position: absolute;
             transform: translateY(-50%);
-            right: -30px;
             top: 50%;
             width: 100%;
-            max-width: 53%;
+            max-width: 100px;
+            right: -10px;
 
-            @include min-xl {
-              right: -22px;
-            }
             @include med {
               right: -10px;
+            }
+            @include sm {
+              max-width: 85px;
             }
           }
           // position: absolute;
@@ -219,9 +181,10 @@ $text: rgb(198, 190, 149);
 }
 
 .current-users-container {
-  color: $text;
+  padding-top: 10px;
+  color: $text_default_title;
   margin-right: auto;
-  margin-left: auto;
+  margin-left: 40px;
   max-height: 200px;
 
   @include min-L {
@@ -230,6 +193,7 @@ $text: rgb(198, 190, 149);
   @include L {
     width: 100%;
     flex: 1;
+    margin-left: auto;
   }
 
   @include sm {
@@ -239,7 +203,8 @@ $text: rgb(198, 190, 149);
   .content {
     overflow-y: auto;
     border-radius: 8px;
-    background-color: rgba($color: $mainBg, $alpha: 0.7);
+    background-color: rgb(255, 255, 255);
+    border: 5px solid rgb(185, 159, 32);
     padding: 10px 15px;
     min-height: 100px;
     @include sm {

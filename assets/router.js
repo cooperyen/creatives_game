@@ -16,7 +16,7 @@ const router = createRouter({
       path: '/',
       name: 'login',
       component: login,
-      meta: { transition: 'move-out' },
+      meta: { transition: 'move-out', style: { body: 'login_bd' } },
     },
     {
       path: '/lobby',
@@ -61,15 +61,9 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(to => {
   const bg = new bg_style()
-  let body = null;
-  let check = to.meta.style ? to.meta.style.body : null
-  console.log(check);
-  switch (check) {
-    case 'yellowCard':
-      body = 'yellowCard';
-    default:
-      break;
-  }
+  const body = to.meta.style ? to.meta.style.body : null
+  console.log(body);
+
   bg.backGorund(body)
 })
 

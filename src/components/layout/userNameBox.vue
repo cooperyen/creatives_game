@@ -49,7 +49,7 @@ export default {
     color: black;
   }
   &.light {
-    color: $text;
+    color: $text_default_title;
   }
   > :deep(.content) {
     right: 20px;

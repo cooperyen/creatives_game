@@ -62,5 +62,20 @@ const loopStore = {
   }
 }
 
+const gameData = {
+  state() {
+    return {
+      chGameName: {
+        game01: { name: '心靈同步', ppl: '2-4' },
+        game02: { name: '21點', ppl: '2-4' },
+        game03: { name: '黃牌', ppl: '2-4' },
+      },
+    }
+  },
+  mutations: {
 
-export { userStore, loopStore }
+  }
+}
+
+
+export { userStore, loopStore, gameData }

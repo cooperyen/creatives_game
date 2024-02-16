@@ -2,39 +2,11 @@
   <userNameBox :userName="userName">
     <p @click="$router.replace('/')">change ID</p>
   </userNameBox>
-
+  <div class="check"></div>
   <!-- content -->
   <transition name="content-ready">
     <div class="lobby-container" v-show="$store.state.userStore.loading">
       <div class="room-container flex">
-        <!-- swiper game rooms -->
-        <!-- <swiper-container
-          init="false"
-          :slides-per-view="1"
-          :space-between="spaceBetween"
-          pagination="ture"
-          :breakpoints="breakpoints"
-        >
-          <swiper-slide class="room" v-for="i in gameRooms" :key="i">
-            <div class="room-layout">
-              <div class="room-content" @click="joinRoom(i)">
-                <div class="img-box">
-                  <img
-                    :src="'./../../image/' + i + '.png'"
-                    :alt="i"
-                    loading="lazy"
-                  />
-                </div>
-                <div class="content">
-                  <div class="title">
-                    <p>{{ chGameName[i] ? chGameName[i] : i }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </swiper-slide>
-        </swiper-container> -->
-
         <div class="room-box exist" v-for="i in gameRooms" :key="i">
           <div class="room-layout">
             <div class="room-content" @click="joinRoom(i)">
@@ -47,49 +19,28 @@
                 </div>
               </div>
               <div class="img-box">
-                <div class="bg">
-                  <img :src="getRoomUrl(i)" :alt="i" loading="lazy" />
-                </div>
+                <div class="bg"></div>
                 <div class="right">
-                  <img :src="getRoomUrl(`${i}_icon`)" :alt="i" loading="lazy" />
+                  <img :src="getRoomUrl(`${i}`)" :alt="i" loading="lazy" />
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- <div class="room-box exist" v-for="i in gameRooms" :key="i">
-          <div class="room-layout">
-            <div class="room-content" @click="joinRoom(i)">
-              <div class="content flex">
-                <div class="title">
-                  <p>{{ getRoomDetail(i, 'name') }}</p>
-                </div>
-                <div class="players">
-                  <p>{{ getRoomDetail(i, 'player') }}人</p>
-                </div>
-              </div>
-              <div class="img-box">
-                <img :src="getRoomUrl(i)" :alt="i" loading="lazy" />
-              </div>
-            </div>
-          </div>
-        </div> -->
-
         <div class="room-box" v-for="i in unGameRooms" :key="i">
           <div class="room-layout">
             <div class="room-content">
               <div class="content flex">
-                <div class="title">
+                <div class="soon">
+                  <p>coming</p>
                   <p>soon</p>
                 </div>
               </div>
-              <div class="img-box">
-                <div class="bg" style="opacity: 0.4">
-                  <img :src="getRoomUrl('unroom')" loading="lazy" />
-                </div>
+              <div class="img-box" style="opacity: 0.4">
+                <div class="bg"></div>
                 <div class="right">
-                  <img :src="getRoomUrl('unroom_icon')" loading="lazy" />
+                  <img :src="getRoomUrl('default_game')" loading="lazy" />
                 </div>
               </div>
             </div>
@@ -118,9 +69,6 @@
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
-// Import Swiper styles
-// import { register } from 'swiper/element/bundle';
-// register();
 
 export default {
   setup() {
@@ -150,6 +98,7 @@ export default {
       gameRooms: null,
       unGameRooms: 0,
       lobbyPlayerList: null,
+      isShowPage: false,
       chGameName: {
         game01: { name: '心靈同步', ppl: '2-4' },
         game02: { name: '21點', ppl: '2-4' },
@@ -174,7 +123,7 @@ export default {
       }
     },
     getRoomUrl(name) {
-      return new URL(`/src/image/lobby/${name}.png`, import.meta.url).href;
+      return new URL(`/src/image/game/${name}.svg`, import.meta.url).href;
     },
     swipierInit() {
       const swiperEl = document.querySelector('swiper-container');
@@ -270,6 +219,13 @@ export default {
     },
   },
   watch: {
+    'state.userStore.loading': {
+      handler(el) {
+        setTimeout(() => {
+          this.isShowPage = el;
+        }, 100);
+      },
+    },
     'state.goUrl': {
       handler(el) {
         if (el === null) return;
@@ -301,6 +257,8 @@ export default {
   },
   mounted() {
     // this.swipierInit();\
+    this.$store.state.userStore.loading = false;
+    console.log(this.$store.state.userStore.loading);
     this.socketConnectCheck();
   },
 
