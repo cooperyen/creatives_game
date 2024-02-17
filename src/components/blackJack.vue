@@ -1,6 +1,6 @@
 <template>
   <div class="end game">
-    <router-link to="/lobby">END GAME</router-link>
+    <router-link to="/lobby" replace>END GAME</router-link>
   </div>
   <div v-if="windowSize" class="window">
     <div class="content">
@@ -304,7 +304,7 @@ export default {
       deep: true,
     },
     'game.endGame'(el) {
-      console.log(el);
+      // console.log(el);
       if (el) {
         const data = this.registerEmit();
         data.showdown = true;

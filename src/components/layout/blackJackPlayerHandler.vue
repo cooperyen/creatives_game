@@ -136,7 +136,7 @@ export default {
       }, 100);
     },
     playersCardTranform() {
-      console.log('object');
+      // console.log('object');
       const handCardBox = document.querySelectorAll(
         '.hand-card-box.players-box'
       );

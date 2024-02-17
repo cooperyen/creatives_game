@@ -47,7 +47,10 @@ export default {
       if (this.userName === '' || nameLength > 15) alert('this.userName');
       if (this.userName != '' && nameLength <= 15) {
         this.$store.state.userStore.userName = this.userName;
-        this.socket.emit('login', { id: this.userName });
+        this.socket.emit('login', {
+          id: this.userName,
+          icon: this.$store.state.gameData.playerIcon[0],
+        });
       }
     },
   },
@@ -65,7 +68,7 @@ export default {
     },
     'state.goUrl': {
       handler(el) {
-        console.log('url', el);
+        // console.log('url', el);
         if (el === null) return;
         this.$router.replace(el);
         // this.state.goUrl = null;
@@ -80,13 +83,9 @@ export default {
       deep: true,
     },
   },
+  // create new database from local.
   created() {
-    localStorage.setItem(
-      'userData',
-      JSON.stringify({ userName: null, userRoom: null })
-    );
-
-    // this.state.connected = false;
+    this.$store.commit('createDefaultData');
   },
   beforeMount() {
     // this.$store.commit('backGorund', 'default');

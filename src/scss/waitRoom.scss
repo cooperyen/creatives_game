@@ -17,9 +17,10 @@
 
 .leader-box,
 .player-box {
-  margin: 0 auto;
   width: 100%;
   max-width: 380px;
+  margin: 0 auto;
+  padding: 0 5px;
 }
 
 .player-container {
@@ -31,21 +32,26 @@
 
   .player-box .player-item,
   .leader-box .leader-item {
-    height: 120px;
     position: relative;
     background-color: rgb(241, 241, 241);
     border-radius: 7px;
-    margin-bottom: 5px;
+    @include sm {
+      margin-bottom: 5px;
+    }
   }
 
   .player-box {
     .player-item {
+      height: 120px;
       border: 5px solid $border_style_lightDark;
       @include sm {
         height: 80px;
       }
-      @include min-sm {
-        margin-bottom: 10px;
+      &:nth-child(1),
+      &:nth-child(2) {
+        @include min-sm {
+          margin-bottom: 10px;
+        }
       }
       &.empty {
         opacity: 0.2;
@@ -77,7 +83,7 @@
           }
           @include sm {
             img {
-              width: 80px;
+              width: 70px;
             }
           }
         }
@@ -110,7 +116,9 @@
 
   .leader-box {
     .leader-item {
+      height: 100%;
       border: 5px solid #ccae73;
+      background-color: wheat;
       @include sm {
         display: flex;
         background-color: white;
@@ -125,7 +133,7 @@
           width: 100%;
           margin: 0 auto;
           @include sm {
-            width: 80px;
+            width: 70px;
           }
         }
         @include min-sm {
@@ -163,9 +171,9 @@
 .back-container {
   height: 140px;
   max-width: 1200px;
-  background-image: url('./../image/top_ui.png');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+  // background-image: url('./../image/top_ui.png');
+  // background-size: 100% 100%;
+  // background-repeat: no-repeat;
   margin: 0 auto;
   position: relative;
   @include sm {
@@ -224,8 +232,8 @@
     margin-top: 0px;
   }
   .ready-box {
-    filter: drop-shadow(0px 0px 6px rgb(255, 214, 34));
-    animation: filterBgAni 2s infinite;
+    // filter: drop-shadow(0px 0px 6px $agree);
+    // animation: filterBgAni 2s infinite;
     .ready-content {
       // background-color: rgb(219, 29, 29);
       // clip-path: polygon(25% 0%, 75% 0%, 95% 25%, 85% 100%, 15% 100%, 5% 25%);
@@ -247,16 +255,24 @@
       .ready-btn {
         cursor: pointer;
         // transform: scale(0.9);
-        box-shadow: 0 0 4px black;
+        border: 5px solid black;
+        box-shadow: 0 0 4px $agree;
         font-weight: bold;
         font-size: 2rem;
         color: white;
         text-transform: uppercase;
         padding: 10px;
         background-clip: border-box;
-        // clip-path: polygon(25% 10%, 75% 10%, 91% 29%, 84% 91%, 16% 91%, 9% 29%);
+        clip-path: polygon(
+          25% 15%,
+          75% 10%,
+          85% 29%,
+          84% 85%,
+          16% 91%,
+          15% 29%
+        );
         &.ready {
-          background-color: rgb(22, 80, 116);
+          background-color: $agree;
         }
         &.cancel {
           background-color: rgba(172, 59, 59, 0.9);

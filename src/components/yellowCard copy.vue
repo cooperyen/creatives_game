@@ -267,7 +267,7 @@ export default {
   methods: {
     currentStep() {
       const el = this.playerMove.currentStep;
-      console.log(this.timer.countTimer);
+      // console.log(this.timer.countTimer);
 
       switch (el) {
         case 'used':
@@ -386,7 +386,7 @@ export default {
     },
     gameDataLayoutFirstLoad(el) {
       if (el === null || el === undefined) return;
-      console.log(el);
+      // console.log(el);
       let yellowCard = [];
       this.playerMove.currentStep = 'used';
       this.playerMove.usedOpen = true;
@@ -401,7 +401,7 @@ export default {
     },
     // receive each data from bkend after first in game.
     gameDataLayout(action = null, el) {
-      console.log('gameDataLayout', el);
+      // console.log('gameDataLayout', el);
       if (el === null || el === undefined) return;
 
       let yellowCard = [];

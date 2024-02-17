@@ -3,6 +3,7 @@ import router from '@/../assets/router.js';
 import { userStore, loopStore, gameData } from '@/../assets/userStore.js';
 import { style } from '@/../assets/style.js';
 import readyIcon from '@/../src/ui/ready.vue';
+import backGround from '@/../src/components/animation/backGround.vue';
 import App from '@/App.vue'
 import { createStore } from 'vuex';
 
@@ -34,4 +35,5 @@ app.use(store);
 app.use(router);
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('readyIcon', readyIcon)
+app.component('backGround', backGround)
 router.isReady().then(() => app.mount('#app'))

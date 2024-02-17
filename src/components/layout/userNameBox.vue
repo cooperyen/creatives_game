@@ -30,7 +30,7 @@ export default {
       this.$route.meta.style?.userName != undefined
         ? this.$route.meta.style.userName
         : false;
-    console.log(this.on);
+    // console.log(this.on);
     if (this.userName != null) this.ani = true;
     else this.ani = false;
   },

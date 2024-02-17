@@ -62,7 +62,6 @@ router.beforeEach((to, from, next) => {
 router.afterEach(to => {
   const bg = new bg_style()
   const body = to.meta.style ? to.meta.style.body : null
-  console.log(body);
 
   bg.backGorund(body)
 })

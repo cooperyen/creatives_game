@@ -2,7 +2,7 @@
   <userNameBox :userName="userName">
     <p @click="$router.replace('/')">change ID</p>
   </userNameBox>
-  <div class="check"></div>
+  <backGround></backGround>
   <!-- content -->
   <transition name="content-ready">
     <div class="lobby-container" v-show="$store.state.userStore.loading">
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <!-- current not in game or room players in lobby -->
+      <!-- Players who are not currently in the game or in the room -->
       <div id="user" class="container pd-side current-users-container">
         <div class="title">
           <p>當前玩家</p>
@@ -57,7 +57,7 @@
           <div>
             <ul>
               <li v-for="i in lobbyPlayerList" :key="i">
-                {{ i.user_id }}
+                <span>{{ i.user_id }}</span>
               </li>
             </ul>
           </div>
@@ -175,7 +175,6 @@ export default {
       );
 
       function doCheck() {
-        console.log(that.state.gameRooms.state);
         // make sure backEnd data same as frontEnd.
         const userData = JSON.parse(localStorage.getItem('userData'));
 
@@ -183,6 +182,7 @@ export default {
           that.socket.emit('id_check', {
             id: userData.userName,
             room: userData.userRoom,
+            icon: userData.icon,
           });
 
         if (!that.state.gameRooms.state) return false;
@@ -190,10 +190,12 @@ export default {
       }
     },
     joinRoom(roomId) {
+      const userData = JSON.parse(localStorage.getItem('userData'));
       if (roomId) {
         this.socket.emit('join', {
           room: roomId,
           id: this.userName,
+          icon: userData.icon,
         });
       } else {
         alert('未指定房間 ID');
@@ -245,7 +247,7 @@ export default {
       },
     },
     gameRooms(el) {
-      this.unGameRooms = 8 - el.length;
+      this.unGameRooms = 6 - el.length;
     },
   },
   props: ['socket', 'state'],
@@ -258,7 +260,7 @@ export default {
   mounted() {
     // this.swipierInit();\
     this.$store.state.userStore.loading = false;
-    console.log(this.$store.state.userStore.loading);
+    // console.log(this.$store.state.userStore.loading);
     this.socketConnectCheck();
   },
 

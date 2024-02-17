@@ -70,11 +70,7 @@ export default {
     cookieCheck() {
       const data = JSON.parse(localStorage.getItem('userData'));
 
-      if (data === null)
-        localStorage.setItem(
-          'userData',
-          JSON.stringify({ userName: null, userRoom: null })
-        );
+      if (data === null) this.$store.commit('createDefaultData');
     },
   },
   mounted() {

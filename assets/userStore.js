@@ -1,12 +1,16 @@
+const playerIcon = ['cheese'];
 const userData = JSON.parse(localStorage.getItem('userData'))
 const userName = userData != null ? userData.userName : null
 const userRoom = userData != null ? userData.userRoom : null
+const icon = userData != null ? userData.icon : playerIcon[0]
+
 
 const userStore = {
   state() {
     return {
       userName,
       userRoom,
+      icon,
       loading: false,
     };
   },
@@ -70,12 +74,24 @@ const gameData = {
         game02: { name: '21點', ppl: '2-4' },
         game03: { name: '黃牌', ppl: '2-4' },
       },
+      playerIcon
     }
   },
   mutations: {
+    createDefaultData(state) {
 
+      const cookie = JSON.parse(localStorage.getItem('userData'))
+      let data = { userName: null, userRoom: null, icon: playerIcon[0] }
+      console.log(cookie);
+      if (cookie != null && cookie?.icon != playerIcon[0]) data.icon = cookie.icon
+
+      localStorage.setItem(
+        'userData',
+        JSON.stringify(data)
+      );
+    },
   }
 }
 
 
-export { userStore, loopStore, gameData }
+export { userStore, loopStore, gameData, playerIcon }

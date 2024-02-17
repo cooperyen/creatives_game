@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import { io } from "socket.io-client";
-import { userStore } from '@/../assets/userStore.js';
+import { userStore, gameData, playerIcon } from '@/../assets/userStore.js';
 
 
 export const state = reactive({
@@ -13,6 +13,7 @@ export const state = reactive({
   gameRooms: { state: false, gameList: null },
   lobbyPlayerList: null,
   currentPlayers: null,
+  eachPlayers: null,
   router: null,
   loginError: null,
   activeGameRoom: null,
@@ -64,7 +65,6 @@ async function ans() {
       res()
     });
   })
-  console.log(id);
   state.connected = true;
 }
 ans();
@@ -76,6 +76,7 @@ state.connected = false;
 state.gameDataUpdate = null;
 state.gameOne.readyList = null;
 state.currentPlayers = null;
+state.eachPlayers = null;
 
 socket.on('re_act', function (datas) {
   // console.log(datas)
@@ -89,6 +90,9 @@ socket.on('re_act', function (datas) {
 function router(data) {
   switch (data.way) {
     case 'id_check':
+
+      if (data.user_sids != null || data.user_sids != undefined)
+        state.currentPlayers = data
 
       if (data.game_list != null || data.game_list != undefined) {
         state.gameRooms = null;
@@ -120,8 +124,11 @@ function router(data) {
       break;
 
     case 'login':
-
-      localStorage.setItem('userData', JSON.stringify({ userName: data.id, userRoom: null }));
+      const cookie = JSON.parse(localStorage.getItem('userData'))
+      const icon = playerIcon[0]
+      let cookieData = { userName: data.id, userRoom: null, icon };
+      if (cookie.icon != icon) cookieData.icon = icon;
+      localStorage.setItem('userData', JSON.stringify(cookieData));
       state.loginError = null;
       state.goUrl = null;
 
@@ -173,12 +180,12 @@ socket.on('update_lobby', function (data) {
   if (data.user_sids != null || data.user_sids != undefined)
     state.lobbyPlayerList = data.user_sids;
 
-  if (data.page != null || data.page != undefined)
-    state.currentPlayers = data.page;
+  if (data.page != null || data.page != undefined) {
+    state.currentPlayers = data;
+  }
 })
 
 socket.on('updata_ready', function (data) {
-  console.log(data);
   state.gameOne.readyToGo = false;
   state.gameOne.readyList = data.reduce((key, val, index) => {
     key[val] = val
@@ -201,12 +208,9 @@ socket.on('re_draw', function (data) {
   if (data.message === 'draw') state.drawVote = { isPass: true }
   if (data.message === 'play') state.drawVote = { isPass: false, card: data.card };
 
-  console.log(state.drawVote);
-
 })
 
 socket.on('re_lunch', function (data) {
-  console.log(data);
   // state.gameOne.readyToGo = false;
   if (data.isReady != null || data.isReady != undefined)
     state.gameOne.readyToGo = data.isReady;
@@ -240,6 +244,6 @@ socket.on('re_no_game', function (data) {
 })
 
 socket.on('update_wait_room', function (data) {
-  console.log(data)
+  // console.log(data)
 })
 

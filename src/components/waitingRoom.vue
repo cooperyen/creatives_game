@@ -2,7 +2,7 @@
   <div v-show="$store.state.userStore.loading">
     <div class="back-container">
       <div class="back-btn">
-        <router-link to="/lobby" class="flex">
+        <router-link to="/lobby" replace class="flex">
           <font-awesome-icon icon="fa-solid fa-chevron-left" />
           <p>to looby</p>
         </router-link>
@@ -23,11 +23,11 @@
             <div class="layout-inner flex">
               <!-- icon -->
               <div class="icon-box">
-                <img src="./../image/user.png" alt="" />
+                <img :src="getRoomUrl(i.icon)" alt="" />
               </div>
               <!-- name -->
               <div class="name-box flex">
-                <p>{{ i }}</p>
+                <p>{{ i.id }}</p>
               </div>
               <!-- ready icon -->
               <readyIcon v-show="readyList[i]"></readyIcon>
@@ -47,7 +47,7 @@
         <div class="leader-box">
           <div class="leader-item">
             <div class="icon-box">
-              <img src="./../image/user.png" alt="" />
+              <img :src="getRoomUrl(userIcon)" alt="" />
             </div>
             <div class="name-box">
               <p>
@@ -100,6 +100,7 @@
       </div>
     </div>
   </div>
+  <backGround></backGround>
 </template>
 
 <script>
@@ -109,7 +110,9 @@ export default {
       otherPlayers: null,
       otherPlayerSetroom: 3,
       selfPlayer: null,
+      eachPlayer: null,
       userRoom: null,
+      userIcon: null,
       start: false,
       readyList: [],
       isReady: false,
@@ -131,6 +134,13 @@ export default {
     'state.currentPlayers': {
       handler(el) {
         this.currentPlayers(el);
+      },
+      deep: true,
+    },
+    'state.eachPlayers': {
+      handler(el) {
+        // console.log(el);
+        // this.eachPlayer = el;
       },
       deep: true,
     },
@@ -184,6 +194,11 @@ export default {
   emits: ['loadingLoop'],
   props: ['socket', 'state'],
   methods: {
+    getRoomUrl(name) {
+      if (name === null) return;
+      return new URL(`/src/image/player_icon/${name}.svg`, import.meta.url)
+        .href;
+    },
     readyGameUI(boolean) {
       if (boolean) {
         this.isShowCountDown = true;
@@ -229,22 +244,35 @@ export default {
         this.socket.emit('ready', who_is_ready);
       }
     },
+    eachPlayers(el) {
+      this.eachPlayer = el;
+    },
     currentPlayers(el) {
+      // console.log(el, 'currentPlayers');
       // no data than return.
-      if (el === undefined || el === null) return;
-
+      if (el.page === undefined || el.page === null) return;
+      const page = el.page;
+      const players = el.user_sids;
       const userRoomURL = this.$store.state.userStore.userRoom;
       const userRoom = userRoomURL.substring(userRoomURL.indexOf('/') + 1);
 
       if (userRoom === null) return;
 
-      const ready = el[userRoom]['ready'].indexOf(this.selfPlayer);
-      const playerList = el[userRoom]['player'];
+      const ready = page[userRoom]['ready'].indexOf(this.selfPlayer);
+      const playerList = page[userRoom]['player'];
 
       // room players without self.
-      const otherPlayers = playerList.filter((el) => {
-        return el != this.selfPlayer;
-      });
+      const otherPlayers = playerList
+        .map((el) => {
+          // console.log(el, this.selfPlayer);
+          if (el != this.selfPlayer) {
+            players[el].id = el;
+            return players[el];
+          }
+        })
+        .filter((x) => {
+          return x != null;
+        });
 
       if (ready === -1) this.readyGameUI(false);
       if (ready === -1 && playerList.length >= 2) this.readyGameUI(true);
@@ -304,6 +332,7 @@ export default {
           that.socket.emit('id_check', {
             id: that.selfPlayer,
             room: that.userRoom,
+            icon: that.userIcon,
           });
           return false;
         }
@@ -312,13 +341,11 @@ export default {
   },
   mounted() {
     const LocalStorageData = JSON.parse(localStorage.getItem('userData'));
-    const userName = LocalStorageData.userName;
-    const userRoom = LocalStorageData.userRoom;
+    this.selfPlayer = LocalStorageData.userName;
+    this.userRoom = LocalStorageData.userRoom;
+    this.userIcon = LocalStorageData.icon;
 
-    this.userRoom = userRoom;
-    this.selfPlayer = userName;
-
-    if (userRoom === null || userRoom === undefined)
+    if (this.userRoom === null || this.userRoom === undefined)
       this.$router.replace('/lobby');
 
     this.loadCheck();

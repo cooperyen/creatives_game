@@ -1,8 +1,15 @@
 <template>
   <div id="yellowCard">
     <userNameBox :userName="getUserName" class="name"></userNameBox>
-    <!-- <h1>{{ timer }}</h1>
-    <h1>{{ playerMove.currentStep }}</h1> -->
+    <h1>{{ timer }}</h1>
+    <h1>{{ playerMove.currentStep }}</h1>
+    <div v-if="playerMove.currentStep != 'end'">
+      <h1>show time</h1>
+      <div v-if="this.timer.show">
+        {{ this.timer.time }}
+      </div>
+      <div v-else>0</div>
+    </div>
     <div v-if="playerMove.currentStep != 'end'">
       <div class="player_list">
         <div class="title">
@@ -72,8 +79,8 @@
 
       <!-- new game await other player -->
       <div
-        v-if="playerMove.currentStep === ''"
-        :class="{ active: playerMove.currentStep === '' }"
+        v-if="playerMove.currentStep === 'statistic'"
+        :class="{ active: playerMove.currentStep === 'statistic' }"
       >
         <h1>回合計算中</h1>
       </div>
@@ -85,29 +92,13 @@
       id="end_game"
     >
       <div class="container">
-        <template v-if="gameFinal === 'win' || gameFinal === 'lose'">
-          <div class="title">END GAME</div>
-          <div class="result">
-            <h2>YOU {{ gameFinal.toUpperCase() }}</h2>
-          </div>
-        </template>
-
-        <template v-if="gameFinal === 'end'">
-          <div class="title">GAME END</div>
-          <div class="result">
-            <p>You exceed game response time</p>
-          </div>
-        </template>
-
-        <template v-if="gameFinal === 'close'">
-          <div class="title">GAME CLOSE</div>
-          <div class="result">
-            <p>The number of players in the game is less than 2</p>
-          </div>
-        </template>
+        <div class="title">{{ gameFinal.toUpperCase() }} GAME</div>
+        <div class="result">
+          <h2>{{ gameData.endGameSentence[gameFinal] }}</h2>
+        </div>
 
         <div>
-          <router-link to="/lobby">Leave</router-link>
+          <router-link to="/lobby" replace>Leave</router-link>
           <p>
             leave the game in <span>{{ timer.time }}</span> seconds
           </p>
@@ -131,9 +122,19 @@ export default {
       timer: {
         countTimer: null,
         time: 30,
+        long: 30,
+        show: false,
+        isWait: false,
         default: 30,
       },
       gameData: {
+        endGameSentence: {
+          end: 'The game exceed response time',
+          win: 'You WIN!',
+          lose: 'You LOSE',
+          close: 'The number of players in the game is less than 2',
+          re: '',
+        },
         selfHand: null,
         hp: [],
         player: null,
@@ -171,11 +172,15 @@ export default {
         this.playerMove.voteOpen = false;
         this.playerMove.dropOpen = false;
 
-        console.log(el);
-
-        if (el.action === 'in') this.gameDataLayout(el.message.action, el.page);
-
-        if (el.action === 'lose' || el.action === 'win' || el.action === 'end')
+        if (el.action === 'in' || el.action === 'game_update') {
+          this.gameDataLayout(el.message.action, el.page);
+        }
+        if (
+          el.action === 'lose' ||
+          el.action === 'win' ||
+          el.action === 'end' ||
+          el.action === 'close'
+        )
           setTimeout(() => {
             this.gameEnd(el.action);
           }, 1000);
@@ -184,7 +189,6 @@ export default {
     },
     gameFinal: {
       handler(el) {
-        console.log(el);
         const x = this.cleanTimer();
         if (x)
           this.creatTimer(10, () => {
@@ -192,6 +196,13 @@ export default {
           });
       },
       deep: true,
+    },
+    'playerMove.currentStep': {
+      handler(el) {
+        // check if is step statistic.
+        if (el != 'statistic') return;
+        this.checkToCreatTimer();
+      },
     },
   },
   computed: {
@@ -207,9 +218,62 @@ export default {
     this.gameRoom = this.getUserRoom;
   },
   methods: {
+    // receive each data from bkend after first in game.
+    gameDataLayout(action = null, el) {
+      if (el === null || el === undefined) return;
+
+      if (el['玩家列表'].length <= 1)
+        this.socket.emit('yc', {
+          id: this.getUserName,
+          room: this.getUserRoom,
+          immediate: true,
+        });
+
+      if (el['玩家列表'].length > 1) {
+        let yellowCard = [];
+        this.gameData.tableCard = el['檯面上'];
+        this.gameData.ownself = el['我的資訊'];
+        this.gameData.quest = el['題目'].replace(/{}/g, '__');
+        this.gameData.questLength = this.checkQuestLength(el['題目']);
+        this.gameData.selfHand = this.gameData.ownself['手牌'];
+        this.gameData.player = el['玩家列表'];
+        this.gameData.vote = el['投票欄'];
+
+        this.gameData.player.forEach((name) => {
+          if (el[name]) yellowCard.push({ [name]: el[name]['黃牌'] });
+        });
+        yellowCard.push({ [this.getUserName]: el['我的資訊']['黃牌'] });
+
+        this.gameData.yellowCard = yellowCard;
+
+        switch (action) {
+          case 'used':
+            // check is play cards and go next.
+            if (this.gameData.ownself['出牌'].length != 0)
+              this.playerMove.currentStep = 'vote';
+            break;
+          case 'vote':
+            if (this.gameData.ownself['投給'] != '')
+              this.playerMove.currentStep = 'drop';
+            break;
+          case 'drop':
+            if (
+              this.gameData.tableCard.length === 0 &&
+              this.gameData.vote.length === 0
+            )
+              this.playerMove.currentStep = 'used';
+            break;
+        }
+
+        this.currentStep();
+      }
+    },
     gameEnd(el) {
       this.playerMove.currentStep = 'end';
       this.gameFinal = el;
+    },
+    isShowStatistic() {
+      return;
     },
     isShowAwait(el) {
       let result = false;
@@ -220,19 +284,21 @@ export default {
         case 'drop':
           result = !this.playerMove.dropOpen ? true : false;
           break;
+        case 'statistic':
+          result = true;
       }
 
+      this.timer.show = !result;
       return result;
     },
     currentStep() {
       switch (this.playerMove.currentStep) {
         case 'used':
-          console.log(this.gameData.tableCard);
           this.playerMove.usedOpen =
             this.gameData.tableCard.length <= this.gameData.player.length
               ? true
               : false;
-          this.checkToCreatTimer('used', this.playerMove.usedOpen);
+          this.checkToCreatTimer();
 
           break;
 
@@ -242,7 +308,7 @@ export default {
               ? true
               : false;
 
-          this.checkToCreatTimer('vote', this.playerMove.voteOpen);
+          this.checkToCreatTimer();
           break;
 
         case 'drop':
@@ -250,32 +316,34 @@ export default {
             this.gameData.vote.length >= this.gameData.player.length
               ? true
               : false;
-          this.checkToCreatTimer('drop', this.playerMove.dropOpen);
+          this.checkToCreatTimer();
           break;
       }
     },
     outCheck(el) {
-      // this.socket.emit('yc', {
-      //   id: this.getUserName,
-      //   room: this.getUserRoom,
-      //   re_player: el,
-      // });
-      console.log('');
+      this.socket.emit('yc', {
+        id: this.getUserName,
+        room: this.getUserRoom,
+        re_player: el,
+      });
     },
 
-    checkToCreatTimer(point, open = false) {
+    checkToCreatTimer() {
       let timer;
+      const point = this.playerMove.currentStep;
 
       switch (point) {
         case 'used':
         case 'vote':
-          timer = 30 * 1.5;
+        case 'statistic':
+          timer = this.timer.long;
           break;
         default:
           timer = this.timer.default;
           break;
       }
 
+      if (!this.timer.show) this.cleanTimer();
       this.timer.countTimer === null
         ? this.creatTimer(timer, () => {
             this.outCheck(point);
@@ -301,12 +369,8 @@ export default {
       let leng = this.playerMove.pickCard.length;
 
       if (auto === false) {
-        if (this.playerMove.pickCard.length <= 0)
-          alert('最少棄一張牌，最多3張牌');
-        if (
-          this.playerMove.pickCard.length > 0 &&
-          this.playerMove.pickCard.length <= 3
-        ) {
+        if (leng <= 0) alert('最少棄一張牌，最多3張牌');
+        if (leng > 0 && leng <= 3) {
           this.socket.emit('yc', {
             id: this.getUserName,
             room: this.getUserRoom,
@@ -323,7 +387,7 @@ export default {
         });
       }
 
-      this.playerMove.currentStep = '';
+      this.playerMove.currentStep = 'statistic';
       this.playerMove.pickCard = [];
       this.cleanTimer();
     },
@@ -416,47 +480,6 @@ export default {
       this.checkToCreatTimer('used');
     },
 
-    // receive each data from bkend after first in game.
-    gameDataLayout(action = null, el) {
-      if (el === null || el === undefined) return;
-
-      let yellowCard = [];
-      this.gameData.tableCard = el['檯面上'];
-      this.gameData.ownself = el['我的資訊'];
-      this.gameData.quest = el['題目'].replace(/{}/g, '__');
-      this.gameData.questLength = this.checkQuestLength(el['題目']);
-      this.gameData.selfHand = this.gameData.ownself['手牌'];
-      this.gameData.player = el['玩家列表'];
-      this.gameData.vote = el['投票欄'];
-
-      this.gameData.player.forEach((name) => {
-        if (el[name]) yellowCard.push({ [name]: el[name]['黃牌'] });
-      });
-      yellowCard.push({ [this.getUserName]: el['我的資訊']['黃牌'] });
-
-      this.gameData.yellowCard = yellowCard;
-
-      switch (action) {
-        case 'used':
-          // check is play cards and go next.
-          if (this.gameData.ownself['出牌'].length != 0)
-            this.playerMove.currentStep = 'vote';
-          break;
-        case 'vote':
-          if (this.gameData.ownself['投給'] != '')
-            this.playerMove.currentStep = 'drop';
-          break;
-        case 'drop':
-          if (
-            this.gameData.tableCard.length === 0 &&
-            this.gameData.vote.length === 0
-          )
-            this.playerMove.currentStep = 'used';
-          break;
-      }
-
-      this.currentStep();
-    },
     updateUserRoom() {
       if (this.state.activeGameRoom != null)
         this.$store.commit('updateUserRoom', this.state.activeGameRoom);
@@ -493,8 +516,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.$store.state.style.yellowCard);
-
     if (
       this.state.gameDataFirstLoad === null ||
       this.state.gameDataFirstLoad === undefined

@@ -246,7 +246,7 @@ export default {
     },
     'state.drawVote': {
       handler(el) {
-        console.log(el);
+        // console.log(el);
         if (el != null && el.isPass) this.drawVote.state = el;
         if (el != null && !el.isPass) {
           this.drawVote.state = false;
@@ -320,7 +320,7 @@ export default {
     },
     'drawVote.state'(el) {
       this.drawVote.time = 5;
-      console.log(el);
+      // console.log(el);
       if (el)
         this.drawVote.countTimer = setInterval(() => {
           if (this.drawVote.time <= 0) this.drawVote.time = 0;
