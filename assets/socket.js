@@ -177,6 +177,7 @@ socket.on('updata_watingroom_ready', function (data) {
 
 
 socket.on('update_lobby', function (data) {
+
   if (data.user_sids != null || data.user_sids != undefined)
     state.lobbyPlayerList = data.user_sids;
 

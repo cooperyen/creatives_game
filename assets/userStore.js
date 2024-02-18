@@ -1,16 +1,31 @@
-const playerIcon = ['cheese'];
-const userData = JSON.parse(localStorage.getItem('userData'))
-const userName = userData != null ? userData.userName : null
-const userRoom = userData != null ? userData.userRoom : null
-const icon = userData != null ? userData.icon : playerIcon[0]
+const playerIcon = ['cheese', 'strawberry', 'cheese2', 'strawberry2'];
+const userData = JSON.parse(localStorage.getItem('userData'));
+const userName = userData != null ? userData.userName : null;
+const userRoom = userData != null ? userData.userRoom : null;
 
+
+function updateCookie(el, val, each = null) {
+  localStorage.setItem(
+    el,
+    JSON.stringify(val)
+  );
+}
+
+
+function isNotExist(el) {
+  return el === undefined || el === null || el === '' ? true : false
+}
+
+function getCookie(el) {
+  return JSON.parse(localStorage.getItem(el))
+}
 
 const userStore = {
   state() {
     return {
       userName,
       userRoom,
-      icon,
+      icon: playerIcon[0],
       loading: false,
     };
   },
@@ -22,12 +37,43 @@ const userStore = {
       state.userRoom = data;
       localStorage.setItem('userData', JSON.stringify(state))
     },
-    clearUserRoom(state, data) {
-      const userData = JSON.parse(localStorage.getItem('userData'))
-      if (userData === null) return;
-      userData.userRoom = null
+    updateUserIcon(state, data) {
+      const userData = getCookie('userData')
+      state.icon = data;
+      userData.icon = state.icon
       localStorage.setItem('userData', JSON.stringify(userData))
-    }
+    },
+    clearUserRoom(state, data) {
+
+      const userData = getCookie('userData')
+
+      if (userData === null) return;
+
+      state.userRoom = null
+      userData.userRoom = state.userRoom
+
+      updateCookie('userData', userData)
+    },
+    authCheck(state) {
+      const userData = getCookie('userData')
+
+      // check each cookie value.
+      if (isNotExist(userData.userName)) userData.userName = state.userName
+      if (isNotExist(userData.userRoom)) userData.userRoom = state.userRoom
+      if (isNotExist(userData.icon) || !isNotExist(userData.icon) && !playerIcon.includes(userData.icon)) userData.icon = state.icon
+
+      // update cookie
+      updateCookie('userData', userData)
+
+    },
+    createDefaultData(state) {
+      const cookie = getCookie('userData')
+      let data = { userName: null, userRoom: null, icon: playerIcon[0] }
+
+      if (cookie != null && cookie?.icon != playerIcon[0]) data.icon = cookie.icon
+
+      updateCookie('userData', data)
+    },
   },
 }
 
@@ -78,18 +124,7 @@ const gameData = {
     }
   },
   mutations: {
-    createDefaultData(state) {
 
-      const cookie = JSON.parse(localStorage.getItem('userData'))
-      let data = { userName: null, userRoom: null, icon: playerIcon[0] }
-      console.log(cookie);
-      if (cookie != null && cookie?.icon != playerIcon[0]) data.icon = cookie.icon
-
-      localStorage.setItem(
-        'userData',
-        JSON.stringify(data)
-      );
-    },
   }
 }
 

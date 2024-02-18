@@ -23,6 +23,84 @@
   padding: 0 5px;
 }
 
+.change_user_role {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(63, 51, 10, 0.6);
+  position: fixed;
+  left: 0;
+  top: 0;
+  .content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 530px;
+    width: calc(100% - 30px);
+    min-height: 200px;
+    background-color: $bg_light;
+    flex-wrap: wrap;
+    padding: 15px 0;
+    border-radius: 10px;
+    border: 5px solid $border_style_dark;
+    .role {
+      margin-bottom: 15px;
+      img {
+        max-width: 200px;
+        width: calc(100% - 80px);
+        margin: 0 auto;
+      }
+    }
+    .roles {
+      max-width: 500px;
+      width: calc(100% - 20px);
+      // background-color: rgb(42, 89, 110);
+      margin: 0 auto;
+      .img_content {
+        width: 20%;
+        // border: 1px solid black;
+        padding: 15px;
+        @include sm {
+          width: 33.3%;
+        }
+        .icon_box {
+          cursor: pointer;
+          border: 2px solid rgb(95 100 121);
+          background-color: rgb(240, 240, 240);
+          border-radius: 10px;
+          padding: 10px 5px;
+          img {
+            max-width: 45px;
+            width: 100%;
+            margin: 0 auto;
+          }
+        }
+      }
+    }
+    .btn {
+      margin-top: 10px;
+      width: 100%;
+      text-align: center;
+      button {
+        padding: 10px 10px;
+        border-radius: 10px;
+        margin: 0 10px;
+        border-width: 2px;
+        border-style: solid;
+        min-width: 70px;
+        cursor: pointer;
+        &.agree {
+          background-color: #7ad97a;
+          border-color: #54af54;
+        }
+        &.cencel {
+          border-color: rgb(203, 91, 91);
+        }
+      }
+    }
+  }
+}
+
 .player-container {
   max-width: 800px;
   margin: 0 auto;
@@ -164,6 +242,13 @@
           }
         }
       }
+    }
+    .setting {
+      cursor: pointer;
+      position: absolute;
+      right: 5px;
+      top: 0;
+      color: rgb(88, 88, 88);
     }
   }
 }

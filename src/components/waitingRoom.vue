@@ -1,5 +1,6 @@
 <template>
   <div v-show="$store.state.userStore.loading">
+    <!-- back to lobby -->
     <div class="back-container">
       <div class="back-btn">
         <router-link to="/lobby" replace class="flex">
@@ -13,22 +14,25 @@
         </h2>
       </div>
     </div>
+
+    <!-- main container -->
     <div class="container">
       <!-- player's content -->
       <div class="flex player-container">
         <!-- otherPlayers -->
         <div class="player-box">
           <div class="player-item" v-for="i in otherPlayers" :key="i">
-            <!-- <div class="layout"></div> -->
             <div class="layout-inner flex">
               <!-- icon -->
               <div class="icon-box">
-                <img :src="getRoomUrl(i.icon)" alt="" />
+                <img :src="getImgUrl(i.icon)" alt="" />
               </div>
+
               <!-- name -->
               <div class="name-box flex">
                 <p>{{ i.id }}</p>
               </div>
+
               <!-- ready icon -->
               <readyIcon v-show="readyList[i]"></readyIcon>
             </div>
@@ -47,27 +51,30 @@
         <div class="leader-box">
           <div class="leader-item">
             <div class="icon-box">
-              <img :src="getRoomUrl(userIcon)" alt="" />
+              <img :src="getImgUrl(userIcon)" alt="" />
             </div>
             <div class="name-box">
               <p>
                 {{ selfPlayer }}
               </p>
             </div>
+            <!-- change user role -->
+            <div class="setting" @click="role.open = true">
+              <font-awesome-icon icon="fa-solid fa-gear" />
+            </div>
             <readyIcon v-show="readyList[selfPlayer]"></readyIcon>
           </div>
         </div>
       </div>
     </div>
-    <!-- buttons -->
-
+    <!-- active -->
     <div class="active-container" v-show="!readyToGo">
-      <!-- <transition name="move-up"> -->
+      <!-- time count down -->
       <div class="count-down" :class="{ visible: !isShowCountDown }">
         請準備遊戲，<span>{{ time }}</span> 秒後反回大廳
         {{ isShowCountDown }}
       </div>
-      <!-- </transition> -->
+      <!-- do ready-->
       <div class="ready-container">
         <div class="ready-box">
           <div class="ready-content">
@@ -91,6 +98,7 @@
       </div>
     </div>
 
+    <!-- room leader start game -->
     <div class="start-game" v-if="readyToGo">
       <div class="start-layout">
         <div class="content">
@@ -99,8 +107,65 @@
         </div>
       </div>
     </div>
+
+    <!-- change user role content -->
+    <div class="change_user_role" v-if="role.open">
+      {{ $store.state.gameData.playerIcon }}
+      <div class="content">
+        <div class="role">
+          <img
+            :src="
+              getImgUrl(
+                role.userSelectIcon === null
+                  ? role.userDefault
+                  : role.userSelectIcon
+              )
+            "
+            alt=""
+          />
+        </div>
+        <hr />
+        <div class="roles flex flex-wrap">
+          <div
+            v-for="i in $store.state.gameData.playerIcon"
+            :key="i"
+            class="img_content"
+            @click="role.userSelectIcon = i"
+          >
+            <div class="icon_box">
+              <img :src="getImgUrl(i)" alt="" />
+            </div>
+          </div>
+          <div
+            v-for="i in $store.state.gameData.playerIcon"
+            :key="i"
+            class="img_content"
+            @click="role.userSelectIcon = i"
+          >
+            <div class="icon_box">
+              <img :src="getImgUrl(i)" alt="" />
+            </div>
+          </div>
+          <div
+            v-for="i in $store.state.gameData.playerIcon"
+            :key="i"
+            class="img_content"
+            @click="role.userSelectIcon = i"
+          >
+            <div class="icon_box">
+              <img :src="getImgUrl(i)" alt="" />
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="btn">
+          <button class="agree" @click="setUserRole()">agree</button>
+          <button class="cencel" @click="role.open = false">cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <backGround></backGround>
+  <backGroundAnimate></backGroundAnimate>
 </template>
 
 <script>
@@ -121,9 +186,15 @@ export default {
       countDownFun: null,
       isShowCountDown: false,
       readyToGo: false,
+      role: {
+        open: false,
+        userSelectIcon: null,
+        userDefault: null,
+      },
     };
   },
   components: {},
+
   watch: {
     'state.loginError': {
       handler(el) {
@@ -194,7 +265,13 @@ export default {
   emits: ['loadingLoop'],
   props: ['socket', 'state'],
   methods: {
-    getRoomUrl(name) {
+    setUserRole() {
+      this.role.userDefault = this.role.userSelectIcon;
+      this.userIcon = this.role.userSelectIcon;
+      this.$store.commit('updateUserIcon', this.role.userSelectIcon);
+      this.role.open = false;
+    },
+    getImgUrl(name) {
       if (name === null) return;
       return new URL(`/src/image/player_icon/${name}.svg`, import.meta.url)
         .href;
@@ -340,15 +417,17 @@ export default {
     },
   },
   mounted() {
-    const LocalStorageData = JSON.parse(localStorage.getItem('userData'));
-    this.selfPlayer = LocalStorageData.userName;
-    this.userRoom = LocalStorageData.userRoom;
-    this.userIcon = LocalStorageData.icon;
-
     if (this.userRoom === null || this.userRoom === undefined)
       this.$router.replace('/lobby');
 
     this.loadCheck();
+  },
+  created() {
+    const localStorageData = JSON.parse(localStorage.getItem('userData'));
+    this.selfPlayer = localStorageData.userName;
+    this.userRoom = localStorageData.userRoom;
+    this.userIcon = localStorageData.icon;
+    this.role.userDefault = this.userIcon;
   },
   beforeUnmount() {
     clearTimeout(this.countDownFun);

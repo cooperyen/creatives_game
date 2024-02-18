@@ -470,7 +470,6 @@ export default {
       this.state.gameDataFirstLoad != undefined &&
       this.state.gameDataFirstLoad != null
     ) {
-      this.$store.commit('updateLoading', true);
       this.gameDataLayoutFirstLoad(this.state.gameDataFirstLoad.page);
     }
 

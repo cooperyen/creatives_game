@@ -26,6 +26,7 @@
   <div class="connected" v-show="connectedTime != 0">
     <div>connecting : {{ connectedTime }}</div>
   </div>
+  <backGroundAnimate></backGroundAnimate>
 </template>
 
 <script>
@@ -44,6 +45,7 @@ export default {
     login() {
       const nameLength = this.userName.length;
 
+      // character should between 1-15
       if (this.userName === '' || nameLength > 15) alert('this.userName');
       if (this.userName != '' && nameLength <= 15) {
         this.$store.state.userStore.userName = this.userName;

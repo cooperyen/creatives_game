@@ -2,7 +2,7 @@
   <userNameBox :userName="userName">
     <p @click="$router.replace('/')">change ID</p>
   </userNameBox>
-  <backGround></backGround>
+  <backGroundAnimate></backGroundAnimate>
   <!-- content -->
   <transition name="content-ready">
     <div class="lobby-container" v-show="$store.state.userStore.loading">
@@ -163,9 +163,9 @@ export default {
               if (this.chGameName[x] != undefined) return x;
             });
 
-            setTimeout(() => {
-              this.$store.commit('updateLoading', true);
-            }, 200);
+            // setTimeout(() => {
+            this.$store.commit('updateLoading', true);
+            // }, 20);
           }
 
           // next run will return looby by "id_check" by backEnd after clearUserRoom;
@@ -209,7 +209,7 @@ export default {
         setInterval(() => {
           const result = doCheck(this);
           if (result) this.$store.commit('socketDelete');
-        }, 1000)
+        }, 100)
       );
 
       function doCheck() {
