@@ -30,7 +30,7 @@
 
               <!-- name -->
               <div class="name-box flex">
-                <p>{{ i.id }}</p>
+                <p>{{ i.user_id }}</p>
               </div>
 
               <!-- ready icon -->
@@ -325,11 +325,12 @@ export default {
       this.eachPlayer = el;
     },
     currentPlayers(el) {
-      // console.log(el, 'currentPlayers');
       // no data than return.
-      if (el.page === undefined || el.page === null) return;
-      const page = el.page;
       const players = el.user_sids;
+      if (el.page === undefined || el.page === null) return;
+
+      const page = el.page;
+
       const userRoomURL = this.$store.state.userStore.userRoom;
       const userRoom = userRoomURL.substring(userRoomURL.indexOf('/') + 1);
 
@@ -338,12 +339,13 @@ export default {
       const ready = page[userRoom]['ready'].indexOf(this.selfPlayer);
       const playerList = page[userRoom]['player'];
 
+      console.log(page[userRoom], 'page[userRoom]');
       // room players without self.
       const otherPlayers = playerList
         .map((el) => {
-          // console.log(el, this.selfPlayer);
+          console.log(players, 'el');
           if (el != this.selfPlayer) {
-            players[el].id = el;
+            players[el].user_id = el;
             return players[el];
           }
         })

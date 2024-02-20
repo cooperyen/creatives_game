@@ -239,6 +239,7 @@ export default {
     },
     'state.lobbyPlayerList': {
       handler(el) {
+        console.log(el);
         // Leave a player that room vlaue is null.
         this.lobbyPlayerList = Object.values(el).filter((vl) => {
           if (vl.room != null) return;

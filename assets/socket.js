@@ -91,8 +91,11 @@ function router(data) {
   switch (data.way) {
     case 'id_check':
 
-      if (data.user_sids != null || data.user_sids != undefined)
+      if (data.user_sids != null || data.user_sids != undefined) {
+        console.log(data);
         state.currentPlayers = data
+      }
+
 
       if (data.game_list != null || data.game_list != undefined) {
         state.gameRooms = null;
@@ -172,17 +175,18 @@ function router(data) {
 }
 
 socket.on('updata_watingroom_ready', function (data) {
-  state.currentPlayers = data.room_data
+  console.log(data);
+  state.currentPlayers = data.user_sids
 })
 
 
 socket.on('update_lobby', function (data) {
-
+  console.log(data);
   if (data.user_sids != null || data.user_sids != undefined)
     state.lobbyPlayerList = data.user_sids;
 
   if (data.page != null || data.page != undefined) {
-    state.currentPlayers = data;
+    // state.currentPlayers = data;
   }
 })
 

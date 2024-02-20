@@ -194,38 +194,40 @@
 
   .leader-box {
     .leader-item {
-      height: 100%;
       border: 5px solid #ccae73;
       background-color: wheat;
       @include sm {
         display: flex;
         background-color: white;
-        // background-image: url('./../image/leader_mb.png');
-        height: 80px;
+      }
+      @include min-sm {
+        height: 100%;
       }
       .icon-box {
         width: 100%;
 
         img {
-          max-width: 230px;
+          max-width: 200px;
           width: 100%;
           margin: 0 auto;
           @include sm {
-            width: 70px;
+            width: 45px;
           }
         }
         @include min-sm {
-          padding-top: 30px;
+          padding-top: 50px;
+          padding-bottom: 15px;
         }
         @include sm {
           // padding: 15px 0;
+          padding: 5px 0;
           flex: 1.5;
         }
       }
       .name-box {
         font-size: 2rem;
         @include sm {
-          flex: 2;
+          flex: 3;
           font-size: 1rem;
           padding: 15px 0;
           display: flex;
