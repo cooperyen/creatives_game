@@ -15,14 +15,6 @@
   // transform: translate(-50%, -50%);
 }
 
-.leader-box,
-.player-box {
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
-  padding: 0 5px;
-}
-
 .change_user_role {
   width: 100%;
   height: 100%;
@@ -58,18 +50,26 @@
       margin: 0 auto;
       .img_content {
         width: 20%;
-        // border: 1px solid black;
         padding: 15px;
+        &.focus {
+          .icon_box {
+            border-color: red;
+            img {
+              opacity: 1;
+            }
+          }
+        }
         @include sm {
           width: 33.3%;
         }
         .icon_box {
           cursor: pointer;
-          border: 2px solid rgb(95 100 121);
+          border: 2px solid rgb(184, 189, 211);
           background-color: rgb(240, 240, 240);
           border-radius: 10px;
           padding: 10px 5px;
           img {
+            opacity: 0.8;
             max-width: 45px;
             width: 100%;
             margin: 0 auto;
@@ -108,91 +108,105 @@
     flex-wrap: wrap;
   }
 
-  .player-box .player-item,
-  .leader-box .leader-item {
-    position: relative;
-    background-color: rgb(241, 241, 241);
-    border-radius: 7px;
-    @include sm {
-      margin-bottom: 5px;
+  .name-box {
+    color: rgb(47, 47, 47);
+    font-weight: bold;
+    // text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .leader-box,
+  .player-box {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+    padding: 0 5px;
+    .player-item,
+    .leader-item {
+      position: relative;
+      border-radius: 7px;
+
+      .icon-box {
+        width: 100%;
+
+        @include sm {
+          flex: 1.5;
+        }
+      }
+      .name-box {
+        @include sm {
+          flex: 3;
+          font-size: 1rem;
+          padding: 15px 0;
+          display: flex;
+          align-items: center;
+        }
+        p {
+          max-width: 75%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
     }
   }
 
   .player-box {
     .player-item {
-      height: 120px;
       border: 5px solid $border_style_lightDark;
-      @include sm {
-        height: 80px;
+      // border: 5px solid rgb(216 174 174);
+      background-color: rgb(250, 250, 250);
+      @include min-sm {
+        padding: 5px 0;
       }
       &:nth-child(1),
       &:nth-child(2) {
+        @include sm {
+          margin-bottom: 7px;
+        }
         @include min-sm {
-          margin-bottom: 10px;
+          margin-bottom: 15px;
         }
       }
       &.empty {
         opacity: 0.2;
+        height: 80px;
+        @include sm {
+          height: 64px;
+        }
       }
-      .layout-inner {
-        width: 100%;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-
-        .icon-box {
-          img {
-            margin: 0 auto;
-          }
-          flex: 1.5;
-          @include min-sm {
-            img {
-              width: 100px;
-            }
-            transform: translate(-30px, -10px);
-          }
-          @include med {
-            transform: translate(0px, 0px);
-          }
-          @include min-med {
-            img {
-              width: 120px;
-            }
-          }
+      .icon-box {
+        flex: 1;
+        img {
+          max-width: 60px;
+          width: 100%;
+          margin: 0 auto;
           @include sm {
-            img {
-              width: 70px;
-            }
+            width: 45px;
           }
         }
-        .name-box {
-          width: 100%;
-          align-items: center;
-          flex: 2;
-          font-size: 1.2rem;
-          @include sm {
-            font-size: 1rem;
-          }
-          @include min-med {
-            transform: translateX(-30px);
-            width: calc(100% - 120px);
-          }
-          p {
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
+      }
+      .name-box {
+        width: 100%;
+        align-items: center;
+        flex: 2;
+        font-size: 1.5rem;
+        @include sm {
+          font-size: 1rem;
+        }
+        @include min-med {
+          width: calc(100% - 120px);
+        }
+        p {
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
     }
   }
 
-  .name-box {
-    color: rgb(47, 47, 47);
-    font-weight: bold;
-    text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
-  }
-
   .leader-box {
+    @include sm {
+      margin-top: 30px;
+    }
     .leader-item {
       border: 5px solid #ccae73;
       background-color: wheat;
@@ -207,7 +221,7 @@
         width: 100%;
 
         img {
-          max-width: 200px;
+          max-width: 150px;
           width: 100%;
           margin: 0 auto;
           @include sm {
@@ -215,7 +229,7 @@
           }
         }
         @include min-sm {
-          padding-top: 50px;
+          padding-top: 25px;
           padding-bottom: 15px;
         }
         @include sm {
@@ -226,6 +240,7 @@
       }
       .name-box {
         font-size: 2rem;
+        padding-bottom: 25px;
         @include sm {
           flex: 3;
           font-size: 1rem;
@@ -369,7 +384,6 @@
   }
 
   .count-down {
-    color: white;
     margin-bottom: 10px;
     margin-top: 10px;
     &.visible {

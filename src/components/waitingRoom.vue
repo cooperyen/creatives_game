@@ -34,7 +34,7 @@
               </div>
 
               <!-- ready icon -->
-              <readyIcon v-show="readyList[i]"></readyIcon>
+              <readyIcon v-show="readyList[i.user_id]"></readyIcon>
             </div>
           </div>
           <!-- empty -->
@@ -130,29 +130,9 @@
             v-for="i in $store.state.gameData.playerIcon"
             :key="i"
             class="img_content"
-            @click="role.userSelectIcon = i"
+            :class="{ focus: role.userSelectIcon === i }"
           >
-            <div class="icon_box">
-              <img :src="getImgUrl(i)" alt="" />
-            </div>
-          </div>
-          <div
-            v-for="i in $store.state.gameData.playerIcon"
-            :key="i"
-            class="img_content"
-            @click="role.userSelectIcon = i"
-          >
-            <div class="icon_box">
-              <img :src="getImgUrl(i)" alt="" />
-            </div>
-          </div>
-          <div
-            v-for="i in $store.state.gameData.playerIcon"
-            :key="i"
-            class="img_content"
-            @click="role.userSelectIcon = i"
-          >
-            <div class="icon_box">
+            <div class="icon_box" @click="role.userSelectIcon = i">
               <img :src="getImgUrl(i)" alt="" />
             </div>
           </div>
@@ -180,6 +160,7 @@ export default {
       userIcon: null,
       start: false,
       readyList: [],
+      playerList: null,
       isReady: false,
       time: 60,
       isCountDown: false,
@@ -202,16 +183,24 @@ export default {
         this.$router.replace(`/${el}`);
       },
     },
-    'state.currentPlayers': {
+    'state.updateCurrentPlayers': {
       handler(el) {
-        this.currentPlayers(el);
+        this.playerList = el.room_data[this.userRoom]['player'];
+        this.countPlayers(el);
+        const ready = el.room_data[this.userRoom]['ready'];
+        this.readyList = ready.reduce((key, val, index) => {
+          key[val] = val;
+          return key;
+        }, {});
       },
       deep: true,
     },
-    'state.eachPlayers': {
+
+    'state.currentPlayers': {
       handler(el) {
-        // console.log(el);
-        // this.eachPlayer = el;
+        this.playerList = el.page[this.userRoom]['player'];
+        this.currentPlayers(el);
+        this.countPlayers(el);
       },
       deep: true,
     },
@@ -270,6 +259,11 @@ export default {
       this.userIcon = this.role.userSelectIcon;
       this.$store.commit('updateUserIcon', this.role.userSelectIcon);
       this.role.open = false;
+      this.socket.emit('id_check', {
+        id: this.selfPlayer,
+        room: this.userRoom,
+        icon: this.userIcon,
+      });
     },
     getImgUrl(name) {
       if (name === null) return;
@@ -326,7 +320,6 @@ export default {
     },
     currentPlayers(el) {
       // no data than return.
-      const players = el.user_sids;
       if (el.page === undefined || el.page === null) return;
 
       const page = el.page;
@@ -339,11 +332,15 @@ export default {
       const ready = page[userRoom]['ready'].indexOf(this.selfPlayer);
       const playerList = page[userRoom]['player'];
 
-      console.log(page[userRoom], 'page[userRoom]');
       // room players without self.
-      const otherPlayers = playerList
+      if (ready === -1) this.readyGameUI(false);
+      if (ready === -1 && this.playerList.length >= 2) this.readyGameUI(true);
+    },
+
+    countPlayers(el) {
+      const players = el.user_sids;
+      const otherPlayers = this.playerList
         .map((el) => {
-          console.log(players, 'el');
           if (el != this.selfPlayer) {
             players[el].user_id = el;
             return players[el];
@@ -352,10 +349,6 @@ export default {
         .filter((x) => {
           return x != null;
         });
-
-      if (ready === -1) this.readyGameUI(false);
-      if (ready === -1 && playerList.length >= 2) this.readyGameUI(true);
-
       this.otherPlayers = otherPlayers;
       this.otherPlayerSetroom = 3 - otherPlayers.length;
     },

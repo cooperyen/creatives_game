@@ -13,6 +13,8 @@ export const state = reactive({
   gameRooms: { state: false, gameList: null },
   lobbyPlayerList: null,
   currentPlayers: null,
+  updateCurrentPlayers: null,
+  currentPlayersLoby: null,
   eachPlayers: null,
   router: null,
   loginError: null,
@@ -77,6 +79,7 @@ state.gameDataUpdate = null;
 state.gameOne.readyList = null;
 state.currentPlayers = null;
 state.eachPlayers = null;
+state.updateCurrentPlayers = null;
 
 socket.on('re_act', function (datas) {
   // console.log(datas)
@@ -92,7 +95,6 @@ function router(data) {
     case 'id_check':
 
       if (data.user_sids != null || data.user_sids != undefined) {
-        console.log(data);
         state.currentPlayers = data
       }
 
@@ -174,20 +176,16 @@ function router(data) {
   }
 }
 
-socket.on('updata_watingroom_ready', function (data) {
-  console.log(data);
-  state.currentPlayers = data.user_sids
+socket.on('updateWaitRoomPlayers', function (data) {
+  state.updateCurrentPlayers = data
+  state.gameOne.readyToGo = false;
+
 })
 
-
 socket.on('update_lobby', function (data) {
-  console.log(data);
   if (data.user_sids != null || data.user_sids != undefined)
     state.lobbyPlayerList = data.user_sids;
 
-  if (data.page != null || data.page != undefined) {
-    // state.currentPlayers = data;
-  }
 })
 
 socket.on('updata_ready', function (data) {
