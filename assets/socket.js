@@ -59,6 +59,12 @@ socket.on("connect", (el) => {
 
 });
 
+socket.on("disconnect", (el) => {
+  console.log(el);
+
+});
+
+
 async function ans() {
   let id;
   const cos = await new Promise(res => {
