@@ -50,7 +50,29 @@ export const socket = io(URL, {
 });
 
 
+function handleErrors(el) {
+  let time = 5
+
+  if (state.isConnected) return;
+  state.isConnected = true
+
+  const xx = setInterval(() => {
+    time -= 1
+    console.log(time);
+    if (time <= 0) {
+      state.connected = false;
+      socket.disconnect()
+      clearInterval(xx)
+    }
+  }, 5000);
+
+
+
+}
+
 // export const conntect = () => {
+socket.on('connect_error', err => handleErrors(err))
+
 
 socket.on("connect", (el) => {
   // alert(el);

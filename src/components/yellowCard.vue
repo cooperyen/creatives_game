@@ -2,7 +2,7 @@
   <div id="yellowCard">
     <userNameBox :userName="getUserName" class="name"></userNameBox>
     <h1>{{ timer }}</h1>
-    <h1>{{ playerMove.currentStep }}</h1>
+    <!-- <h1>{{ playerMove.currentStep }}</h1> -->
     <div v-if="playerMove.currentStep != 'end'">
       <h1>show time</h1>
       <div v-if="this.timer.show">
@@ -365,7 +365,19 @@ export default {
       this.timer.countTimer = null;
       return true;
     },
+    /**
+     *  Check if the current time has expired.
+     *  @return Boolean
+     */
+    timeOutCheck() {
+      if (this.timer.time <= 0) {
+        // alert('time out');
+        return true;
+      }
+    },
     drop(auto = false) {
+      if (this.timeOutCheck()) return;
+
       let leng = this.playerMove.pickCard.length;
 
       if (auto === false) {
@@ -392,6 +404,8 @@ export default {
       this.cleanTimer();
     },
     vote(auto = false) {
+      if (this.timeOutCheck()) return;
+
       this.socket.emit('yc', {
         id: this.getUserName,
         room: this.getUserRoom,
@@ -415,6 +429,8 @@ export default {
       return [...el.matchAll('{}')].length;
     },
     pickUsedCard(el) {
+      if (this.timeOutCheck()) return;
+
       let span,
         result = this.gameData.quest;
 
@@ -428,6 +444,8 @@ export default {
       this.questInnerHTML(`<p>${result}</p>`);
     },
     pickUsedCardRemove(el) {
+      if (this.timeOutCheck()) return;
+
       let result = this.gameData.quest;
 
       this.playerMove.pickCardclickQueue -= 1;
@@ -440,6 +458,8 @@ export default {
       this.questInnerHTML(`<p>${result}</p>`);
     },
     rePickUsedCard() {
+      if (this.timeOutCheck()) return;
+
       this.questInnerHTML(this.gameData.quest);
       this.repickCard();
     },
@@ -449,15 +469,20 @@ export default {
       this.wait.quest = target.innerHTML;
     },
     pickDropCard(el) {
+      if (this.timeOutCheck()) return;
+
       if (this.playerMove.pickCard.length >= 3) return;
       this.playerMove.pickCardclickQueue += 1;
       this.playerMove.pickCard.push(el);
     },
     pickDropCardRemove(el) {
+      if (this.timeOutCheck()) return;
+
       this.playerMove.pickCardclickQueue -= 1;
       this.playerMove.pickCard.splice(this.playerMove.pickCard.indexOf(el), 1);
     },
     repickCard() {
+      if (this.timeOutCheck()) return;
       this.playerMove.pickCard = [];
       this.playerMove.pickCardclickQueue = 0;
     },
@@ -485,6 +510,7 @@ export default {
         this.$store.commit('updateUserRoom', this.state.activeGameRoom);
     },
     used(auto = false) {
+      if (this.timeOutCheck()) return;
       if (!auto) {
         if (this.playerMove.pickCard.length != this.gameData.questLength)
           return;

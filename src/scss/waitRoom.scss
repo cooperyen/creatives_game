@@ -48,6 +48,9 @@
       width: calc(100% - 20px);
       // background-color: rgb(42, 89, 110);
       margin: 0 auto;
+      @include sm {
+        width: calc(100% - 5px);
+      }
       .img_content {
         width: 20%;
         padding: 15px;
@@ -61,6 +64,8 @@
         }
         @include sm {
           width: 33.3%;
+          padding: 5px;
+          // width: calc(100% - 10px);
         }
         .icon_box {
           cursor: pointer;
@@ -263,8 +268,8 @@
     .setting {
       cursor: pointer;
       position: absolute;
-      right: 5px;
-      top: 0;
+      right: 10px;
+      top: 5px;
       color: rgb(88, 88, 88);
     }
   }

@@ -110,7 +110,6 @@
 
     <!-- change user role content -->
     <div class="change_user_role" v-if="role.open">
-      {{ $store.state.gameData.playerIcon }}
       <div class="content">
         <div class="role">
           <img
@@ -423,6 +422,7 @@ export default {
     this.userRoom = localStorageData.userRoom;
     this.userIcon = localStorageData.icon;
     this.role.userDefault = this.userIcon;
+    this.role.userSelectIcon = this.userIcon;
   },
   beforeUnmount() {
     clearTimeout(this.countDownFun);

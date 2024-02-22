@@ -1,13 +1,20 @@
 <template>
   <transition name="connect">
     <div id="connect" v-if="!$store.state.userStore.loading">
-      <div class="loading-box">
+      <div class="loading-box active" v-if="state.connected != false">
         <div class="flex">
           <h2>Connecting</h2>
           <span>......</span>
         </div>
         <div><p>shouldn't take too long.</p></div>
         <div class="ani"></div>
+      </div>
+      <div class="loading-box" v-if="!state.connected">
+        <div class="flex">
+          <h3>Connecting to service FAIL</h3>
+        </div>
+        <div><p>please reload page and try again!</p></div>
+        <!-- <div class="ani"></div> -->
       </div>
     </div>
   </transition>
