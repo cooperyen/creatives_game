@@ -14,8 +14,8 @@
   border-radius: 100%;
   width: 50px;
   height: 50px;
-  right: 0;
-  top: 0;
+  right: -15px;
+  top: -15px;
   align-items: center;
   justify-content: center;
   font-weight: bold;

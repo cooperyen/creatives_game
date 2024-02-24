@@ -5,7 +5,7 @@ import { userStore, gameData, playerIcon } from '@/../assets/userStore.js';
 
 export const state = reactive({
   isConnected: false,
-  connected: false,
+  connected: null,
   loading: false,
   socketId: '',
   userName: null,

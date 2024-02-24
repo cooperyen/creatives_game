@@ -128,7 +128,7 @@
     .player-item,
     .leader-item {
       position: relative;
-      border-radius: 7px;
+      border-radius: 30px;
 
       .icon-box {
         width: 100%;
@@ -213,6 +213,7 @@
       margin-top: 30px;
     }
     .leader-item {
+      // border-radius: 11% 7% 10% 18% / 5% 14% 10% 7%;
       border: 5px solid #ccae73;
       background-color: wheat;
       @include sm {
