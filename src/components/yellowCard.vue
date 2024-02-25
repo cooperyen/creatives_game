@@ -1,7 +1,7 @@
 <template>
   <div id="yellowCard">
     <userNameBox :userName="getUserName" class="name"></userNameBox>
-    <h1>{{ timer }}</h1>
+    <!-- <h1>{{ timer }}</h1> -->
     <!-- <h1>{{ playerMove.currentStep }}</h1> -->
     <div v-if="playerMove.currentStep != 'end'">
       <h1>show time</h1>
