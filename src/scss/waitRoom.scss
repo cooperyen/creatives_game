@@ -36,7 +36,8 @@
     border-radius: 10px;
     border: 5px solid $border_style_dark;
     .role {
-      margin-bottom: 15px;
+      margin-bottom: 30px;
+      margin-top: 15px;
       img {
         max-width: 200px;
         width: calc(100% - 80px);
@@ -218,7 +219,6 @@
       background-color: wheat;
       @include sm {
         display: flex;
-        background-color: white;
       }
       @include min-sm {
         height: 100%;

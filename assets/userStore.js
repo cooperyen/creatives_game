@@ -1,4 +1,6 @@
-const playerIcon = ['cheese', 'strawberry', 'cheese2', 'strawberry2'];
+const playerIcon = ['apple', 'grape', 'orange', 'pineapple', 'watermelon'];
+
+
 const userData = JSON.parse(localStorage.getItem('userData'));
 const userName = userData != null ? userData.userName : null;
 const userRoom = userData != null ? userData.userRoom : null;
