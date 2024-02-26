@@ -20,11 +20,13 @@
     background-image: url('@/./image/bg/icons_bg.svg');
     background-size: var(--bg-size);
     background-repeat: repeat;
-    transform: rotate(45deg);
     opacity: 0.1;
     animation: login_bg 10s linear infinite;
     position: fixed;
     z-index: -3;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%) rotate(45deg);
   }
 }
 
