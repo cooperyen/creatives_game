@@ -13,10 +13,10 @@
   .title {
     h1 {
       color: $text_default_title;
-      font-size: clamp(2rem, 8vw, 3rem);
+      font-size: clamp(1.8rem, 8vw, 3rem);
       text-align: center;
       @include sm {
-        text-align: justify;
+        // text-align: justify;
         // font-size: 2rem;
       }
       p {
@@ -34,26 +34,34 @@
     background-clip: padding-box;
     margin-top: 40px;
     background-color: rgba(247, 247, 247, 0.9);
-    padding: 35px 15px 35px 15px;
+    padding: 35px 15px;
     border-radius: 12px;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
-    font-size: 3rem;
-    // animation: flashing 5s infinite;
     text-align: center;
     @include sm {
-      margin-top: 20px;
+      padding: 25px 5px;
+      max-width: calc(100% - 15px);
+      margin: 20px auto 0 auto;
     }
-    .login.btn button {
-      width: 90%;
-      background-color: #ebbf3c;
-      padding: 10px 5px;
-      border: unset;
-      border-radius: 6px;
+    .login.btn {
       margin-top: 30px;
-      font-weight: bold;
-      color: black;
-
-      cursor: pointer;
+      @include sm {
+        margin-top: 25px;
+      }
+      button {
+        width: 90%;
+        color: rgb(44, 44, 44);
+        background-color: #ebbf3c;
+        padding: 10px 5px;
+        border: unset;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        @include sm {
+          padding: 10px 2px;
+        }
+      }
     }
     .input-box {
       font-size: 1.2rem;

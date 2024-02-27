@@ -6,8 +6,52 @@
   <!-- content -->
   <transition name="content-ready">
     <div class="lobby-container" v-show="$store.state.userStore.loading">
-      <div class="room-container flex">
-        <div class="room-box exist" v-for="i in gameRooms" :key="i">
+      <!-- room content -->
+      <!-- {{ slide.currentPage }} -->
+
+      <div class="room-container pd-side" v-if="gameRoomsData != null">
+        <!-- each room -->
+        <template v-for="(x, y) in gameRoomsData" :key="y">
+          <div class="page-room flex" v-show="y === slide.currentPage">
+            <div class="room-box exist" v-for="i in x" :key="i">
+              <div class="room-layout">
+                <div
+                  class="room-content"
+                  :class="{ active: i != 'soon' }"
+                  @click="joinRoom(i)"
+                >
+                  <div class="content flex">
+                    <div class="title" v-if="i != 'soon'">
+                      <p>{{ getRoomDetail(i, 'name') }}</p>
+                    </div>
+                    <div class="soon" v-else>
+                      <p>coming</p>
+                      <p>soon</p>
+                    </div>
+                    <div class="players" v-if="i != 'soon'">
+                      <p>{{ getRoomDetail(i, 'player') }}人</p>
+                    </div>
+                  </div>
+                  <div class="img-box">
+                    <div class="bg"></div>
+                    <div class="right">
+                      <img
+                        :src="getRoomUrl(`${i != 'soon' ? i : 'default_game'}`)"
+                        :alt="i"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+        <button @click="moveRoomPage(false)">A</button>
+        <hr />
+        <button @click="moveRoomPage(true)">B</button>
+
+        <!-- <div class="room-box exist" v-for="i in x" :key="i">
           <div class="room-layout">
             <div class="room-content" @click="joinRoom(i)">
               <div class="content flex">
@@ -26,9 +70,9 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
-        <div class="room-box" v-for="i in unGameRooms" :key="i">
+        <!-- <div class="room-box" v-for="i in unGameRooms" :key="i">
           <div class="room-layout">
             <div class="room-content">
               <div class="content flex">
@@ -45,7 +89,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- Players who are not currently in the game or in the room -->
@@ -93,9 +137,14 @@ export default {
   },
   data() {
     return {
+      slide: {
+        pageSum: 2,
+        currentPage: 0,
+      },
       userName: null,
       userRoom: null,
       gameRooms: null,
+      gameRoomsData: null,
       unGameRooms: 0,
       lobbyPlayerList: null,
       isShowPage: false,
@@ -121,6 +170,28 @@ export default {
         if (item === 'name') return data.name;
         if (item === 'player') return data.ppl;
       }
+    },
+    moveRoomPage(boolean = true) {
+      if (boolean) {
+        if (this.gameRoomsData.length <= this.slide.currentPage + 1) return;
+        if (this.slide.currentPage < this.slide.pageSum - 1)
+          this.slide.currentPage += 1;
+      }
+      if (!boolean) {
+        if (this.slide.currentPage <= 0) return;
+        this.slide.currentPage -= 1;
+      }
+    },
+    sliceGameRoom() {
+      let sum = this.gameRooms.length / this.slide.pageSum;
+      if (sum <= 3) sum = 3;
+
+      let y = [];
+
+      for (let i = 0; i < this.gameRooms.length; i += sum) {
+        y.push(this.gameRooms.slice(i, i + sum));
+      }
+      this.gameRoomsData = y;
     },
     getRoomUrl(name) {
       return new URL(`/src/image/game/${name}.svg`, import.meta.url).href;
@@ -162,6 +233,14 @@ export default {
             this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
               if (this.chGameName[x] != undefined) return x;
             });
+            if (this.gameRooms.length <= 6) {
+              const sum = 6 - this.gameRooms.length;
+              for (let i = 0; i < sum; i++) {
+                this.gameRooms.push('soon');
+              }
+            }
+
+            this.sliceGameRoom();
 
             // setTimeout(() => {
             this.$store.commit('updateLoading', true);
@@ -219,6 +298,20 @@ export default {
         } else return false;
       }
     },
+    onResize() {
+      const width = window.innerWidth;
+      if (width >= 1140) {
+        this.slide.pageSum = 1;
+        this.slide.currentPage = 0;
+        this.sliceGameRoom();
+      } else {
+        this.slide.pageSum = 2;
+        this.sliceGameRoom();
+      }
+
+      console.log(window.innerWidth);
+      console.log(this.slide.pageSum);
+    },
   },
   watch: {
     'state.userStore.loading': {
@@ -259,9 +352,10 @@ export default {
       userStore.userRoom === undefined ? null : userStore.userRoom;
   },
   mounted() {
-    // this.swipierInit();\
     this.$store.state.userStore.loading = false;
-    // console.log(this.$store.state.userStore.loading);
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    });
     this.socketConnectCheck();
   },
 

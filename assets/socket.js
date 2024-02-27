@@ -4,7 +4,7 @@ import { userStore, gameData, playerIcon } from '@/../assets/userStore.js';
 
 
 export const state = reactive({
-  isConnected: false,
+  isConnected: null,
   connected: null,
   loading: false,
   socketId: '',
@@ -31,6 +31,8 @@ export const state = reactive({
   blackJack: null,
   yellowCard: null,
 });
+
+console.log(state.isConnected);
 
 // const testURL = 'http://200.69.21.59:88'
 const testURL = 'https://user.creatives.ink'
@@ -87,27 +89,27 @@ socket.on("disconnect", (el) => {
 });
 
 
-async function ans() {
-  let id;
-  const cos = await new Promise(res => {
-    socket.on("connected", (el) => {
-      id = el.id;
-      res()
-    });
-  })
-  state.connected = true;
+// async function ans() {
+//   let id;
+//   const cos = await new Promise(res => {
+//     socket.on("connected", (el) => {
+//       id = el.id;
+//       res()
+//     });
+//   })
+//   state.connected = true;
+// }
+// ans();
+
+
+const int = () => {
+  state.gameDataUpdate = null;
+  state.gameOne.readyList = null;
+  state.currentPlayers = null;
+  state.eachPlayers = null;
+  state.updateCurrentPlayers = null;
 }
-ans();
-
-
-
-
-state.connected = false;
-state.gameDataUpdate = null;
-state.gameOne.readyList = null;
-state.currentPlayers = null;
-state.eachPlayers = null;
-state.updateCurrentPlayers = null;
+int();
 
 socket.on('re_act', function (datas) {
   // console.log(datas)
