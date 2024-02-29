@@ -130,20 +130,28 @@ export default {
       },
     };
 
-    return {
-      spaceBetween,
-      breakpoints,
-    };
+    // return {
+    //   spaceBetween,
+    //   breakpoints,
+    // };
   },
   data() {
     return {
       slide: {
-        pageSum: 2,
+        pageSum: 1,
         currentPage: 0,
+        breakpoints: {
+          1140: {
+            pageSum: 2,
+          },
+          1141: {
+            pageSum: 1,
+          },
+        },
       },
       userName: null,
       userRoom: null,
-      gameRooms: null,
+      gameRooms: [],
       gameRoomsData: null,
       unGameRooms: 0,
       lobbyPlayerList: null,
@@ -300,17 +308,34 @@ export default {
     },
     onResize() {
       const width = window.innerWidth;
-      if (width >= 1140) {
-        this.slide.pageSum = 1;
-        this.slide.currentPage = 0;
-        this.sliceGameRoom();
-      } else {
-        this.slide.pageSum = 2;
-        this.sliceGameRoom();
+      const breakpoints = Object.keys(this.slide.breakpoints);
+      let pageSum = 1;
+      for (let i = 0; i < breakpoints.length; i++) {
+        if (width <= breakpoints[i] && width <= breakpoints[i + 1]) {
+          pageSum = this.slide.breakpoints[breakpoints[i]].pageSum;
+        }
+
+        if (width > breakpoints[breakpoints.length - 1]) {
+          pageSum = this.slide.breakpoints[breakpoints[i]].pageSum;
+          this.slide.currentPage = 0;
+        }
       }
 
-      console.log(window.innerWidth);
-      console.log(this.slide.pageSum);
+      this.slide.pageSum = pageSum;
+
+      this.$nextTick(() => {
+        this.sliceGameRoom();
+      });
+
+      // console.log(this.slide.pageSum);
+      // if (width >= 1140) {
+      //   this.slide.pageSum = 1;
+      //   this.slide.currentPage = 0;
+      //   this.sliceGameRoom();
+      // } else {
+      //   this.slide.pageSum = 2;
+      //   this.sliceGameRoom();
+      // }
     },
   },
   watch: {
@@ -350,6 +375,7 @@ export default {
     this.userName = userStore.userName;
     this.userRoom =
       userStore.userRoom === undefined ? null : userStore.userRoom;
+    this.onResize();
   },
   mounted() {
     this.$store.state.userStore.loading = false;
