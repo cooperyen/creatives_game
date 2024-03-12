@@ -12,9 +12,9 @@ $text: rgb(198, 190, 149);
   max-width: 1400px;
   @include L {
     width: calc(100% - 15px);
+    flex-wrap: wrap;
   }
   @include med {
-    flex-wrap: wrap;
     margin-top: 28px;
   }
   @include min-sm {
@@ -28,20 +28,22 @@ $text: rgb(198, 190, 149);
   margin-left: auto;
   margin-right: auto;
 
+  @include sm {
+    flex: unset;
+    padding: 17px 10px;
+  }
+
   @include min-med {
     flex: 3;
   }
   @include L {
     width: calc(100% - 10px);
   }
-  @include sm {
-    flex: unset;
-    padding: 17px 10px;
-  }
+
   .page-room {
     width: 100%;
     flex-wrap: wrap;
-    @include L {
+    @include med {
       &.flex {
         display: unset;
       }
@@ -89,8 +91,8 @@ $text: rgb(198, 190, 149);
             cursor: pointer;
             .img-box {
               .right {
-                top: 35%;
-                transform: rotate(5deg) translateY(-50%);
+                // top: 45%;
+                transform: rotate(5deg) translateY(-60%);
               }
             }
           }
@@ -100,11 +102,15 @@ $text: rgb(198, 190, 149);
 
     flex-wrap: wrap;
     width: 100%;
-    @include min-xl {
-      width: 33.3%;
+
+    @include min-med {
+      width: 50%;
     }
     @include xs {
       width: 100%;
+    }
+    @include min-L {
+      width: 33.3%;
     }
 
     .room-layout {
@@ -159,7 +165,7 @@ $text: rgb(198, 190, 149);
           }
         }
         .img-box {
-          background-color: white;
+          background-color: #f7f7f7;
           border: 5px solid rgb(110, 110, 110);
           height: 80px;
           width: 100%;
@@ -193,6 +199,24 @@ $text: rgb(198, 190, 149);
       }
     }
   }
+
+  // pagination
+  .pagination {
+    text-align: center;
+    button {
+      color: rgb(42, 42, 42);
+      margin: 0 5px;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .none {
+      opacity: 0.35;
+      &:hover {
+        cursor: default;
+      }
+    }
+  }
 }
 
 // user's list
@@ -208,7 +232,7 @@ $text: rgb(198, 190, 149);
   }
   @include L {
     width: 100%;
-    flex: 1;
+
     margin-left: auto;
   }
 

@@ -1,0 +1,332 @@
+#yellowCard {
+  height: 100vh;
+  width: 100vw;
+}
+
+.player_list {
+  margin-bottom: 50px;
+  color: white;
+}
+.player_list .title {
+  margin: 0 10px;
+}
+.player_list .items {
+  display: flex;
+  text-align: center;
+}
+.player_list .items .item {
+  margin: 5px 10px;
+}
+
+h1 {
+  color: rgb(190, 52, 52);
+}
+
+.move_btn {
+  color: white;
+}
+
+#end_game {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+}
+#end_game .container {
+  background-color: #ffed9c;
+  border-radius: 8px;
+  width: calc(100% - 30px);
+  max-width: 800px;
+  padding: 50px;
+  margin: 0 auto;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-weight: bold;
+  text-align: center;
+}
+@media (max-width: 576px) {
+  #end_game .container {
+    padding: 50px 5px;
+  }
+}
+#end_game .title {
+  font-size: clamp(1.8rem, 3vw, 2.2rem);
+}
+#end_game .result h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+#end_game .result p {
+  margin-top: 10px;
+}
+
+#await {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: calc(100% - 50px);
+  width: 100%;
+  margin: 0 auto;
+}
+@media (min-width: 769px) {
+  #await {
+    max-width: calc(100% - 200px);
+  }
+}
+@media (max-width: 399px) {
+  #await {
+    max-width: calc(100% - 15px);
+  }
+}
+#await::v-deep(.insert) {
+  color: rgb(215, 57, 49);
+}
+#await .content {
+  padding: 25px 0;
+  border-radius: 8px;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  background-color: #ffed9c;
+  text-align: center;
+  font-weight: bold;
+}
+#await .text {
+  font-size: 1.4rem;
+  margin-top: 5vh;
+  color: white;
+  text-align: center;
+}
+#await .text span {
+  position: absolute;
+}
+#await .text span::after {
+  content: "...";
+  display: block;
+  width: 0%;
+  overflow: hidden;
+  animation: loading 1s infinite ease-in-out;
+}
+
+.active {
+  animation: upin 1s forwards;
+}
+
+#vote {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 500px;
+}
+#vote::v-deep(.insert) {
+  color: rgb(215, 57, 49);
+}
+#vote .item {
+  padding: 10px 15px;
+  margin: 10px 10px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  transition: 0.2s ease-in-out;
+}
+@media (max-width: 576px) {
+  #vote .item {
+    margin: 10px 15px;
+  }
+}
+@media (max-width: 399px) {
+  #vote .item {
+    margin: 15px 20px;
+  }
+}
+#vote .item.check {
+  background-color: #ffd208;
+  font-weight: bold;
+  box-shadow: 5px 5px 1px #6d5317;
+  transform: translate(-1px, -4px);
+}
+#vote .item.default {
+  background-color: rgb(233, 233, 233);
+}
+#vote .btn-box {
+  margin-top: 30px;
+  text-align: center;
+}
+#vote .btn-box .btn {
+  padding: 10px 30px 10px 33px;
+}
+
+#hand-card,
+#drop {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+#hand-card .btn-box,
+#drop .btn-box {
+  margin-top: 50px;
+  padding: 0 50px;
+}
+#hand-card .btn-box.flex,
+#drop .btn-box.flex {
+  flex-wrap: wrap;
+}
+#hand-card .btn-box .btn,
+#drop .btn-box .btn {
+  width: 100%;
+}
+@media (min-width: 400px) {
+  #hand-card .btn-box .btn,
+  #drop .btn-box .btn {
+    flex: 1;
+  }
+  #hand-card .btn-box .btn:first-child,
+  #drop .btn-box .btn:first-child {
+    flex: 2;
+  }
+}
+#hand-card .conetnt.flex,
+#drop .conetnt.flex {
+  flex-wrap: wrap;
+}
+#hand-card .card.item,
+#drop .card.item {
+  text-align: center;
+  width: 50%;
+}
+@media (min-width: 577px) {
+  #hand-card .card.item,
+  #drop .card.item {
+    width: 33%;
+  }
+}
+@media (max-width: 399px) {
+  #hand-card .card.item,
+  #drop .card.item {
+    width: 100%;
+  }
+}
+@media (max-width: 576px) {
+  #hand-card .card.item:nth-child(odd) .option,
+  #drop .card.item:nth-child(odd) .option {
+    margin: 5px 5px 5px 15px;
+  }
+  #hand-card .card.item:nth-child(even) .option,
+  #drop .card.item:nth-child(even) .option {
+    margin: 5px 15px 5px 5px;
+  }
+}
+@media (max-width: 399px) {
+  #hand-card .card.item:nth-child(odd) .option, #hand-card .card.item:nth-child(even) .option,
+  #drop .card.item:nth-child(odd) .option,
+  #drop .card.item:nth-child(even) .option {
+    margin: 5px 20px;
+  }
+}
+#hand-card .card.item .option,
+#drop .card.item .option {
+  border: 4px solid rgb(30, 30, 30);
+  border-radius: 8px;
+  padding: 10px 0;
+  margin: 5px 5px;
+  background-color: #ffd208;
+  position: relative;
+  transition: 0.2s ease-in-out;
+}
+@media (max-width: 576px) {
+  #hand-card .card.item .option,
+  #drop .card.item .option {
+    padding: 4px 0;
+  }
+}
+@media (max-width: 399px) {
+  #hand-card .card.item .option,
+  #drop .card.item .option {
+    padding: 10px;
+  }
+}
+#hand-card .card.item .option.selected,
+#drop .card.item .option.selected {
+  font-weight: bold;
+  background-color: #ffed9c;
+  box-shadow: 4px 4px 1px #806932;
+  transform: translate(-1px, -4px);
+}
+#hand-card .card.item .option .num,
+#drop .card.item .option .num {
+  color: white;
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(231, 86, 86);
+  border-radius: 100%;
+  position: absolute;
+  right: -5px;
+  top: -15px;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  box-shadow: 2px 2px 1px rgb(121, 41, 41);
+}
+
+#quest {
+  min-height: 80px;
+  margin: 5px 5px 15px 5px;
+  color: rgb(21, 21, 21);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+@media (max-width: 576px) {
+  #quest {
+    margin: 5px 5px 15px 15px;
+  }
+}
+#quest::v-deep(.insert) {
+  color: rgb(253, 235, 73);
+  background-color: rgb(53, 53, 53);
+  border-radius: 4px;
+  margin: 0 2px;
+}
+
+#quest::v-deep(.insert),
+#await::v-deep(.insert) {
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+.btn-box .btn {
+  border-radius: 8px;
+  margin: 5px;
+  padding: 10px 6px 10px 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.3rem;
+  border: white 5px solid;
+  transition: 0.6s border, 0.6s background-color;
+}
+.btn-box .btn.selected {
+  animation: flips 1s forwards;
+  background-color: rgb(117, 232, 154);
+  border-color: rgba(255, 223, 128, 0.12);
+}
+
+@keyframes flips {
+  0% {
+    transform: rotate3d(1, 0, 0, 0deg);
+  }
+  100% {
+    transform: rotate3d(1, 0, 0, 360deg);
+  }
+}
+@keyframes loading {
+  100% {
+    width: 100%;
+  }
+}
+@keyframes upin {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}/*# sourceMappingURL=yellowCard.css.map */

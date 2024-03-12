@@ -47,49 +47,23 @@
             </div>
           </div>
         </template>
-        <button @click="moveRoomPage(false)">A</button>
-        <hr />
-        <button @click="moveRoomPage(true)">B</button>
 
-        <!-- <div class="room-box exist" v-for="i in x" :key="i">
-          <div class="room-layout">
-            <div class="room-content" @click="joinRoom(i)">
-              <div class="content flex">
-                <div class="title">
-                  <p>{{ getRoomDetail(i, 'name') }}</p>
-                </div>
-                <div class="players">
-                  <p>{{ getRoomDetail(i, 'player') }}人</p>
-                </div>
-              </div>
-              <div class="img-box">
-                <div class="bg"></div>
-                <div class="right">
-                  <img :src="getRoomUrl(`${i}`)" :alt="i" loading="lazy" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="room-box" v-for="i in unGameRooms" :key="i">
-          <div class="room-layout">
-            <div class="room-content">
-              <div class="content flex">
-                <div class="soon">
-                  <p>coming</p>
-                  <p>soon</p>
-                </div>
-              </div>
-              <div class="img-box" style="opacity: 0.4">
-                <div class="bg"></div>
-                <div class="right">
-                  <img :src="getRoomUrl('default_game')" loading="lazy" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
+        <div class="pagination" v-if="slide.pageSum > 1">
+          <button
+            @click="moveRoomPage(false)"
+            :class="{ none: slide.currentPage === 0 }"
+          >
+            <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
+          </button>
+          <button
+            @click="moveRoomPage(true)"
+            :class="{
+              none: slide.currentPage === slide.pageSum - 1,
+            }"
+          >
+            <font-awesome-icon icon="fa-solid fa-arrow-right-long" />
+          </button>
+        </div>
       </div>
 
       <!-- Players who are not currently in the game or in the room -->
@@ -141,7 +115,7 @@ export default {
         pageSum: 1,
         currentPage: 0,
         breakpoints: {
-          1140: {
+          768: {
             pageSum: 2,
           },
           1141: {
