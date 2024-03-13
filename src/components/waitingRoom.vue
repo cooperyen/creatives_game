@@ -19,24 +19,56 @@
     <div class="container">
       <!-- player's content -->
       <div class="flex player-container">
-        <!-- otherPlayers -->
         <div class="player-box">
-          <div class="player-item" v-for="i in otherPlayers" :key="i">
-            <div class="layout-inner flex">
-              <!-- icon -->
-              <div class="icon-box">
-                <img :src="getImgUrl(i.icon)" alt="" />
+          <!-- self -->
+          <div class="player-item self">
+            <div class="layout-inner">
+              <!-- name -->
+              <div class="info_box">
+                <p>{{ selfPlayer.toUpperCase() }}</p>
               </div>
 
+              <!-- icon -->
+              <div class="icon_box">
+                <div class="user_icon">
+                  <img :src="getImgUrl(userIcon)" alt="" />
+                </div>
+                <div class="bg_icon">
+                  <img :src="getImgUrl('plate')" alt="" />
+                </div>
+              </div>
+
+              <!-- ready icon -->
+              <readyIcon
+                :class="{ visible: !readyList[selfPlayer] }"
+              ></readyIcon>
+              <div v-show="readyToGo">
+                {{ readyToGo }}
+              </div>
+            </div>
+          </div>
+          <!-- other -->
+          <div class="player-item" v-for="i in otherPlayers" :key="i">
+            <div class="layout-inner">
               <!-- name -->
-              <div class="name-box flex">
-                <p>{{ i.user_id }}</p>
+              <div class="info_box">
+                <p>{{ i.user_id.toUpperCase() }}</p>
+              </div>
+              <!-- icon -->
+              <div class="icon_box">
+                <div class="user_icon">
+                  <img :src="getImgUrl(i.icon)" alt="" />
+                </div>
+                <div class="bg_icon">
+                  <img :src="getImgUrl('plate')" alt="" />
+                </div>
               </div>
 
               <!-- ready icon -->
               <readyIcon v-show="readyList[i.user_id]"></readyIcon>
             </div>
           </div>
+
           <!-- empty -->
           <div
             class="player-item empty"
@@ -44,29 +76,21 @@
             :key="i"
           >
             <!-- <div class="layout empty"></div> -->
-          </div>
-        </div>
-
-        <!-- self -->
-        <div class="leader-box">
-          <div class="leader-item">
-            <div class="icon-box">
-              <img :src="getImgUrl(userIcon)" alt="" />
+            <div class="layout-inner">
+              <div class="icon_box">
+                <div class="empty_box">
+                  <p>EMPTY</p>
+                </div>
+                <div class="bg_icon">
+                  <img :src="getImgUrl('plate')" alt="" />
+                </div>
+              </div>
             </div>
-            <div class="name-box">
-              <p>
-                {{ selfPlayer }}
-              </p>
-            </div>
-            <!-- change user role -->
-            <div class="setting" @click="role.open = true">
-              <font-awesome-icon icon="fa-solid fa-gear" />
-            </div>
-            <readyIcon v-show="readyList[selfPlayer]"></readyIcon>
           </div>
         </div>
       </div>
     </div>
+
     <!-- active -->
     <div class="active-container" v-show="!readyToGo">
       <!-- time count down -->
@@ -104,6 +128,17 @@
         <div class="content">
           <h2>開始遊戲，{{ time }} 秒後返回遊戲廳</h2>
           <button @click="startGame()">出發囉!!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- side menu -->
+    <div class="side_menu">
+      <div class="items setting">
+        <div class="inner">
+          <div class="box" @click="role.open = true">
+            <font-awesome-icon icon="fa-solid fa-gear" />
+          </div>
         </div>
       </div>
     </div>

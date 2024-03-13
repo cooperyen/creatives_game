@@ -74,8 +74,8 @@
         <div class="content">
           <div>
             <ul>
-              <li v-for="i in lobbyPlayerList" :key="i">
-                <span>{{ i.user_id }}</span>
+              <li v-for="i in 100" :key="i">
+                <span>{{ i }}</span>
               </li>
             </ul>
           </div>

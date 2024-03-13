@@ -114,7 +114,7 @@ $text: rgb(198, 190, 149);
     }
 
     .room-layout {
-      padding-left: 15px;
+      padding-left: 10px;
       margin-right: 10px;
       margin-bottom: 30px;
       @include med {
@@ -231,13 +231,12 @@ $text: rgb(198, 190, 149);
     flex: 1;
   }
   @include L {
-    width: 100%;
+    width: calc(100% - 25px);
 
     margin-left: auto;
   }
 
   @include sm {
-    width: 100%;
     max-height: 100px;
   }
   .title {
@@ -250,22 +249,29 @@ $text: rgb(198, 190, 149);
     }
   }
   .content {
+    margin-top: 10px;
     overflow-y: auto;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: rgb(245, 245, 245);
-    border: 5px solid rgb(185, 159, 32);
-    padding: 10px 15px;
+    // border: 5px solid rgb(185, 159, 32);
+    // border: 3px solid rgb(199 218 229);
+    box-shadow: 0 0 0px 5px rgb(185, 159, 32);
+    padding: 5px 7px;
     min-height: 100px;
+    max-height: 300px;
     @include sm {
       max-height: 100px;
     }
 
     ul {
       list-style-type: none;
-      margin-top: 5px;
+
       li {
         font-size: 0.9rem;
-        margin-bottom: 8px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+        float: left;
+        margin-left: 5px;
         span {
           box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.12);
           border-radius: 8px;
