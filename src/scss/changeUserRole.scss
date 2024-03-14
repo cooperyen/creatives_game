@@ -1,0 +1,132 @@
+@import './color.scss';
+@import './rwd.scss';
+
+$bg_: rgb(255, 253, 251);
+
+.change_user_role {
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(63, 51, 10, 0.6);
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  .content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 530px;
+    width: calc(100% - 30px);
+    min-height: 200px;
+    background-color: $bg_light;
+    flex-wrap: wrap;
+    padding: 15px 0;
+    border-radius: 10px;
+    border: 5px solid $border_style_dark;
+    overflow: hidden;
+
+    .role {
+      margin-bottom: 30px;
+      margin-top: 15px;
+      &::after {
+        content: '';
+        --size: 250vmax;
+        --bg-size: 200px;
+        inline-size: var(--size);
+        block-size: var(--size);
+        background-image: url('@/./image/player_icon/tablerunner.svg');
+        background-size: var(--bg-size);
+        background-repeat: repeat;
+        opacity: 0.15;
+        // animation: login_bg 10s linear infinite;
+        position: absolute;
+        z-index: -3;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+      img {
+        max-width: 200px;
+        width: calc(100% - 80px);
+        margin: 0 auto;
+        @include xs {
+          width: 30vw;
+        }
+      }
+    }
+    .roles_container {
+      background-color: $bg_;
+
+      .roles {
+        height: 90vh;
+        max-height: 230px;
+        max-width: 500px;
+        margin: 0 auto;
+        width: calc(100% - 20px);
+        padding: 10px 0;
+        overflow-y: scroll;
+        .img_content {
+          width: 20%;
+          padding: 15px;
+          &.focus {
+            .icon_box {
+              border-color: rgb(99, 162, 233);
+              background-color: rgba(250, 250, 250, 0.9);
+              img {
+                opacity: 1;
+              }
+            }
+          }
+          @include sm {
+            width: 33.3%;
+            padding: 5px;
+            // width: calc(100% - 10px);
+          }
+          @include xs {
+            width: calc(100% / 5);
+          }
+          .icon_box {
+            cursor: pointer;
+            border: 2px solid rgb(184, 189, 211);
+            background-color: rgb(240, 240, 240);
+            border-radius: 10px;
+            padding: 10px 5px;
+            @include xs {
+              padding: 8px;
+            }
+            img {
+              opacity: 0.8;
+              max-width: 45px;
+              width: 100%;
+              margin: 0 auto;
+            }
+          }
+        }
+      }
+    }
+    .btn {
+      margin-top: 10px;
+      width: 100%;
+      text-align: center;
+      button {
+        font-size: 1rem;
+        padding: 10px 10px;
+        border-radius: 10px;
+        margin: 0 10px;
+        border-width: 2px;
+        border-style: solid;
+        min-width: 70px;
+        cursor: pointer;
+        &.agree {
+          background-color: #7ad97a;
+          border-color: #54af54;
+        }
+        &.cencel {
+          border-color: rgb(203, 91, 91);
+        }
+      }
+    }
+  }
+}

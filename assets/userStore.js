@@ -1,9 +1,10 @@
-const playerIcon = ['apple', 'grape', 'orange', 'pineapple', 'watermelon'];
+const playerIcon = ['apple', 'grape', 'orange', 'pineapple', 'watermelon', 'burger', 'cheese', 'chickenleg', 'chips', 'cowbread', 'donut', 'egg', 'hotdog', 'pizza', 'sandwich', 'steak', 'toast'];
 
 
 const userData = JSON.parse(localStorage.getItem('userData'));
 const userName = userData != null ? userData.userName : null;
 const userRoom = userData != null ? userData.userRoom : null;
+// const userIcon = userData != null ? userData.icon : null;
 
 
 function updateCookie(el, val, each = null) {
@@ -27,7 +28,7 @@ const userStore = {
     return {
       userName,
       userRoom,
-      icon: playerIcon[0],
+      icon: userData?.icon != null ? userData.icon : playerIcon[0],
       loading: false,
     };
   },
@@ -37,6 +38,7 @@ const userStore = {
     },
     updateUserRoom(state, data) {
       state.userRoom = data;
+      console.log(state);
       localStorage.setItem('userData', JSON.stringify(state))
     },
     updateUserIcon(state, data) {

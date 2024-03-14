@@ -1,14 +1,10 @@
 <template>
-  <userNameBox :userName="userName">
-    <p @click="$router.replace('/')">change ID</p>
-  </userNameBox>
+  <userNameBox :userName="userName" :userIcon="userIcon"></userNameBox>
   <backGroundAnimate></backGroundAnimate>
   <!-- content -->
   <transition name="content-ready">
     <div class="lobby-container" v-show="$store.state.userStore.loading">
       <!-- room content -->
-      <!-- {{ slide.currentPage }} -->
-
       <div class="room-container pd-side" v-if="gameRoomsData != null">
         <!-- each room -->
         <template v-for="(x, y) in gameRoomsData" :key="y">
@@ -36,7 +32,12 @@
                     <div class="bg"></div>
                     <div class="right">
                       <img
-                        :src="getRoomUrl(`${i != 'soon' ? i : 'default_game'}`)"
+                        :src="
+                          this.$global_getImgUrl(
+                            `${i != 'soon' ? i : 'default_game'}`,
+                            'game'
+                          )
+                        "
                         :alt="i"
                         loading="lazy"
                       />
@@ -47,7 +48,9 @@
             </div>
           </div>
         </template>
+        <!-- end -->
 
+        <!-- pagination -->
         <div class="pagination" v-if="slide.pageSum > 1">
           <button
             @click="moveRoomPage(false)"
@@ -64,7 +67,9 @@
             <font-awesome-icon icon="fa-solid fa-arrow-right-long" />
           </button>
         </div>
+        <!-- end -->
       </div>
+      <!-- end -->
 
       <!-- Players who are not currently in the game or in the room -->
       <div id="user" class="container pd-side current-users-container">
@@ -74,41 +79,49 @@
         <div class="content">
           <div>
             <ul>
-              <li v-for="i in 100" :key="i">
-                <span>{{ i }}</span>
+              <li v-for="i in lobbyPlayerList" :key="i">
+                <span>{{ i.user_id }}</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
+      <!-- end -->
+
+      <!-- change user role content -->
+      <changeUserRoleHandler
+        :isOpne="role.open"
+        @close="(n) => (role.open = n)"
+        @userIcon="(n) => (userIcon = n)"
+      ></changeUserRoleHandler>
+      <!-- end -->
     </div>
   </transition>
+
+  <!-- side menu -->
+  <div class="side_menu flex">
+    <div class="items setting">
+      <div class="inner">
+        <div class="box" @click="role.open = true">
+          <font-awesome-icon icon="fa-solid fa-gear" />
+        </div>
+      </div>
+    </div>
+    <div class="items user_edit">
+      <div class="inner">
+        <div class="box" @click="$router.replace('/')">
+          <font-awesome-icon icon="fa-solid fa-user-pen" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end -->
 </template>
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
-
+import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHandler.vue';
 export default {
-  setup() {
-    const spaceBetween = 0;
-
-    const breakpoints = {
-      399: {
-        slidesPerView: 2,
-      },
-      768: {
-        slidesPerView: 3,
-      },
-      1200: {
-        slidesPerView: 4,
-      },
-    };
-
-    // return {
-    //   spaceBetween,
-    //   breakpoints,
-    // };
-  },
   data() {
     return {
       slide: {
@@ -125,6 +138,7 @@ export default {
       },
       userName: null,
       userRoom: null,
+      userIcon: null,
       gameRooms: [],
       gameRoomsData: null,
       unGameRooms: 0,
@@ -135,9 +149,13 @@ export default {
         game02: { name: '21點', ppl: '2-4' },
         game03: { name: '黃牌', ppl: '2-4' },
       },
+      role: {
+        open: false,
+        icon: null,
+      },
     };
   },
-  components: { userNameBox },
+  components: { userNameBox, changeUserRoleHandler },
   methods: {
     getRoomDetail(el, item = null) {
       if (item === null) return false;
@@ -177,26 +195,6 @@ export default {
     },
     getRoomUrl(name) {
       return new URL(`/src/image/game/${name}.svg`, import.meta.url).href;
-    },
-    swipierInit() {
-      const swiperEl = document.querySelector('swiper-container');
-      const params = {
-        // array with CSS styles
-        injectStyles: [
-          `
-          :host{
-              --swiper-theme-color: rgb(198, 190, 149);
-          }
-          `,
-        ],
-
-        // // array with CSS urls
-        // injectStylesUrls: ['path/to/one.css', 'path/to/two.css'],
-      };
-
-      Object.assign(swiperEl, params);
-
-      swiperEl.initialize();
     },
     loadRoomData() {
       if (this.userName === null) return;
@@ -346,9 +344,11 @@ export default {
   props: ['socket', 'state'],
   created() {
     const userStore = this.$store.state.userStore;
+    const userData = JSON.parse(localStorage.getItem('userData'));
     this.userName = userStore.userName;
     this.userRoom =
       userStore.userRoom === undefined ? null : userStore.userRoom;
+    this.userIcon = userData.icon;
     this.onResize();
   },
   mounted() {
@@ -365,6 +365,6 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/scss/lobby.scss';
 </style>

@@ -144,45 +144,17 @@
     </div>
 
     <!-- change user role content -->
-    <div class="change_user_role" v-if="role.open">
-      <div class="content">
-        <div class="role">
-          <img
-            :src="
-              getImgUrl(
-                role.userSelectIcon === null
-                  ? role.userDefault
-                  : role.userSelectIcon
-              )
-            "
-            alt=""
-          />
-        </div>
-        <hr />
-        <div class="roles flex flex-wrap">
-          <div
-            v-for="i in $store.state.gameData.playerIcon"
-            :key="i"
-            class="img_content"
-            :class="{ focus: role.userSelectIcon === i }"
-          >
-            <div class="icon_box" @click="role.userSelectIcon = i">
-              <img :src="getImgUrl(i)" alt="" />
-            </div>
-          </div>
-        </div>
-        <hr />
-        <div class="btn">
-          <button class="agree" @click="setUserRole()">agree</button>
-          <button class="cencel" @click="role.open = false">cancel</button>
-        </div>
-      </div>
-    </div>
+    <changeUserRoleHandler
+      :isOpne="role.open"
+      @close="(n) => (role.open = n)"
+      @userIcon="(n) => (userIcon = n)"
+    ></changeUserRoleHandler>
   </div>
   <backGroundAnimate></backGroundAnimate>
 </template>
 
 <script>
+import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHandler.vue';
 export default {
   data() {
     return {
@@ -208,7 +180,7 @@ export default {
       },
     };
   },
-  components: {},
+  components: { changeUserRoleHandler },
 
   watch: {
     'state.loginError': {
@@ -288,17 +260,17 @@ export default {
   emits: ['loadingLoop'],
   props: ['socket', 'state'],
   methods: {
-    setUserRole() {
-      this.role.userDefault = this.role.userSelectIcon;
-      this.userIcon = this.role.userSelectIcon;
-      this.$store.commit('updateUserIcon', this.role.userSelectIcon);
-      this.role.open = false;
-      this.socket.emit('id_check', {
-        id: this.selfPlayer,
-        room: this.userRoom,
-        icon: this.userIcon,
-      });
-    },
+    // setUserRole() {
+    //   this.role.userDefault = this.role.userSelectIcon;
+    //   this.userIcon = this.role.userSelectIcon;
+    //   this.$store.commit('updateUserIcon', this.role.userSelectIcon);
+    //   this.role.open = false;
+    //   this.socket.emit('id_check', {
+    //     id: this.selfPlayer,
+    //     room: this.userRoom,
+    //     icon: this.userIcon,
+    //   });
+    // },
     getImgUrl(name) {
       if (name === null) return;
       return new URL(`/src/image/player_icon/${name}.svg`, import.meta.url)
@@ -456,8 +428,6 @@ export default {
     this.selfPlayer = localStorageData.userName;
     this.userRoom = localStorageData.userRoom;
     this.userIcon = localStorageData.icon;
-    this.role.userDefault = this.userIcon;
-    this.role.userSelectIcon = this.userIcon;
   },
   beforeUnmount() {
     clearTimeout(this.countDownFun);

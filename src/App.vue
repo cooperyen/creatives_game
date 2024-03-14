@@ -85,14 +85,7 @@ export default {
       this.$store.commit('authCheck');
     },
   },
-  mounted() {
-    // history.pushState(null, null, location.href);
-    // window.onpopstate = function () {
-    //   history.go(1);
-    // };
-    // const testURL = 'https://user.creatives.ink';
-    // const URL = testURL;
-  },
+  mounted() {},
   created() {
     this.cookieCheck();
     const userName = this.$store.state.userStore.userName;

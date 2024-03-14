@@ -12,10 +12,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import { faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong)
+library.add(faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen)
 
 
 const store = createStore({
@@ -37,4 +37,11 @@ app.use(router);
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('readyIcon', readyIcon)
 app.component('backGroundAnimate', backGroundAnimate)
+
+app.config.globalProperties.$global_getImgUrl = function (name, place) {
+  if (name === null) return;
+  return new URL(`/src/image/${place}/${name}.svg`, import.meta.url)
+    .href;
+}
+
 router.isReady().then(() => app.mount('#app'))

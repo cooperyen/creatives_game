@@ -2,7 +2,8 @@
   <transition name="lobby">
     <div class="user-container" :class="[on ? on : 'light']" v-show="ani">
       <div class="content">
-        <h2 id="userid">勇者 : {{ userName }}</h2>
+        {{ userIcon }}
+        <h2 id="userid">勇者: {{ userName }}</h2>
         <slot></slot>
       </div>
     </div>
@@ -17,7 +18,7 @@ export default {
       on: false,
     };
   },
-  props: ['userName'],
+  props: ['userName', 'userIcon'],
   watch: {
     $route: {
       handler(to, from) {
@@ -45,6 +46,9 @@ export default {
   position: relative;
   width: 100%;
   overflow: hidden;
+  @include sm {
+    height: 80px;
+  }
   &.dark {
     color: black;
   }
@@ -61,6 +65,9 @@ export default {
       h2 {
         font-size: 1rem;
       }
+    }
+    p {
+      text-align: right;
     }
 
     a {

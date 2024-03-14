@@ -1,3 +1,55 @@
+@keyframes side_menu {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.side_menu {
+  position: fixed;
+  left: 0;
+  bottom: 10%;
+  transform: translateY(-50%);
+  border-radius: 0 18px 18px 0;
+  overflow: hidden;
+}
+@media (max-width: 576px) {
+  .side_menu {
+    bottom: 15%;
+  }
+}
+.side_menu .items {
+  width: 50px;
+  height: 50px;
+}
+.side_menu .items .inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+}
+.side_menu .items .inner .box {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  font-size: 1.8rem;
+  color: white;
+}
+.side_menu .items .inner .box svg {
+  filter: drop-shadow(-3px 1px 4px rgba(0, 0, 0, 0.3));
+}
+.side_menu .setting {
+  background-color: rgb(131, 212, 163);
+}
+.side_menu .user_edit {
+  background-color: rgb(131, 193, 212);
+}
+.side_menu .user_edit .inner .box {
+  font-size: 1.5rem;
+}
+
 .lobby-container {
   display: flex;
   margin: 0 auto;
@@ -23,6 +75,11 @@
     margin-top: 17px;
   }
 }
+@media (max-width: 576px) {
+  .lobby-container {
+    margin-top: 0px;
+  }
+}
 
 .room-container {
   padding: 17px 0;
@@ -33,7 +90,7 @@
 @media (max-width: 576px) {
   .room-container {
     flex: unset;
-    padding: 17px 10px;
+    padding: 5px 10px 0 10px;
   }
 }
 @media (min-width: 769px) {
@@ -180,7 +237,9 @@
 }
 .room-container .pagination button {
   color: rgb(42, 42, 42);
-  margin: 0 5px;
+  margin: 0 10px;
+  font-size: 1rem;
+  background-color: unset;
 }
 .room-container .pagination button:hover {
   cursor: pointer;
@@ -206,7 +265,7 @@
 }
 @media (max-width: 991px) {
   .current-users-container {
-    width: calc(100% - 25px);
+    width: calc(100% - 13px);
     margin-left: auto;
   }
 }
