@@ -21,7 +21,8 @@ $text: rgb(198, 190, 149);
   border-radius: 18px;
   overflow: hidden;
   // animation: side_menu 3s ease-in-out forwards;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+  border: 3px solid rgb(247, 247, 247);
   @include sm {
     bottom: 15%;
   }
@@ -29,7 +30,7 @@ $text: rgb(198, 190, 149);
     bottom: 3%;
   }
   .items {
-    background-color: #e9e9e9;
+    background-color: #f2f2f2;
 
     width: 50px;
     height: 50px;
@@ -48,22 +49,22 @@ $text: rgb(198, 190, 149);
         transform: translate(-50%, -50%);
         position: absolute;
         font-size: 1.8rem;
-        color: white;
+        color: rgb(255, 255, 255);
         @include xs {
           font-size: 1.4rem;
         }
         svg {
-          filter: drop-shadow(3px 1px 4px rgba(0, 0, 0, 0.3));
+          filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.3));
         }
       }
     }
   }
   .setting {
-    // background-color: rgb(131, 212, 163);
+    // background-color: rgb(92 108 113);
   }
   .user_edit {
-    // background-color: rgb(131 193 212);
-    background-color: #eeeeee;
+    // background-color: rgb(108, 124, 130);
+    // background-color: #eeeeee;
     .inner .box {
       font-size: 1.5rem;
       @include xs {
@@ -86,11 +87,11 @@ $text: rgb(198, 190, 149);
   @include med {
     margin-top: 28px;
   }
-  @include min-sm {
-    margin-top: 17px;
+  @include min-med {
+    margin-top: 35px;
   }
   @include sm {
-    margin-top: 0px;
+    margin-top: 4vh;
   }
 }
 
@@ -298,20 +299,19 @@ $text: rgb(198, 190, 149);
   padding-top: 10px;
   color: $text_default_title;
   margin-right: auto;
-  margin-left: 40px;
-  max-height: 200px;
+  // margin-left: 40px;
+  // max-height: 200px;
 
   @include min-L {
     flex: 1;
   }
   @include L {
     width: calc(100% - 13px);
-
     margin-left: auto;
   }
 
   @include sm {
-    max-height: 100px;
+    // max-height: 100px;
   }
   .title {
     p {
@@ -334,7 +334,8 @@ $text: rgb(198, 190, 149);
     min-height: 100px;
     max-height: 300px;
     @include sm {
-      max-height: 100px;
+      max-height: 60px;
+      min-height: 60px;
     }
 
     ul {

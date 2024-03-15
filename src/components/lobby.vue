@@ -1,5 +1,5 @@
 <template>
-  <userNameBox :userName="userName" :userIcon="userIcon"></userNameBox>
+  <userNameBox :userName="userName" :userIcon="userIcon"> </userNameBox>
   <backGroundAnimate></backGroundAnimate>
   <!-- content -->
   <transition name="content-ready">

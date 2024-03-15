@@ -7,7 +7,7 @@ $bg_: rgb(255, 253, 251);
   z-index: 10;
   width: 100%;
   height: 100%;
-  background-color: rgba(63, 51, 10, 0.6);
+  background-color: rgba(10, 39, 63, 0.6);
   position: fixed;
   left: 0;
   top: 0;
@@ -24,7 +24,7 @@ $bg_: rgb(255, 253, 251);
     flex-wrap: wrap;
     padding: 15px 0;
     border-radius: 10px;
-    border: 5px solid $border_style_dark;
+    border: 5px solid #bc6e6e;
     overflow: hidden;
 
     .role {
@@ -48,8 +48,8 @@ $bg_: rgb(255, 253, 251);
         transform: translate(-50%, -50%) rotate(45deg);
       }
       img {
-        max-width: 200px;
-        width: calc(100% - 80px);
+        max-width: 150px;
+        width: 100%;
         margin: 0 auto;
         @include xs {
           width: 30vw;
