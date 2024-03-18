@@ -1,6 +1,6 @@
 <template>
   <transition name="lobby">
-    <div class="user-container" :class="[on ? on : 'light']" v-show="ani">
+    <div class="user-container" :class="[on ? on : 'dark']" v-show="ani">
       <div class="content">
         <div class="user_box">
           <div class="flex">
@@ -38,6 +38,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.$route.meta.style?.userName);
     this.on =
       this.$route.meta.style?.userName != undefined
         ? this.$route.meta.style.userName
@@ -62,10 +63,10 @@ export default {
     height: 45px;
   }
   &.dark {
-    color: black;
+    color: $text_default_title;
   }
   &.light {
-    color: $text_default_title;
+    color: rgb(240, 240, 240);
   }
   :deep(.content) {
     padding-top: 10px;

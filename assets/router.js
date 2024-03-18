@@ -32,6 +32,7 @@ const router = createRouter({
       path: '/mind/:room',
       name: 'game',
       component: game,
+      meta: { style: { userName: 'light' } },
     },
     {
       path: '/blackjack/:room',

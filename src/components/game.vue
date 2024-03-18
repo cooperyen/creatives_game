@@ -1,5 +1,9 @@
 <template>
-  <userNameBox :userName="player" class="name"></userNameBox>
+  <userNameBox
+    :userName="player"
+    :userIcon="userIcon"
+    class="name"
+  ></userNameBox>
 
   <!-- next round -->
   <div class="transition" v-show="passNotice != false">
@@ -210,6 +214,7 @@ import userNameBox from '@/../src/components/layout/userNameBox.vue';
 export default {
   data() {
     return {
+      userIcon: null,
       player: null,
       gameRoom: null,
       gameData: false,
@@ -469,6 +474,8 @@ export default {
   },
   beforeMount() {
     this.player = this.$store.state.userStore.userName;
+    this.userIcon = this.$store.state.userStore.icon;
+    // :userIcon="userIcon"
   },
   mounted() {
     this.socketConnectCheck();
