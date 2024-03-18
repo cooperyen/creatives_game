@@ -70,6 +70,8 @@ $bg_: rgb(255, 253, 251);
         .img_content {
           width: 20%;
           padding: 15px;
+          overflow: hidden;
+
           &.focus {
             .icon_box {
               border-color: rgb(99, 162, 233);
@@ -80,11 +82,11 @@ $bg_: rgb(255, 253, 251);
             }
           }
           @include sm {
-            width: 33.3%;
+            // width: 25%;
             padding: 5px;
-            // width: calc(100% - 10px);
           }
           @include xs {
+            padding: 5px;
             width: calc(100% / 5);
           }
           .icon_box {
@@ -92,15 +94,27 @@ $bg_: rgb(255, 253, 251);
             border: 2px solid rgb(184, 189, 211);
             background-color: rgb(240, 240, 240);
             border-radius: 10px;
-            padding: 10px 5px;
+            position: relative;
+            &::after {
+              content: '';
+              display: block;
+              padding-bottom: 100%;
+            }
             @include xs {
-              padding: 8px;
+              // padding: 8px;
             }
             img {
+              position: absolute;
               opacity: 0.8;
               max-width: 45px;
               width: 100%;
               margin: 0 auto;
+              left: 50%;
+              top: 50%;
+              transform: translate(-50%, -50%);
+              @include sm {
+                width: 60%;
+              }
             }
           }
         }
