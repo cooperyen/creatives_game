@@ -4,6 +4,8 @@ import { userStore, loopStore, gameData, playerIcon } from '@/../assets/userStor
 import { style } from '@/../assets/style.js';
 import readyIcon from '@/../src/ui/ready.vue';
 import backGroundAnimate from '@/../src/components/animation/backGround.vue';
+import answerHandler from '@/../src/components/global/answerHandler.vue';
+import answerBtn from '@/../src/ui/answerBtn.vue';
 import App from '@/App.vue'
 import { createStore } from 'vuex';
 
@@ -37,6 +39,10 @@ app.use(router);
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('readyIcon', readyIcon)
 app.component('backGroundAnimate', backGroundAnimate)
+app.component('answerBtn', answerBtn)
+app.component('answerHandler', answerHandler)
+
+
 
 app.config.globalProperties.$global_getImgUrl = function (name, place) {
   if (name === null) return;

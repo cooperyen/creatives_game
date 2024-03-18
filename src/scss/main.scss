@@ -141,7 +141,9 @@ body {
     position: absolute;
     left: 50%;
     top: 30%;
+    // width: calc(100% - 20px);
     transform: translate(-50%, -50%);
+    // text-align: center;
     h2,
     span {
       font-size: 3rem;
@@ -149,6 +151,9 @@ body {
         font-size: 1.8rem;
       }
     }
+    // h2 {
+    //   font-size: clamp(1.4rem, 5rem, 3vw);
+    // }
     span {
       width: 100%;
       display: block;

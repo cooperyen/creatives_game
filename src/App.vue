@@ -10,12 +10,9 @@
         <div><p>shouldn't take too long.</p></div>
         <div class="ani"></div>
       </div>
-      <div
-        class="loading-box"
-        v-if="state.connected === false && state.connected != null"
-      >
+      <div class="loading-box" v-if="connectedCheck()">
         <div class="flex">
-          <h3>Connecting to service FAIL</h3>
+          <h2>Connecting to service FAIL</h2>
         </div>
         <div><p>please reload page and try again!</p></div>
       </div>
@@ -71,11 +68,8 @@ export default {
     },
     connectedCheck() {
       const connected = this.state.connected;
-      if (connected === undefined) return;
-
-      setTimeout(() => {
-        connected ? (this.loading = true) : (this.loading = false);
-      }, 500);
+      if (connected === undefined) return false;
+      if (connected === false && connected != null) return true;
     },
     cookieCheck() {
       const data = JSON.parse(localStorage.getItem('userData'));

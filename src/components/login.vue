@@ -106,9 +106,13 @@ export default {
             this.$store.commit('updateLoading', true);
           }, 200);
         }
-        // if (this.connectedTime >= 5) this.socket.emit('isConnect');
         if (this.connectedTime >= 10) {
           // this.$router.go(0);
+        }
+        if (this.connected === false && this.connected != null) {
+          this.$store.commit('socketDelete');
+          clearInterval(conetectLoop);
+          this.connectedTime = 0;
         }
       }, 1000);
     }, 200);

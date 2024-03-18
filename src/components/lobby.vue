@@ -1,5 +1,5 @@
 <template>
-  <userNameBox :userName="userName" :userIcon="userIcon"> </userNameBox>
+  <userNameBox :userName="userName" :userIcon="userIcon"></userNameBox>
   <backGroundAnimate></backGroundAnimate>
   <!-- content -->
   <transition name="content-ready">
@@ -79,8 +79,10 @@
         <div class="content">
           <div>
             <ul>
+              <!-- lobbyPlayerList -->
               <li v-for="i in lobbyPlayerList" :key="i">
                 <span>{{ i.user_id }}</span>
+                <!-- <span>{{ i }}</span> -->
               </li>
             </ul>
           </div>
@@ -109,13 +111,21 @@
     </div>
     <div class="items user_edit">
       <div class="inner">
-        <div class="box" @click="$router.replace('/')">
+        <div class="box" @click="answer.open = true">
           <font-awesome-icon icon="fa-solid fa-user-pen" />
         </div>
       </div>
     </div>
   </div>
   <!-- end -->
+
+  <answerHandler
+    :show="answer.open"
+    @close="(n) => (answer.open = n)"
+    @agree="$router.replace('./')"
+  >
+    {{ answer.text }}
+  </answerHandler>
 </template>
 
 <script>
@@ -124,6 +134,7 @@ import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHand
 export default {
   data() {
     return {
+      answer: { open: false, text: '即將返回首頁, 確定?' },
       slide: {
         pageSum: 1,
         currentPage: 0,
@@ -184,13 +195,14 @@ export default {
     },
     sliceGameRoom() {
       let sum = this.gameRooms.length / this.slide.pageSum;
-      if (sum <= 3) sum = 3;
+      if (sum <= 4) sum = 4;
 
       let y = [];
 
       for (let i = 0; i < this.gameRooms.length; i += sum) {
         y.push(this.gameRooms.slice(i, i + sum));
       }
+
       this.gameRoomsData = y;
     },
     getRoomUrl(name) {
@@ -214,7 +226,7 @@ export default {
               if (this.chGameName[x] != undefined) return x;
             });
             if (this.gameRooms.length <= 6) {
-              const sum = 6 - this.gameRooms.length;
+              const sum = 8 - this.gameRooms.length;
               for (let i = 0; i < sum; i++) {
                 this.gameRooms.push('soon');
               }

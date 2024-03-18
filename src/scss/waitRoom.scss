@@ -82,13 +82,20 @@
         padding: 5px;
       }
       @include xs {
-        width: 33.3%;
+        width: calc(100% / 3);
       }
 
       &.self {
         .info_box {
           color: #459fc3;
-          font-size: 1.3rem;
+          // font-size: 1.3rem;
+        }
+      }
+      .info_box {
+        p {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
 
