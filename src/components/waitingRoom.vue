@@ -1,6 +1,7 @@
 <template>
   <div v-show="$store.state.userStore.loading">
     <!-- back to lobby -->
+    {{ $store.state.instructions[game]?.content }}
     <div class="back-container">
       <div class="back-btn">
         <router-link to="/lobby" replace class="flex">
@@ -181,7 +182,11 @@ export default {
     };
   },
   components: { changeUserRoleHandler },
-
+  computed: {
+    game() {
+      return this.$store.state.userStore.userRoom;
+    },
+  },
   watch: {
     'state.loginError': {
       handler(el) {

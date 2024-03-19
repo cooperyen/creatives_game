@@ -2,9 +2,11 @@ import { createApp } from 'vue'
 import router from '@/../assets/router.js';
 import { userStore, loopStore, gameData, playerIcon } from '@/../assets/userStore.js';
 import { style } from '@/../assets/style.js';
+import instructions from '@/../assets/instructions.js';
 import readyIcon from '@/../src/ui/ready.vue';
 import backGroundAnimate from '@/../src/components/animation/backGround.vue';
 import answerHandler from '@/../src/components/global/answerHandler.vue';
+import instructionsCompent from '@/../src/components/global/instructionsCompent.vue';
 import answerBtn from '@/../src/ui/answerBtn.vue';
 import App from '@/App.vue'
 import { createStore } from 'vuex';
@@ -26,7 +28,8 @@ const store = createStore({
     loopStore,
     gameData,
     style,
-    playerIcon
+    playerIcon,
+    instructions
   }
 });
 
@@ -41,6 +44,8 @@ app.component('readyIcon', readyIcon)
 app.component('backGroundAnimate', backGroundAnimate)
 app.component('answerBtn', answerBtn)
 app.component('answerHandler', answerHandler)
+app.component('instructionsCompent', instructionsCompent)
+
 
 
 

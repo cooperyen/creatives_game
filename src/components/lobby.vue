@@ -9,40 +9,45 @@
         <!-- each room -->
         <template v-for="(x, y) in gameRoomsData" :key="y">
           <div class="page-room flex" v-show="y === slide.currentPage">
-            <div class="room-box exist" v-for="i in x" :key="i">
+            <div class="room-box exist" v-for="room in x" :key="room">
+              <!-- room -->
               <div class="room-layout">
                 <div
                   class="room-content"
-                  :class="{ active: i != 'soon' }"
-                  @click="joinRoom(i)"
+                  :class="{ active: room != 'soon' }"
+                  @click="joinRoom(room)"
                 >
+                  <!-- content -->
                   <div class="content flex">
-                    <div class="title" v-if="i != 'soon'">
-                      <p>{{ getRoomDetail(i, 'name') }}</p>
+                    <div class="title" v-if="room != 'soon'">
+                      <p>{{ getRoomDetail(room, 'name') }}</p>
                     </div>
                     <div class="soon" v-else>
                       <p>coming</p>
                       <p>soon</p>
                     </div>
-                    <div class="players" v-if="i != 'soon'">
-                      <p>{{ getRoomDetail(i, 'player') }}人</p>
+                    <div class="players" v-if="room != 'soon'">
+                      <p>{{ getRoomDetail(room, 'player') }}人</p>
                     </div>
                   </div>
+                  <!-- content end -->
+                  <!-- game pic -->
                   <div class="img-box">
                     <div class="bg"></div>
                     <div class="right">
                       <img
                         :src="
                           this.$global_getImgUrl(
-                            `${i != 'soon' ? i : 'default_game'}`,
+                            `${room != 'soon' ? room : 'default_game'}`,
                             'game'
                           )
                         "
-                        :alt="i"
+                        :alt="room"
                         loading="lazy"
                       />
                     </div>
                   </div>
+                  <!-- game end -->
                 </div>
               </div>
             </div>
@@ -170,7 +175,7 @@ export default {
   methods: {
     getRoomDetail(el, item = null) {
       if (item === null) return false;
-      const data = this.chGameName[el];
+      const data = this.$store.state.instructions[el];
 
       if (data === null || data === undefined) {
         if (item === 'name') return el;
@@ -178,7 +183,7 @@ export default {
       }
 
       if (data !== null || data != undefined) {
-        if (item === 'name') return data.name;
+        if (item === 'name') return data.title.ch;
         if (item === 'player') return data.ppl;
       }
     },
