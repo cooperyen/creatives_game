@@ -5,19 +5,16 @@
         <h2><slot></slot></h2>
       </div>
       <div class="btn_box">
-        <answer-btn
-          state="true"
-          class="agree"
-          @click="this.$emit('agree', true)"
-          >agree</answer-btn
+        <answerBtn state="true" class="agree" @click="this.$emit('agree', true)"
+          >agree</answerBtn
         >
-        <answer-btn
+        <answerBtn
           state="false"
           class="cancel"
           @click="this.$emit('close', false)"
         >
           cancel
-        </answer-btn>
+        </answerBtn>
       </div>
     </div>
   </div>

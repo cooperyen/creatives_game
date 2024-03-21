@@ -5,7 +5,7 @@
   <transition name="content-ready">
     <div class="lobby-container" v-show="$store.state.userStore.loading">
       <!-- room content -->
-      <div class="room-container pd-side" v-if="gameRoomsData != null">
+      <div class="room-container pd_side" v-if="gameRoomsData != null">
         <!-- each room -->
         <template v-for="(x, y) in gameRoomsData" :key="y">
           <div class="page-room flex" v-show="y === slide.currentPage">
@@ -77,7 +77,7 @@
       <!-- end -->
 
       <!-- Players who are not currently in the game or in the room -->
-      <div id="user" class="container pd-side current-users-container">
+      <div id="user" class="container pd_side current-users-container">
         <div class="title">
           <p>當前玩家</p>
         </div>

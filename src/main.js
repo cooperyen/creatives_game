@@ -8,6 +8,7 @@ import backGroundAnimate from '@/../src/components/animation/backGround.vue';
 import answerHandler from '@/../src/components/global/answerHandler.vue';
 import instructionsCompent from '@/../src/components/global/instructionsCompent.vue';
 import answerBtn from '@/../src/ui/answerBtn.vue';
+import closeBtn from '@/../src/components/global/closeBtn.vue';
 import App from '@/App.vue'
 import { createStore } from 'vuex';
 
@@ -16,10 +17,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import { faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen)
+library.add(faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen, faCircleXmark)
 
 
 const store = createStore({
@@ -45,6 +46,8 @@ app.component('backGroundAnimate', backGroundAnimate)
 app.component('answerBtn', answerBtn)
 app.component('answerHandler', answerHandler)
 app.component('instructionsCompent', instructionsCompent)
+app.component('closeBtn', closeBtn)
+
 
 
 

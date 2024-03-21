@@ -1,7 +1,15 @@
 <template>
   <div v-show="$store.state.userStore.loading">
+    <font-awesome-icon
+      @click="openInstruction = true"
+      icon="fa-solid fa-chevron-left"
+    />
+    <instructionsCompent
+      :show="openInstruction"
+      :game="$store.state.userStore.userRoom"
+      @close="(n) => (openInstruction = n)"
+    ></instructionsCompent>
     <!-- back to lobby -->
-    {{ $store.state.instructions[game]?.content }}
     <div class="back-container">
       <div class="back-btn">
         <router-link to="/lobby" replace class="flex">
@@ -11,7 +19,7 @@
       </div>
       <div class="room-box">
         <h2>
-          {{ $store.state.gameData.chGameName[userRoom]?.name }}
+          {{ $store.state.instructions[userRoom]?.title.ch }}
         </h2>
       </div>
     </div>
@@ -179,6 +187,7 @@ export default {
         userSelectIcon: null,
         userDefault: null,
       },
+      openInstruction: false,
     };
   },
   components: { changeUserRoleHandler },

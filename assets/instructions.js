@@ -13,7 +13,7 @@ const data = {
       'game03': {
         'title': { 'en': 'Yellow Card', 'ch': '抓梗bro' },
         'ppl': '2-4',
-        'content': ['line1', 'line2', 'line3'],
+        'content': { 'en': '', 'ch': ['line1', 'line2', 'line3'] },
       }
     }
   },
