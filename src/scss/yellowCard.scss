@@ -5,22 +5,67 @@ $yellowCardLight: #ffed9c;
 $true: rgb(117, 232, 154);
 
 #yellowCard {
-  // background-color: rgb(205, 196, 142);
   height: 100vh;
   width: 100vw;
+  position: relative;
 }
 
-.player_list {
-  margin-bottom: 50px;
-  color: white;
+.timer {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  .img_box {
+    max-width: 30px;
+    color: #c53a3a;
+  }
+  .number {
+    margin-left: 5px;
+    color: #c53a3a;
+  }
+  .stop {
+    color: #848484;
+  }
+}
+
+.cccc {
+  position: absolute;
+}
+
+.header {
+  width: calc(100% - 5px);
+  max-width: 1800px;
+  position: relative;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 10px;
+  color: rgb(183, 113, 32);
+  border-bottom: 1px solid rgb(95, 95, 95);
   .title {
     margin: 0 10px;
   }
   .items {
+    margin: 0 5px;
     display: flex;
     text-align: center;
+
     .item {
-      margin: 5px 10px;
+      margin: 5px 6px;
+      @include sm {
+        font-size: 0.7rem;
+      }
+      .text {
+        .light {
+          color: red;
+        }
+      }
+      .img_box {
+        width: 25px;
+        margin-right: 3px;
+        @include sm {
+          width: 17px;
+        }
+      }
     }
   }
 }
@@ -153,111 +198,109 @@ h1 {
     }
   }
 }
-#hand-card,
+#hand-card {
+  max-width: 1400px;
+  margin: 80px auto 0 auto;
+  @include sm {
+    margin: 40px auto 0 auto;
+  }
+}
 #drop {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
+}
+#hand-card,
+#drop {
   .btn-box {
     margin-top: 50px;
-    padding: 0 50px;
+    padding: 0 30px;
 
     &.flex {
       flex-wrap: wrap;
     }
     .btn {
       width: 100%;
-
-      @include min-xs {
-        flex: 1;
-        &:first-child {
-          flex: 2;
-        }
+      flex: 1;
+      &:first-child {
+        flex: 2;
       }
     }
   }
-  .conetnt.flex {
-    flex-wrap: wrap;
-  }
-  .card.item {
-    text-align: center;
-    width: 50%;
-    @include min-sm {
-      width: 33%;
+  .conetnt {
+    margin: 0 auto;
+    &.flex {
+      flex-wrap: wrap;
     }
-    @include xs {
-      width: 100%;
-    }
-    @include sm {
-      &:nth-child(odd) {
-        .option {
-          margin: 5px 5px 5px 15px;
-        }
+    .card.item {
+      text-align: center;
+      flex-grow: 1;
+      &:last-child {
+        flex-grow: 0;
       }
-      &:nth-child(even) {
-        .option {
-          margin: 5px 15px 5px 5px;
-        }
-      }
-    }
-    @include xs {
-      &:nth-child(odd),
-      &:nth-child(even) {
-        .option {
-          margin: 5px 20px;
-        }
-      }
-    }
-    .option {
-      border: 4px solid rgb(30, 30, 30);
-      border-radius: 8px;
-      padding: 10px 0;
-      margin: 5px 5px;
-      background-color: $yellowCard;
-      position: relative;
-      transition: 0.2s ease-in-out;
+      .option {
+        border: 4px solid rgb(30, 30, 30);
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin: 5px 5px;
+        background-color: $yellowCard;
+        position: relative;
+        transition: 0.2s ease-in-out;
 
-      @include sm {
-        padding: 4px 0;
-      }
-      @include xs {
-        padding: 10px;
-      }
-      &.selected {
-        font-weight: bold;
-        background-color: $yellowCardLight;
-        box-shadow: 4px 4px 1px #806932;
-        transform: translate(-1px, -4px);
-      }
-      .num {
-        color: white;
-        display: flex;
-        width: 30px;
-        height: 30px;
-        background-color: rgb(231, 86, 86);
-        border-radius: 100%;
-        position: absolute;
-        right: -5px;
-        top: -15px;
-        align-items: center;
-        justify-content: center;
-        line-height: 0;
-        box-shadow: 2px 2px 1px rgb(121, 41, 41);
+        @include sm {
+          padding: 8px 12px;
+        }
+        @include xs {
+          padding: 10px 14px;
+        }
+        &.selected {
+          font-weight: bold;
+          background-color: $yellowCardLight;
+          box-shadow: 4px 4px 1px #806932;
+          transform: translate(-1px, -4px);
+        }
+        .num {
+          color: white;
+          display: flex;
+          width: 30px;
+          height: 30px;
+          background-color: rgb(231, 86, 86);
+          border-radius: 100%;
+          position: absolute;
+          right: -5px;
+          top: -15px;
+          align-items: center;
+          justify-content: center;
+          line-height: 0;
+          box-shadow: 2px 2px 1px rgb(121, 41, 41);
+        }
       }
     }
   }
 }
 
+#quest,
+#hand-card .conetnt,
+#drop .conetnt {
+  max-width: 800px;
+  width: calc(100% - 30px);
+}
+
 #quest {
+  text-align: center;
   min-height: 80px;
   margin: 5px 5px 15px 5px;
   color: rgb(21, 21, 21);
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-size: clamp(1.5rem, 5vw, 2.6rem);
+  @include min-sm {
+    margin: 15px auto;
+  }
   @include sm {
-    margin: 5px 5px 15px 15px;
+    // text-align: start;
+    width: calc(100% - 20px);
+    margin: 15px auto;
   }
-  @include xs {
-  }
+
   &::v-deep(.insert) {
     color: rgb(253, 235, 73);
     background-color: rgb(53, 53, 53);
@@ -270,11 +313,15 @@ h1 {
   &::v-deep(.insert) {
     font-weight: bold;
     padding: 0 10px;
+    white-space: nowrap;
   }
 }
 
 // global
 .btn-box {
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
   .btn {
     border-radius: 8px;
     margin: 5px;

@@ -1,38 +1,63 @@
 <template>
   <div id="yellowCard">
-    <userNameBox :userName="getUserName" class="name"></userNameBox>
-    <!-- <h1>{{ timer }}</h1> -->
-    <!-- <h1>{{ playerMove.currentStep }}</h1> -->
-    <div v-if="playerMove.currentStep != 'end'">
-      <h1>show time</h1>
-      <div v-if="this.timer.show">
-        {{ this.timer.time }}
-      </div>
-      <div v-else>0</div>
-    </div>
-    <div v-if="playerMove.currentStep != 'end'">
-      <div class="player_list">
+    <userNameBox
+      :userName="getUserName"
+      :userIcon="getUserIcon"
+      class="name"
+    ></userNameBox>
+
+    <template v-if="playerMove.currentStep != 'end'">
+      <div class="header">
         <div class="title">
           <p>Players</p>
         </div>
         <div class="items">
-          <div v-for="i in gameData.yellowCard" :key="i" class="item">
-            <p>{{ Object.keys(i)[0] }}</p>
-            <p>{{ Object.values(i)[0] }}</p>
+          <div v-for="i in gameData.yellowCard" :key="i" class="item flex">
+            <div class="img_box">
+              <img
+                :src="
+                  $global_getImgUrl(
+                    gameData.icon[Object.keys(i)[0]]['icon'],
+                    'player_icon'
+                  )
+                "
+              />
+            </div>
+            <div class="text">
+              <p>
+                {{ Object.keys(i)[0] }} /
+                <span :class="{ light: Object.values(i)[0] >= 1 }">{{
+                  Object.values(i)[0] < 10
+                    ? '0' + Object.values(i)[0]
+                    : Object.values(i)[0]
+                }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="timer flex" v-if="playerMove.currentStep != 'end'">
+          <div class="img_box" :class="{ stop: !this.timer.show }">
+            <font-awesome-icon icon="fa-solid fa-clock" />
+          </div>
+          <div class="number" :class="{ stop: !this.timer.show }">
+            <template v-if="this.timer.show">{{ this.timer.time }}</template>
+            <template v-else>0</template>
           </div>
         </div>
       </div>
 
       <!-- hand card -->
-      <handCardHandler
-        :gameData="gameData"
-        :playerMove="playerMove"
-        :class="{ active: playerMove.usedOpen }"
-        @pickUsedCard="pickUsedCard"
-        @pickUsedCardRemove="pickUsedCardRemove"
-        @used="used"
-        @rePickUsedCard="rePickUsedCard"
-      ></handCardHandler>
+      <div>
+        <handCardHandler
+          :gameData="gameData"
+          :playerMove="playerMove"
+          :class="{ active: playerMove.usedOpen }"
+          @pickUsedCard="pickUsedCard"
+          @pickUsedCardRemove="pickUsedCardRemove"
+          @used="used"
+          @rePickUsedCard="rePickUsedCard"
+        ></handCardHandler>
+      </div>
 
       <!-- vote -->
       <voteHandler
@@ -84,7 +109,7 @@
       >
         <h1>回合計算中</h1>
       </div>
-    </div>
+    </template>
 
     <div
       v-if="playerMove.currentStep === 'end'"
@@ -121,11 +146,11 @@ export default {
       ownself: null,
       timer: {
         countTimer: null,
-        time: 30,
-        long: 30,
+        time: 3000,
+        long: 3000,
         show: false,
         isWait: false,
-        default: 30,
+        default: 3000,
       },
       gameData: {
         endGameSentence: {
@@ -137,6 +162,7 @@ export default {
         },
         selfHand: null,
         hp: [],
+        icon: [],
         player: null,
         quest: null,
         questLength: 0,
@@ -209,6 +235,9 @@ export default {
     getUserName() {
       return this.$store.state.userStore.userName;
     },
+    getUserIcon() {
+      return this.$store.state.userStore.icon;
+    },
     getUserRoom() {
       return this.$store.state.userStore.userRoom;
     },
@@ -233,7 +262,7 @@ export default {
         let yellowCard = [];
         this.gameData.tableCard = el['檯面上'];
         this.gameData.ownself = el['我的資訊'];
-        this.gameData.quest = el['題目'].replace(/{}/g, '__');
+        this.gameData.quest = el['題目'].replace(/{}/g, '___');
         this.gameData.questLength = this.checkQuestLength(el['題目']);
         this.gameData.selfHand = this.gameData.ownself['手牌'];
         this.gameData.player = el['玩家列表'];
@@ -321,11 +350,11 @@ export default {
       }
     },
     outCheck(el) {
-      this.socket.emit('yc', {
-        id: this.getUserName,
-        room: this.getUserRoom,
-        re_player: el,
-      });
+      // this.socket.emit('yc', {
+      //   id: this.getUserName,
+      //   room: this.getUserRoom,
+      //   re_player: el,
+      // });
     },
 
     checkToCreatTimer() {
@@ -371,7 +400,6 @@ export default {
      */
     timeOutCheck() {
       if (this.timer.time <= 0) {
-        // alert('time out');
         return true;
       }
     },
@@ -438,7 +466,7 @@ export default {
       this.playerMove.pickCardclickQueue += 1;
       this.playerMove.pickCard.push(el);
       this.playerMove.pickCard.forEach((val) => {
-        result = result.replace('__', `<span class="insert">${val}</span>`);
+        result = result.replace('___', `<span class="insert">${val}</span>`);
       });
 
       this.questInnerHTML(`<p>${result}</p>`);
@@ -452,7 +480,7 @@ export default {
       this.playerMove.pickCard.splice(this.playerMove.pickCard.indexOf(el), 1);
 
       this.playerMove.pickCard.forEach((val) => {
-        result = result.replace('__', `<span class="insert">${val}</span>`);
+        result = result.replace('___', `<span class="insert">${val}</span>`);
       });
 
       this.questInnerHTML(`<p>${result}</p>`);
@@ -501,6 +529,7 @@ export default {
       });
 
       this.gameData.player = el.player;
+      this.gameData.icon = el.icon;
       this.gameData.yellowCard = yellowCard;
       this.checkToCreatTimer('used');
     },

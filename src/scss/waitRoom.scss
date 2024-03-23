@@ -8,7 +8,7 @@
     content: '';
     display: block;
     width: 80vw;
-    max-width: 1200px;
+    max-width: 1150px;
     height: 80vh;
     top: 50%;
     left: 50%;
@@ -16,8 +16,8 @@
     z-index: -1;
     position: fixed;
     border-radius: 20px;
-    // background: rgba(255, 255, 255, 1);
-    // box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.1);
+    background: rgba(253, 253, 255, 0.6);
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.1);
     @include sm {
       top: 80px;
       transform: translateX(-50%);
@@ -25,13 +25,13 @@
     }
     @include sm {
       width: 96vw;
-      top: 100px;
+      top: 110px;
     }
   }
 }
 
 .container {
-  max-width: 1200px;
+  // max-width: 1200px;
   width: 100%;
   margin-top: 5px;
   margin-left: auto;
@@ -89,20 +89,21 @@
 .player-container {
   max-width: 800px;
   margin: 0 auto;
+  width: 80vw;
   justify-content: center;
+  @include sm {
+    width: 100vw;
+  }
   .player-box {
     display: flex;
     @include L {
       flex-wrap: wrap;
     }
     @include med {
-      padding: 0 15px 0px 15px;
-      margin: 0 15px;
-    }
-    @include med {
       padding: 0 5px 0px 5px;
-      margin: 0 2px;
+      // margin: 0 15px;
     }
+
     .player-item {
       width: 100%;
       min-height: 50px;
@@ -215,7 +216,7 @@
   .back-btn {
     position: absolute;
     left: 0;
-    top: 30px;
+    top: 40px;
     margin-left: 25px;
     transform: translateY(-50%);
     a {
@@ -231,7 +232,7 @@
   .instruction_btn {
     position: absolute;
     right: 20px;
-    top: 30px;
+    top: 40px;
     transform: translateY(-50%);
     .btn {
       border-radius: 100%;
@@ -249,7 +250,7 @@
     width: 100%;
     top: 50%;
     left: 50%;
-    margin-top: 10px;
+    margin-top: 20px;
     transform: translate(-50%, -50%);
     text-align: center;
     text-transform: uppercase;
@@ -265,7 +266,7 @@
       font-size: 2rem;
     }
     h2 {
-      font-size: 2.5rem;
+      font-size: 3.2rem;
       @include sm {
         font-size: 2rem;
       }

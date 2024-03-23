@@ -10,7 +10,7 @@
       <div class="back-btn">
         <router-link to="/lobby" replace class="flex">
           <font-awesome-icon icon="fa-solid fa-chevron-left" />
-          <p>to looby</p>
+          <p>LOBBY</p>
         </router-link>
       </div>
       <div class="instruction_btn">

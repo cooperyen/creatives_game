@@ -53,7 +53,7 @@ export default {
 @import '@/../../../scss/color.scss';
 @import '@/../../../scss/rwd.scss';
 .user-container {
-  height: 80px;
+  height: 65px;
   width: 100%;
   overflow: hidden;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -82,7 +82,6 @@ export default {
   }
   :deep(.user_box) {
     right: 20px;
-    top: 20px;
     position: absolute;
     @include sm {
       right: 15px;
