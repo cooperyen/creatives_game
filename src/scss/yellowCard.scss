@@ -41,6 +41,10 @@ $true: rgb(117, 232, 154);
   padding-bottom: 10px;
   color: rgb(183, 113, 32);
   border-bottom: 1px solid rgb(95, 95, 95);
+  margin: 0 auto 80px auto;
+  @include sm {
+    margin: 0 auto 40px auto;
+  }
   .title {
     margin: 0 10px;
   }
@@ -200,10 +204,7 @@ h1 {
 }
 #hand-card {
   max-width: 1400px;
-  margin: 80px auto 0 auto;
-  @include sm {
-    margin: 40px auto 0 auto;
-  }
+  margin: 0 auto;
 }
 #drop {
   max-width: 500px;
@@ -243,7 +244,7 @@ h1 {
         border-radius: 8px;
         padding: 10px 15px;
         margin: 5px 5px;
-        background-color: $yellowCard;
+        background-color: $yellowCardLight;
         position: relative;
         transition: 0.2s ease-in-out;
 
@@ -255,7 +256,7 @@ h1 {
         }
         &.selected {
           font-weight: bold;
-          background-color: $yellowCardLight;
+          background-color: $yellowCard;
           box-shadow: 4px 4px 1px #806932;
           transform: translate(-1px, -4px);
         }
@@ -306,6 +307,7 @@ h1 {
     background-color: rgb(53, 53, 53);
     border-radius: 4px;
     margin: 0 2px;
+    line-height: 1.8;
   }
 }
 #quest,
@@ -329,13 +331,13 @@ h1 {
     font-size: 1rem;
     font-weight: bold;
     letter-spacing: 0.3rem;
-    border: white 5px solid;
+    border: rgb(245, 245, 245) 5px solid;
     transition: 0.6s border, 0.6s background-color;
 
     &.selected {
       animation: flips 1s forwards;
-      background-color: $true;
-      border-color: rgba(255, 223, 128, 0.12);
+      background-color: rgb(151 217 138);
+      border: rgb(216, 253, 208) 5px solid;
     }
   }
 }

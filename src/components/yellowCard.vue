@@ -146,11 +146,11 @@ export default {
       ownself: null,
       timer: {
         countTimer: null,
-        time: 3000,
-        long: 3000,
+        time: 60,
+        long: 60,
         show: false,
         isWait: false,
-        default: 3000,
+        default: 60,
       },
       gameData: {
         endGameSentence: {
@@ -350,11 +350,11 @@ export default {
       }
     },
     outCheck(el) {
-      // this.socket.emit('yc', {
-      //   id: this.getUserName,
-      //   room: this.getUserRoom,
-      //   re_player: el,
-      // });
+      this.socket.emit('yc', {
+        id: this.getUserName,
+        room: this.getUserRoom,
+        re_player: el,
+      });
     },
 
     checkToCreatTimer() {
@@ -521,7 +521,7 @@ export default {
       this.playerMove.currentStep = 'used';
       this.playerMove.usedOpen = true;
       this.gameData.hp = el.hp;
-      this.gameData.quest = el.quest.replace(/{}/g, '__');
+      this.gameData.quest = el.quest.replace(/{}/g, '___');
       this.gameData.questLength = this.checkQuestLength(el.quest);
       this.gameData.selfHand = el[this.getUserName].hand;
       el.player.forEach((name) => {

@@ -17,16 +17,18 @@ export default {
 <style lang="scss" scoped>
 @import '@/scss/rwd.scss';
 #copyright {
-  position: absolute;
+  position: fixed;
   left: 50%;
   bottom: 15px;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   font-size: 0.9rem;
   color: rgb(157 166 187);
   width: 100%;
   text-align: center;
+  z-index: 1;
   @include sm {
-    font-size: 0.6rem;
+    bottom: 2px;
+    font-size: 0.7rem;
   }
 }
 </style>

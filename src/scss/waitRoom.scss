@@ -25,7 +25,7 @@
     }
     @include sm {
       width: 96vw;
-      top: 110px;
+      top: 95px;
     }
   }
 }
@@ -211,7 +211,7 @@
   position: relative;
   @include sm {
     // height: 160px;
-    margin-top: 20px;
+    // margin-top: 20px;
   }
   .back-btn {
     position: absolute;

@@ -25,6 +25,7 @@
   place-content: center;
   background-color: rgb(244, 244, 244);
   position: relative;
+  height: 100%;
 
   &::after {
     border: 10px solid rgb(231, 231, 231);
@@ -40,6 +41,10 @@
     z-index: -1;
     position: fixed;
     border-radius: 5px;
+    @include sm {
+      top: 50%;
+      height: 70vh;
+    }
   }
 }
 

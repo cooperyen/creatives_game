@@ -27,7 +27,7 @@ $text: rgb(198, 190, 149);
     bottom: 15%;
   }
   @include xs {
-    bottom: 3%;
+    bottom: 3em;
   }
   .items {
     background-color: #f2f2f2;
@@ -317,7 +317,7 @@ $text: rgb(198, 190, 149);
   }
 
   @include sm {
-    // max-height: 100px;
+    padding-top: 0px;
   }
   .title {
     p {
