@@ -1,7 +1,6 @@
 <template>
   <transition name="connect">
     <div id="connect" v-if="!$store.state.userStore.loading">
-      {{ state.connected }}
       <div class="loading-box active" v-if="state.connected != false">
         <div class="flex">
           <h2>Connecting</h2>
@@ -19,8 +18,7 @@
     </div>
   </transition>
 
-  <!-- <loadingLoop v-show="clickLoading"></loadingLoop> -->
-
+  <loadingLoop v-show="clickLoading"></loadingLoop>
   <router-view :socket="socket" :state="state" v-slot="{ Component }">
     <transition :name="$route.meta.transition || 'fade'">
       <div :key="$route.name">
@@ -28,7 +26,7 @@
       </div>
     </transition>
   </router-view>
-
+  <copyright></copyright>
   <transferPageCountDown></transferPageCountDown>
 </template>
 
@@ -39,9 +37,11 @@ import { state, socket } from '@/../assets/socket';
 <script>
 import loadingLoop from '@/../src/ui/loadingLoop.vue';
 import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
+import copyright from '@/../src/components/layout/copyright.vue';
 export default {
   data() {
     return {
+      dsds: false,
       socket,
       state,
       loading: false,
@@ -49,7 +49,7 @@ export default {
       sockets: null,
     };
   },
-  components: { loadingLoop, transferPageCountDown },
+  components: { loadingLoop, transferPageCountDown, copyright },
   watch: {
     $route(el) {
       this.$store.commit('socketDelete');

@@ -1,24 +1,35 @@
 <template>
   <transition name="login">
-    <div class="login-container" v-show="$store.state.userStore.loading">
-      <div class="title">
-        <h1>
-          幫自己取個名字吧
-          <p>.</p>
-        </h1>
-      </div>
-      <div class="content">
-        <div class="input-box">
-          <input
-            v-model="userName"
-            type="text"
-            placeholder="名字必須有氣勢"
-            required=""
-            @keyup.enter="login()"
-          />
+    <div id="login" v-show="$store.state.userStore.loading">
+      <div class="login-container">
+        <div class="title">
+          <h1 class="">
+            <span
+              :class="{ space: t === ' ' }"
+              class="ani_text"
+              v-for="(t, i) in titleText()"
+              :key="i"
+            >
+              {{ t }}
+            </span>
+            <p class="ani_text">
+              <span class="dot">.</span>
+            </p>
+          </h1>
         </div>
-        <div class="login btn">
-          <button @click.prevent="connected ? login() : ' '">登入</button>
+        <div class="content flex">
+          <div class="input-box">
+            <input
+              v-model="userName"
+              type="text"
+              placeholder="名字必須有氣勢"
+              required=""
+              @keyup.enter="login()"
+            />
+          </div>
+          <div class="login btn">
+            <button @click.prevent="connected ? login() : ' '">登入</button>
+          </div>
         </div>
       </div>
     </div>
@@ -38,6 +49,8 @@ export default {
       userName: '',
       loading: false,
       connected: '',
+      title: '幫自己取個名字吧',
+      // Give yourself a name
     };
   },
   props: ['socket', 'state'],
@@ -51,9 +64,36 @@ export default {
         this.$store.state.userStore.userName = this.userName;
         this.socket.emit('login', {
           id: this.userName,
-          icon: this.$store.state.gameData.playerIcon[0],
+          icon: this.$store.state.userStore.icon,
         });
       }
+    },
+    titleText() {
+      let res = this.title.split('');
+      return res;
+    },
+    titleAnimte() {
+      const text = document.querySelectorAll(
+        '.login-container .title .ani_text'
+      );
+      function xx() {
+        let sum = 1;
+        text.forEach((el) => {
+          setTimeout(() => {
+            el.classList.add('ani_');
+          }, sum * 100);
+
+          sum += 1;
+          setTimeout(() => {
+            el.classList.remove('ani_');
+          }, sum * 600);
+        });
+      }
+      xx();
+
+      setInterval(() => {
+        xx();
+      }, text.length * 1000);
     },
   },
   computed: {
@@ -70,10 +110,8 @@ export default {
     },
     'state.goUrl': {
       handler(el) {
-        // console.log('url', el);
         if (el === null) return;
         this.$router.replace(el);
-        // this.state.goUrl = null;
       },
       deep: true,
     },
@@ -96,6 +134,8 @@ export default {
     localStorage.removeItem('reloaded');
   },
   mounted() {
+    const x = this;
+    this.$nextTick(() => this.titleAnimte());
     setTimeout(() => {
       const conetectLoop = setInterval(() => {
         this.connectedTime += 1;

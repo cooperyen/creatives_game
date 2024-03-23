@@ -258,7 +258,7 @@ export default {
           that.socket.emit('id_check', {
             id: userData.userName,
             room: userData.userRoom,
-            icon: userData.icon,
+            icon: 'chips',
           });
 
         if (!that.state.gameRooms.state) return false;
@@ -346,7 +346,6 @@ export default {
     },
     'state.lobbyPlayerList': {
       handler(el) {
-        console.log(el);
         // Leave a player that room vlaue is null.
         this.lobbyPlayerList = Object.values(el).filter((vl) => {
           if (vl.room != null) return;
@@ -361,11 +360,10 @@ export default {
   props: ['socket', 'state'],
   created() {
     const userStore = this.$store.state.userStore;
-    const userData = JSON.parse(localStorage.getItem('userData'));
     this.userName = userStore.userName;
     this.userRoom =
       userStore.userRoom === undefined ? null : userStore.userRoom;
-    this.userIcon = userData.icon;
+    this.userIcon = userStore.icon;
     this.onResize();
   },
   mounted() {

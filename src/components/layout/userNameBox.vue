@@ -38,7 +38,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.$route.meta.style?.userName);
     this.on =
       this.$route.meta.style?.userName != undefined
         ? this.$route.meta.style.userName

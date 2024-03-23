@@ -32,8 +32,6 @@ export const state = reactive({
   yellowCard: null,
 });
 
-console.log(state.isConnected);
-
 // const testURL = 'http://200.69.21.59:88'
 const testURL = 'https://user.creatives.ink'
 // const testURL = 'http://127.0.0.1:5000/'

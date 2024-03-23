@@ -71,10 +71,10 @@ const userStore = {
 
     },
     createDefaultData(state) {
-      const cookie = getCookie('userData')
-      let data = { userName: null, userRoom: null, icon: playerIcon[0] }
+      // const cookie = getCookie('userData')
+      let data = { userName: null, userRoom: null, icon: state.icon }
+      // if (cookie != null && cookie?.icon != playerIcon[0]) data.icon = cookie.icon
 
-      if (cookie != null && cookie?.icon != playerIcon[0]) data.icon = cookie.icon
 
       updateCookie('userData', data)
     },

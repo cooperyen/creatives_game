@@ -1,21 +1,22 @@
 <template>
-  <div v-show="$store.state.userStore.loading">
-    <font-awesome-icon
-      @click="openInstruction = true"
-      icon="fa-solid fa-chevron-left"
-    />
+  <div id="waitroom" v-show="$store.state.userStore.loading">
     <instructionsCompent
       :show="openInstruction"
       :game="$store.state.userStore.userRoom"
       @close="(n) => (openInstruction = n)"
     ></instructionsCompent>
-    <!-- back to lobby -->
-    <div class="back-container">
+    <!-- header -->
+    <div class="header-container">
       <div class="back-btn">
         <router-link to="/lobby" replace class="flex">
           <font-awesome-icon icon="fa-solid fa-chevron-left" />
           <p>to looby</p>
         </router-link>
+      </div>
+      <div class="instruction_btn">
+        <button class="btn" @click="openInstruction = true">
+          <font-awesome-icon icon="fa-solid fa-book" />
+        </button>
       </div>
       <div class="room-box">
         <h2>
@@ -27,7 +28,7 @@
     <!-- main container -->
     <div class="container">
       <!-- player's content -->
-      <div class="flex player-container">
+      <div class="player-container">
         <div class="player-box">
           <!-- self -->
           <div class="player-item self">

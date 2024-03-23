@@ -1,78 +1,136 @@
 @import './rwd.scss';
 @import './color.scss';
 
+#login {
+  width: 100vw;
+  height: 100vh;
+}
+
+@keyframes ani {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes ani_sm {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
 .login-container {
   width: calc(100% - 40px);
   margin: 0 auto;
-  max-width: 500px;
+  max-width: 800px;
   position: fixed;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
 
   .title {
+    width: calc(100% - 6px);
+    margin: 0 auto;
     h1 {
       color: $text_default_title;
-      font-size: clamp(1.8rem, 8vw, 3rem);
+      font-size: clamp(2.2rem, 6vw, 3rem);
       text-align: center;
-      @include sm {
-        // text-align: justify;
-        // font-size: 2rem;
-      }
-      p {
+      .dot {
         color: $titlColor;
         animation: slash 1s infinite steps(20, end);
         font-size: 5rem;
         display: initial;
         line-height: 0;
       }
+      .ani_ {
+        position: relative;
+        animation: ani 0.7s ease-in-out forwards;
+        @include sm {
+          animation: ani_sm 0.7s ease-in-out forwards;
+        }
+      }
+
+      .ani_text {
+        display: inline-block;
+        &.space {
+          width: 1rem;
+          @include sm {
+            width: 0.4rem;
+          }
+        }
+      }
     }
   }
 
   .content {
+    max-width: 500px;
     border: 10px rgba(235, 191, 60, 0.7) double;
     background-clip: padding-box;
     margin-top: 40px;
+    margin-right: auto;
+    margin-left: auto;
     background-color: rgba(247, 247, 247, 0.9);
     padding: 35px 15px;
     border-radius: 12px;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
+
+    &.flex {
+      @include sm {
+        flex-wrap: wrap;
+      }
+    }
     @include sm {
-      padding: 25px 5px;
+      padding: 20px 5px;
       max-width: calc(100% - 15px);
-      margin: 20px auto 0 auto;
+      margin: 40px auto 0 auto;
     }
     .login.btn {
-      margin-top: 30px;
+      // margin-top: 30px;
+      min-width: 70px;
       @include sm {
-        margin-top: 25px;
+        margin-top: 15px;
+        width: 100%;
       }
       button {
-        width: 90%;
+        width: 100%;
         color: rgb(44, 44, 44);
         background-color: #ebbf3c;
-        padding: 10px 5px;
+        // padding: 10px 5px;
+        height: 100%;
         border: unset;
-        border-radius: 6px;
+        border-radius: 0 6px 6px 0;
         font-weight: bold;
         font-size: 1rem;
         cursor: pointer;
         @include sm {
           padding: 10px 2px;
+          width: 90%;
+          border-radius: 6px;
         }
       }
     }
     .input-box {
       font-size: 1.2rem;
-      border-radius: 8px;
       width: 90%;
       margin: 0 auto;
+
       input {
         box-shadow: inset 2px 2px 1px rgba(0, 0, 0, 0.2);
         font-size: 1.2rem;
         padding: 8px 10px;
-        border-radius: 6px;
+        border-radius: 6px 0 0 6px;
         width: 100%;
         border: unset;
         letter-spacing: 1px;
@@ -81,10 +139,13 @@
         &:focus {
           border: unset;
         }
+        @include sm {
+          border-radius: 6px;
+        }
       }
       input,
       input::placeholder {
-        text-align: center;
+        // text-align: center;
       }
     }
   }

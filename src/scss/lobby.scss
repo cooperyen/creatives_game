@@ -303,7 +303,8 @@ $text: rgb(198, 190, 149);
 .current-users-container {
   padding-top: 10px;
   color: $text_default_title;
-  margin-right: auto;
+  // margin-right: auto;
+  margin: 0 15px;
   // margin-left: 40px;
   // max-height: 200px;
 

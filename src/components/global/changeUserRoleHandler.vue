@@ -66,7 +66,7 @@ export default {
       this.socket.emit('id_check', {
         id: this.selfPlayer,
         room: this.userRoom,
-        icon: this.userIcon,
+        icon: this.$store.state.userStore.icon,
       });
 
       this.$emit('userIcon', this.role.userSelectIcon);

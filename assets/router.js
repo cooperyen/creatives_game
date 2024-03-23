@@ -61,10 +61,12 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(to => {
-  const bg = new bg_style()
-  const body = to.meta.style ? to.meta.style.body : null
+  setTimeout(() => {
+    const bg = new bg_style()
+    const body = to.meta.style ? to.meta.style.body : null
 
-  bg.backGorund(body)
+    bg.backGorund(body)
+  }, 500);
 })
 
 export default router;
