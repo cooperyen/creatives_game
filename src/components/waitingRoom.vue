@@ -49,7 +49,9 @@
               </div>
 
               <!-- ready icon -->
+
               <readyIcon
+                :host="roomHost === selfPlayer"
                 :class="{ visible: !readyList[selfPlayer] }"
               ></readyIcon>
               <div v-show="readyToGo">
@@ -75,7 +77,10 @@
               </div>
 
               <!-- ready icon -->
-              <readyIcon v-show="readyList[i.user_id]"></readyIcon>
+              <readyIcon
+                :host="roomHost === i.user_id"
+                v-show="readyList[i.user_id]"
+              ></readyIcon>
             </div>
           </div>
 
@@ -168,6 +173,7 @@ import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHand
 export default {
   data() {
     return {
+      roomHost: null,
       otherPlayers: null,
       otherPlayerSetroom: 3,
       selfPlayer: null,
@@ -220,6 +226,7 @@ export default {
     'state.currentPlayers': {
       handler(el) {
         this.playerList = el.page[this.userRoom]['player'];
+        this.roomHost = el.page[this.userRoom]['ready'][0];
         this.currentPlayers(el);
         this.countPlayers(el);
       },
@@ -255,6 +262,7 @@ export default {
           if (this.otherPlayers.length != 0) this.readyGameUI(true);
         }
         this.readyList = el;
+        this.roomHost = Object.keys(el)[0] || null;
       },
     },
     isCountDown(el) {

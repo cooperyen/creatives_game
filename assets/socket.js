@@ -119,7 +119,9 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
+
   switch (data.way) {
+
     case 'id_check':
 
       if (data.user_sids != null || data.user_sids != undefined) {
@@ -217,6 +219,7 @@ socket.on('update_lobby', function (data) {
 })
 
 socket.on('updata_ready', function (data) {
+  // console.log(data);
   state.gameOne.readyToGo = false;
   state.gameOne.readyList = data.reduce((key, val, index) => {
     key[val] = val

@@ -26,7 +26,7 @@ export default {
   width: 100%;
   text-align: center;
   z-index: 1;
-  @include sm {
+  @include L {
     bottom: 2px;
     font-size: 0.7rem;
   }
