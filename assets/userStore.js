@@ -85,19 +85,18 @@ const userStore = {
 const loopStore = {
   state() {
     return {
-      socketConnect: null,
-      loadRoomLoop: null,
-      connectedTime: 0,
+      loopHandler: null,
+      tryTime: 0,
     }
   },
   mutations: {
-    socketConnect(state, el) {
-      state.socketConnect = el;
+    loopHandler(state, el) {
+      state.loopHandler = el;
     },
-    socketDelete(state) {
-      clearInterval(state.socketConnect);
-      state.socketConnect = null;
-      state.connectedTime = 0;
+    loopHandlerDelete(state, el) {
+      clearInterval(state.loopHandler);
+      state.loopHandler = null;
+      state.tryTime = 0;
     },
     loadRoomLoop(state, el) {
       state.loadRoomLoop = el;
@@ -105,13 +104,13 @@ const loopStore = {
     loadRoomLoopDelete(state) {
       clearInterval(state.loadRoomLoop);
       state.loadRoomLoop = null;
-      state.connectedTime = 0;
+      state.tryTime = 0;
     },
-    connectedTimePlus(state) {
-      state.connectedTime += 1;
+    loopTimePlus(state) {
+      state.tryTime += 1;
     },
     connectedTimeMinus(state) {
-      state.connectedTime -= 1;
+      state.tryTime -= 1;
     },
   }
 }

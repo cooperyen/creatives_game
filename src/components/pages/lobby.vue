@@ -139,6 +139,10 @@ import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHand
 export default {
   data() {
     return {
+      handler: {
+        connected: null,
+        time: 0,
+      },
       answer: { open: false, text: '即將返回首頁, 確定?' },
       slide: {
         pageSum: 1,
@@ -213,23 +217,34 @@ export default {
     getRoomUrl(name) {
       return new URL(`/src/image/game/${name}.svg`, import.meta.url).href;
     },
+    joinRoom(roomId) {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      if (roomId) {
+        this.socket.emit('join', {
+          room: roomId,
+          id: this.userName,
+          icon: userData.icon,
+        });
+      } else {
+        alert('未指定房間 ID');
+      }
+    },
     loadRoomData() {
-      if (this.userName === null) return;
-
       const that = this;
 
       this.$store.commit(
-        'loadRoomLoop',
+        'loopHandler',
         setInterval(() => {
           const result = doCheck();
-          this.$store.commit('connectedTimePlus');
+          this.$store.commit('loopTimePlus');
           if (result) {
-            this.$store.commit('loadRoomLoopDelete');
+            this.$store.commit('loopHandlerDelete');
 
             // display particular room with "chGameName".
             this.gameRooms = this.state.gameRooms.gameList.filter((x, y) => {
               if (this.chGameName[x] != undefined) return x;
             });
+
             if (this.gameRooms.length <= 6) {
               const sum = 8 - this.gameRooms.length;
               for (let i = 0; i < sum; i++) {
@@ -238,15 +253,16 @@ export default {
             }
 
             this.sliceGameRoom();
-
-            // setTimeout(() => {
             this.$store.commit('updateLoading', true);
-            // }, 20);
           }
 
           // next run will return looby by "id_check" by backEnd after clearUserRoom;
-          if (this.$store.state.loopStore.connectedTime >= 5)
+          if (this.handler.time >= 20) {
+            this.$store.commit('loopHandlerDelete');
             this.$store.commit('clearUserRoom');
+          }
+
+          console.log(this.$store.state.loopStore.tryTime, '2');
         }, 1000)
       );
 
@@ -265,35 +281,25 @@ export default {
         if (that.state.gameRooms.state) return true;
       }
     },
-    joinRoom(roomId) {
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      if (roomId) {
-        this.socket.emit('join', {
-          room: roomId,
-          id: this.userName,
-          icon: userData.icon,
-        });
-      } else {
-        alert('未指定房間 ID');
-      }
-    },
     socketConnectCheck() {
-      const that = this;
-
       this.$store.commit(
-        'socketConnect',
+        'loopHandler',
         setInterval(() => {
-          const result = doCheck(this);
-          if (result) this.$store.commit('socketDelete');
-        }, 100)
-      );
+          this.$store.commit('loopTimePlus');
+          if (this.state.connected) {
+            this.$store.commit('loopHandlerDelete');
+            this.loadRoomData();
+          }
 
-      function doCheck() {
-        if (that.state.connected) {
-          that.loadRoomData();
-          return true;
-        } else return false;
-      }
+          if (
+            !this.state.connected &
+            (this.$store.state.loopStore.tryTime >= 10)
+          ) {
+            this.$store.commit('loopHandlerDelete');
+          }
+          console.log(this.$store.state.loopStore.tryTime, '1');
+        }, 1000)
+      );
     },
     onResize() {
       const width = window.innerWidth;
@@ -374,8 +380,8 @@ export default {
     this.socketConnectCheck();
   },
 
-  beforeMount() {
-    // this.$store.commit('backGorund', 'default');
+  beforeUnMount() {
+    this.$store.commit('loopHandlerDelete');
   },
 };
 </script>

@@ -34,8 +34,8 @@
       </div>
     </div>
   </transition>
-  <div class="connected" v-show="connectedTime != 0">
-    <div>connecting : {{ connectedTime }}</div>
+  <div class="connected" v-show="tryTime != 0">
+    <div>connecting : {{ tryTime }}</div>
   </div>
   <backGroundAnimate></backGroundAnimate>
 </template>
@@ -45,7 +45,7 @@ export default {
   emits: ['waitPageTrLoop'],
   data() {
     return {
-      connectedTime: 0,
+      tryTime: 0,
       userName: '',
       loading: false,
       connected: '',
@@ -138,21 +138,21 @@ export default {
     this.$nextTick(() => this.titleAnimte());
     setTimeout(() => {
       const conetectLoop = setInterval(() => {
-        this.connectedTime += 1;
+        this.tryTime += 1;
         if (this.connected) {
-          this.connectedTime = 0;
+          this.tryTime = 0;
           clearInterval(conetectLoop);
           setTimeout(() => {
             this.$store.commit('updateLoading', true);
           }, 200);
         }
-        if (this.connectedTime >= 10) {
+        if (this.tryTime >= 10) {
           // this.$router.go(0);
         }
         if (this.connected === false && this.connected != null) {
-          this.$store.commit('socketDelete');
+          this.$store.commit('loopHandlerDelete');
           clearInterval(conetectLoop);
-          this.connectedTime = 0;
+          this.tryTime = 0;
         }
       }, 1000);
     }, 200);

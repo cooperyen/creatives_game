@@ -55,7 +55,7 @@ export default {
   components: { loadingLoop, transferPageCountDown, copyright },
   watch: {
     $route(el) {
-      this.$store.commit('socketDelete');
+      this.$store.commit('loopHandlerDelete');
       this.$store.commit('loadRoomLoopDelete');
       this.$store.commit('updateLoading', false);
     },
@@ -74,12 +74,13 @@ export default {
       if (connected === undefined) return false;
       if (connected === false && connected != null) return true;
     },
-    cookieCheck() {
+    async cookieCheck() {
       const data = JSON.parse(localStorage.getItem('userData'));
 
       if (data === null) this.$store.commit('createDefaultData');
 
-      this.$store.commit('authCheck');
+      const auth = await this.$store.commit('authCheck');
+      console.log(data);
     },
   },
   mounted() {},

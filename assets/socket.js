@@ -50,6 +50,7 @@ export const socket = io(URL, {
 });
 
 
+
 function handleErrors(el) {
   let time = 5
 
@@ -86,18 +87,6 @@ socket.on("disconnect", (el) => {
 
 });
 
-
-// async function ans() {
-//   let id;
-//   const cos = await new Promise(res => {
-//     socket.on("connected", (el) => {
-//       id = el.id;
-//       res()
-//     });
-//   })
-//   state.connected = true;
-// }
-// ans();
 
 
 const int = () => {
