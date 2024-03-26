@@ -106,7 +106,6 @@
 
     .player-item {
       width: 100%;
-      min-height: 50px;
       padding: 15px;
       // margin-bottom: 15px;
       @include min-med {
@@ -114,6 +113,9 @@
       }
       @include med {
         width: 25%;
+      }
+      &:last-child {
+        align-content: flex-start;
       }
       @include sm {
         padding: 5px;

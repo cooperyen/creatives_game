@@ -19,6 +19,8 @@
   </transition>
 
   <loadingLoop v-show="clickLoading"></loadingLoop>
+
+  <!-- content -->
   <router-view :socket="socket" :state="state" v-slot="{ Component }">
     <transition :name="$route.meta.transition || 'fade'">
       <div :key="$route.name">
@@ -26,6 +28,7 @@
       </div>
     </transition>
   </router-view>
+
   <copyright></copyright>
   <transferPageCountDown></transferPageCountDown>
 </template>
@@ -35,8 +38,8 @@ import { state, socket } from '@/../assets/socket';
 </script>
 
 <script>
-import loadingLoop from '@/../src/ui/loadingLoop.vue';
-import transferPageCountDown from '@/../src/ui/transferPageCountDown.vue';
+import loadingLoop from '@/../src/components/global/loadingLoop.vue';
+import transferPageCountDown from '@/../src/components/global/transferPageCountDown.vue';
 import copyright from '@/../src/components/layout/copyright.vue';
 export default {
   data() {

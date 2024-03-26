@@ -112,28 +112,36 @@ $text: rgb(198, 190, 149);
   width: calc(100% - 15px);
   margin-left: auto;
   margin-right: auto;
-  padding: 17px 0 0 0;
+  padding: 17px 15px 0 15px;
 
   @include min-L {
     padding: 17px 0;
   }
 
+  @include med {
+    padding: 5px 0px 0 0px;
+  }
+
   @include sm {
     flex: unset;
+    // padding: 5px 10px 0 10px;
+  }
+
+  @include xs {
     padding: 5px 10px 0 10px;
   }
 
   @include min-med {
     flex: 3;
   }
-  @include L {
-    width: calc(100% - 10px);
-  }
+  // @include L {
+  //   width: calc(100% - 10px);
+  // }
 
   .page-room {
     width: 100%;
     flex-wrap: wrap;
-    @include med {
+    @include xs {
       &.flex {
         display: unset;
       }
@@ -141,31 +149,6 @@ $text: rgb(198, 190, 149);
   }
 
   .room-box {
-    // @include med {
-    //   &:nth-child(even) {
-    //     .room-layout {
-    //       padding-left: 10px;
-    //     }
-    //   }
-    //   &:nth-child(odd) {
-    //     .room-layout {
-    //       padding-right: 10px;
-    //     }
-    //   }
-    // }
-    // @include xs {
-    //   &:nth-child(even) {
-    //     .room-layout {
-    //       padding-left: 0;
-    //     }
-    //   }
-    //   &:nth-child(odd) {
-    //     .room-layout {
-    //       padding-right: 0;
-    //     }
-    //   }
-    // }
-
     &.exist {
       .room-layout,
       .room-layout:hover {
@@ -196,8 +179,8 @@ $text: rgb(198, 190, 149);
     @include min-med {
       width: 50%;
     }
-    @include xs {
-      width: 100%;
+    @include min-xs {
+      width: 50%;
     }
     @include min-L {
       width: 33.3%;
@@ -207,7 +190,19 @@ $text: rgb(198, 190, 149);
       padding-left: 10px;
       margin-right: 10px;
       margin-bottom: 30px;
-      @include med {
+      // @include L {
+      //   padding-left: 20px;
+      //   margin-right: 20px;
+      //   margin-bottom: 30px;
+      // }
+
+      @include sm {
+        padding-left: 7px;
+        margin-right: 7px;
+        margin-bottom: 30px;
+      }
+
+      @include xs {
         padding-left: 0px;
         margin-right: 0px;
         margin-bottom: 15px;
@@ -239,8 +234,9 @@ $text: rgb(198, 190, 149);
           .title {
             font-weight: bold;
             font-size: 1.3rem;
+            line-height: 1.2;
             @include sm {
-              font-size: 1.2rem;
+              font-size: 1rem;
             }
           }
           .soon {
@@ -253,6 +249,7 @@ $text: rgb(198, 190, 149);
             letter-spacing: 5px;
             @include sm {
               margin-top: 1px;
+              font-size: 0.7rem;
             }
           }
           div {
@@ -266,7 +263,7 @@ $text: rgb(198, 190, 149);
           width: 100%;
           border-radius: 14px 25px;
           @include sm {
-            height: 70px;
+            height: 60px;
           }
           .bg {
             // max-width: 269px;
@@ -284,12 +281,9 @@ $text: rgb(198, 190, 149);
               right: -10px;
             }
             @include sm {
-              max-width: 85px;
+              max-width: 65px;
             }
           }
-          // position: absolute;
-          // right: 0;
-          // top: 0;
         }
       }
     }
@@ -332,10 +326,19 @@ $text: rgb(198, 190, 149);
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  @include med {
+    padding-right: 22px;
+    padding-left: 22px;
   }
 
   @include sm {
     padding-top: 0px;
+    padding-right: 15px;
+    padding-left: 15px;
     width: calc(100% - 10px);
   }
   .title {

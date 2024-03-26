@@ -21,8 +21,10 @@
 </template>
 
 <script>
+import answerBtn from '@/../src/components/global/answerBtn.vue';
 export default {
   props: ['show'],
+  components: { answerBtn },
 };
 </script>
 

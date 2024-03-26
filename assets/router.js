@@ -1,13 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import lobby from '@/components/lobby.vue';
-import NotFound from '@/components/404.vue';
-import game from '@/components/game.vue';
-import blackJack from '@/components/blackJack.vue';
-import yellowCard from '@/components/yellowCard.vue';
-import login from '@/components/login.vue';
-import waitingRoom from '@/components/waitingRoom.vue';
-import { socket } from '@/../assets/socket.js';
+import lobby from '@/components/pages/lobby.vue';
+import NotFound from '@/components/pages/404.vue';
+import game from '@/components/pages/game.vue';
+import blackJack from '@/components/pages/blackJack.vue';
+import yellowCard from '@/components/pages/yellowCard.vue';
+import login from '@/components/pages/login.vue';
+import waitingRoom from '@/components/pages/waitingRoom.vue';
 import { bg_style } from '@/../assets/style.js';
+
+
+const pageHandler = {
+  state() {
+    return {
+      count: 0,
+    };
+  },
+  mutations: {
+    countPlus() {
+      this.state.count += 1;
+    }
+  },
+}
 
 const router = createRouter({
   history: createWebHistory(),
@@ -50,7 +63,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-
   const reloaded = window.localStorage.getItem('reloaded') || '';
   if (reloaded === '' && to.name === 'login') {
     window.location.reload();
@@ -59,6 +71,7 @@ router.beforeEach((to, from, next) => {
   next();
 
 })
+
 
 router.afterEach(to => {
   setTimeout(() => {
@@ -69,4 +82,4 @@ router.afterEach(to => {
   }, 500);
 })
 
-export default router;
+export { router, pageHandler };

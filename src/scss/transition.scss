@@ -19,19 +19,12 @@
 connect
 *******/
 
-// .connect-enter-active,
-// .connect-leave-active {
-//   opacity: 0;
-//   .loading-box {
-//     transition: 0.4s ease;
-//   }
-// }
 // only transition on leave active moment
 .connect-leave-active {
   transition: 1s ease;
 }
 .connect-enter-active {
-  transition: 1s ease;
+  // transition: 1s ease;
 }
 
 .connect-enter-from,
@@ -86,28 +79,6 @@ login end
 /******
 lobby name
 *******/
-// .lobby-enter-active,
-// .lobby-leave-active {
-//   transition: opacity 4s ease;
-//   .content {
-//     transition: transform 1s ease;
-//   }
-// }
-
-// .lobby-enter-from,
-// .lobby-leave-to {
-//   opacity: 0;
-//   .content {
-//     transform: translateX(50px);
-//   }
-// }
-// .lobby-enter-to,
-// .lobby-leave-from {
-//   opacity: 0;
-//   .content {
-//     transform: translateX(0px);
-//   }
-// }
 
 .lobby-leave-active {
   transition: 1s ease;
@@ -131,20 +102,6 @@ lobby name end
 /******
 content-ready
 *******/
-// .content-ready-enter-active,
-// .content-ready-leave-active {
-//   transition: 1s ease;
-// }
-// .content-ready-enter-from,
-// .content-ready-leave-to {
-//   opacity: 0;
-//   transform: translateY(50px);
-// }
-// .content-ready-enter-to,
-// .content-ready-leave-from {
-//   opacity: 1;
-//   transform: translateY(0px);
-// }
 
 .content-ready-leave-active {
   transition: 1s ease;

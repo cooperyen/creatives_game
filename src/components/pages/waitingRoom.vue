@@ -15,7 +15,7 @@
       </div>
       <div class="instruction_btn">
         <button class="btn" @click="openInstruction = true">
-          <font-awesome-icon icon="fa-solid fa-book" />
+          <font-awesome-icon icon="fa-solid fa-circle-question" />
         </button>
       </div>
       <div class="room-box">
@@ -35,7 +35,7 @@
             <div class="layout-inner">
               <!-- name -->
               <div class="info_box">
-                <p>{{ selfPlayer.toUpperCase() }}</p>
+                <!-- <p>{{ selfPlayer.toUpperCase() }}</p> -->
               </div>
 
               <!-- icon -->

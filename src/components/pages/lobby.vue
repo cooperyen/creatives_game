@@ -144,7 +144,7 @@ export default {
         pageSum: 1,
         currentPage: 0,
         breakpoints: {
-          768: {
+          400: {
             pageSum: 2,
           },
           1141: {
