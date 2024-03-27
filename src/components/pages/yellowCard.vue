@@ -1,11 +1,8 @@
 <template>
   <div id="yellowCard">
-    <leaveGameHadnler></leaveGameHadnler>
-    <userNameBox
-      :userName="getUserName"
-      :userIcon="getUserIcon"
-      class="name"
-    ></userNameBox>
+    <userNameBox :userName="getUserName" :userIcon="getUserIcon" class="name">
+      <leaveGameHadnler :socket="socket" game="yc"></leaveGameHadnler>
+    </userNameBox>
 
     <template v-if="playerMove.currentStep != 'end'">
       <div class="header">
@@ -200,8 +197,18 @@ export default {
   },
   props: ['socket', 'state'],
   watch: {
+    'state.goUrl': {
+      handler(el) {
+        console.log(el);
+        if (el === null) return;
+        // update user room before redirect.
+        this.$router.replace(`/${el}`);
+      },
+      deep: true,
+    },
     'state.yellowCard': {
       handler(el) {
+        console.log(el);
         this.playerMove.usedOpen = false;
         this.playerMove.voteOpen = false;
         this.playerMove.dropOpen = false;

@@ -22,7 +22,14 @@ button {
   border-style: solid;
   min-width: 70px;
   cursor: pointer;
+  @include sm {
+    &:first-child {
+      margin-bottom: 10px;
+    }
+  }
   @include xs {
+    margin: 0;
+    width: 100%;
     padding: 8px 10px;
   }
   &.agree {

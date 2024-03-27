@@ -333,7 +333,7 @@ export default {
     },
     'state.goUrl': {
       handler(el) {
-        if (el === null) return;
+        if (el === null || el === 'lobby') return;
         // update user room before redirect.
         this.$store.commit('updateUserRoom', el.substring(el.indexOf('game')));
         this.$router.replace(el);

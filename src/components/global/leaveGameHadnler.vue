@@ -1,49 +1,58 @@
 <template>
   <div id="leave_game">
     <div class="text" @click="open = true">
-      <font-awesome-icon icon="fa-solid fa-chevron-left" />
-      <p>LEAVE</p>
+      <font-awesome-icon icon="fa-regular fa-circle-left" />
     </div>
-    <div class="bg" v-if="open"></div>
+    <div class="bg" v-if="open">
+      <div class="content">
+        <answerHandler
+          :show="open"
+          @close="(n) => (open = n)"
+          @agree="leaveGame()"
+        >
+          <p>離開後就無法返回當前遊戲, 你確定要離開?</p>
+        </answerHandler>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import answerBtn from './answerBtn.vue';
 export default {
+  components: { answerBtn },
   data() {
     return {
       open: false,
     };
   },
-  props: ['socket'],
+  props: ['socket', 'state', 'game'],
+  watch: {},
   methods: {
     leaveGame() {
-      this.$store.commit('clearUserRoom');
-
-      const localStorageData = JSON.parse(localStorage.getItem('userData'));
       const data = {
+        game: this.game,
         id: this.$store.state.userStore.userName,
-        room: null,
+        room: this.$store.state.userStore.userRoom,
         icon: this.$store.state.userStore.icon,
       };
 
-      console.log({
-        id: this.$store.state.userStore.userName,
-        room: null,
-        icon: this.$store.state.userStore.icon,
-      });
-      // this.socket.emit('id_check', data);
+      this.socket.emit('gamesLeave', data);
+      this.$store.commit('clearUserRoom');
+      this.$router.replace('/lobby');
     },
   },
-  mounted() {
-    console.log('object');
-  },
+  mounted() {},
 };
 </script>
 
 <style lang="scss" scoped>
 @import '@/scss/color.scss';
 #leave_game {
+  position: absolute;
+  width: auto;
+  left: 10px;
+  z-index: 9999;
   .bg {
     width: 100vw;
     height: 100vh;
@@ -52,6 +61,12 @@ export default {
     top: 0;
     z-index: 999;
     background-color: $bg_pevent;
+    .content {
+      height: 50px;
+    }
+  }
+  .text {
+    font-size: 1.5rem;
   }
 }
 </style>

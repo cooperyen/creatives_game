@@ -1,9 +1,7 @@
 <template>
-  <userNameBox
-    :userName="player"
-    :userIcon="userIcon"
-    class="name"
-  ></userNameBox>
+  <userNameBox :userName="player" :userIcon="userIcon" class="name">
+    <leaveGameHadnler :socket="socket" game="card"></leaveGameHadnler>
+  </userNameBox>
 
   <!-- next round -->
   <div class="transition" v-show="passNotice != false">
@@ -29,7 +27,7 @@
       <div class="title">
         <h2>有人現在要使用飛鏢, 同意使用嗎?</h2>
       </div>
-      <img src="./../image/ui/gem_large.png" />
+      <img src="./../../image/ui/gem_large.png" />
       <!-- vote option -->
       <div class="click-btn" v-if="isDrawVoted === null">
         <button
@@ -88,7 +86,7 @@
             <div class="item-title">darts remaining</div>
             <div class="flex" v-if="dart != 0">
               <div v-for="i in dart" :key="i">
-                <img src="./../image/ui/gem.png" />
+                <img src="./../../image/ui/gem.png" />
               </div>
             </div>
             <div class="item-content" v-else>
@@ -125,28 +123,30 @@
     </div>
 
     <!-- current card tent -->
-    <div class="current-card">
-      <div class="title">
-        <p>檯面上的牌 :</p>
-      </div>
-      <div class="flex">
-        <div class="card-box card-style" v-for="i in currentCard" :key="i">
-          <div class="card-num">
-            <p>
-              <span>{{ i }}</span>
-            </p>
-          </div>
-          <div class="card-bg">
-            <img src="./../image/card/01.svg" />
-          </div>
+    <div class="dsdsa">
+      <div class="current-card">
+        <div class="title">
+          <p>檯面上的牌 :</p>
         </div>
-        <div
-          class="card-box card-style wait"
-          v-for="i in 5 - currentCard.length"
-          :key="i"
-        >
-          <div class="card-bg">
-            <img src="./../image/card/01.svg" />
+        <div class="flex">
+          <div class="card-box card-style" v-for="i in currentCard" :key="i">
+            <div class="card-num">
+              <p>
+                <span>{{ i }}</span>
+              </p>
+            </div>
+            <div class="card-bg">
+              <img src="./../../image/card/01.svg" />
+            </div>
+          </div>
+          <div
+            class="card-box card-style wait"
+            v-for="i in 5 - currentCard.length"
+            :key="i"
+          >
+            <div class="card-bg">
+              <img src="./../../image/card/01.svg" />
+            </div>
           </div>
         </div>
       </div>
@@ -162,7 +162,7 @@
             </p>
           </div>
           <div class="card-bg">
-            <img src="./../image/card/01.svg" />
+            <img src="./../../image/card/01.svg" />
           </div>
         </div>
       </div>
@@ -190,7 +190,7 @@
     <div class="game_info">
       <div class="flex">
         <div class="img-box">
-          <img src="./../image/ui/heart.png" />
+          <img src="./../../image/ui/heart.png" />
         </div>
         <div class="num-box">
           <p>x {{ hp }}</p>
@@ -199,7 +199,7 @@
 
       <div class="flex dart">
         <div class="img-box">
-          <img src="./../image/ui/gem.png" />
+          <img src="./../../image/ui/gem.png" />
         </div>
         <div class="num-box">
           <p>x {{ dart }}</p>
@@ -211,6 +211,7 @@
 
 <script>
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
+import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
 export default {
   data() {
     return {
@@ -233,7 +234,7 @@ export default {
       voteFail: false,
     };
   },
-  components: { userNameBox },
+  components: { userNameBox, leaveGameHadnler },
   props: ['socket', 'state'],
   watch: {
     passNotice(el) {
@@ -251,13 +252,11 @@ export default {
     },
     'state.drawVote': {
       handler(el) {
-        // console.log(el);
         if (el != null && el.isPass) this.drawVote.state = el;
         if (el != null && !el.isPass) {
           this.drawVote.state = false;
           this.passNotice = { msg: el.card, states: 'msg' };
           this.voteFail = true;
-          // alert('Not pass game yet, Continue playing games');
         }
         if (el === null) {
           this.drawVote.state = false;
@@ -289,7 +288,6 @@ export default {
         } else this.passNotice = { msg: el.card, states: 'msg' };
 
         if (tureFalse('hp')) {
-          // if (this.hp < el.hp) console.log('fail');
           this.hp = el.hp;
         }
         if (tureFalse('dart')) this.dart = el.dart;
@@ -325,7 +323,6 @@ export default {
     },
     'drawVote.state'(el) {
       this.drawVote.time = 5;
-      // console.log(el);
       if (el)
         this.drawVote.countTimer = setInterval(() => {
           if (this.drawVote.time <= 0) this.drawVote.time = 0;
@@ -376,7 +373,6 @@ export default {
         const DOM = handCardBox[i];
         const degrees = i === 0 ? 0 : ((13 * i * 0.3) / i) * (2 * i);
 
-        // if (i === 1) dx = 40;
         if (i >= 1) dx = 25;
 
         dy = (10 * 2) / 10;
@@ -429,21 +425,21 @@ export default {
       const that = this;
 
       this.$store.commit(
-        'socketConnect',
+        'loopHandler',
         setInterval(() => {
           const result = doCheck(this);
           this.$store.state.loopStore.connectedTime += 1;
 
           if (this.$store.state.loopStore.connectedTime >= 15) {
             alert('Connection failed, will return to lobby.');
-            this.$store.commit('socketDelete');
+            this.$store.commit('loopHandlerDelete');
             this.$store.state.loopStore.connectedTime = 0;
             this.goLobby();
           }
 
           if (result) {
             this.$store.state.loopStore.connectedTime = 0;
-            this.$store.commit('socketDelete');
+            this.$store.commit('loopHandlerDelete');
           }
         }, 1000)
       );

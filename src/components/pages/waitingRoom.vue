@@ -7,24 +7,28 @@
     ></instructionsCompent>
     <!-- header -->
     <div class="header-container">
+      <!-- back btn -->
       <div class="back-btn">
         <router-link to="/lobby" replace class="flex">
           <font-awesome-icon icon="fa-solid fa-chevron-left" />
           <p>LOBBY</p>
         </router-link>
       </div>
-      <div class="instruction_btn">
+
+      <!-- instruction icon -->
+      <div class="instruction_btn" v-if="instructions">
         <button class="btn" @click="openInstruction = true">
           <font-awesome-icon icon="fa-solid fa-circle-question" />
         </button>
       </div>
+
+      <!-- room name -->
       <div class="room-box">
         <h2>
           {{ $store.state.instructions[userRoom]?.title.ch }}
         </h2>
       </div>
     </div>
-    <leaveGameHadnler :socket="socket"></leaveGameHadnler>
 
     <!-- main container -->
     <div class="container">
@@ -205,6 +209,11 @@ export default {
   computed: {
     game() {
       return this.$store.state.userStore.userRoom;
+    },
+    instructions() {
+      return this.$store.state.instructions[this.game]?.content?.ch
+        ? true
+        : false;
     },
   },
   watch: {

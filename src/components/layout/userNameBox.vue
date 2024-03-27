@@ -67,7 +67,7 @@ export default {
   &.light {
     color: rgb(240, 240, 240);
   }
-  :deep(.content) {
+  > :deep(.content) {
     padding-top: 10px;
     height: 100%;
     max-width: 1600px;

@@ -4,7 +4,10 @@
 .game-container {
   // position: relative;
   height: 100vh;
+  width: 100vw;
+  position: fixed;
   background-color: #1e183f;
+  // overflow: hidden;
   .game-info {
     width: 200px;
     color: $text;
@@ -14,21 +17,20 @@
     font-size: 1.5rem;
   }
   .current-card {
-    position: absolute;
-    top: 200px;
+    // position: relative;
     color: $text;
     width: calc(100% - 30px);
     max-width: 600px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin: 0 auto;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+    margin: 100px auto 0 auto;
     background-color: rgba(28, 32, 77, 0.242);
     box-shadow: -4px -4px 20px rgba($color: rgb(70 109 125), $alpha: 0.6),
       4px 4px 20px rgba($color: rgb(70 109 125), $alpha: 0.6);
     border-radius: 5px;
     padding: 15px;
     @include sm {
-      top: 180px;
+      margin: 80px auto 0 auto;
       width: calc(100% - 15px);
       padding: 15px 10px;
     }
@@ -63,12 +65,13 @@
 }
 #hand-card {
   overflow: hidden;
-  position: absolute;
+  // position: absolute;
   max-width: 500px;
   padding: 0 15px;
   width: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  margin: 30px auto 0 auto;
+  // left: 50%;
+  // transform: translateX(-50%);
   bottom: 0;
 
   .card-container {
@@ -89,6 +92,15 @@
   .card-play {
     margin-bottom: 50px;
     text-align: center;
+    button {
+      &:first-child {
+        margin-bottom: 10px;
+      }
+      @include xs {
+        width: calc(100% - 20px);
+        margin: 0;
+      }
+    }
     .disabled {
       cursor: not-allowed;
       opacity: 0.4;
@@ -130,11 +142,16 @@
     }
   }
 }
+
 .name {
   position: fixed;
   left: 0;
   bottom: 0;
   top: unset;
+  z-index: 1;
+  @include sm {
+    height: 65px;
+  }
   &.user-container {
     background-color: rgba(255, 255, 255, 0.1);
   }
@@ -142,7 +159,7 @@
     position: unset;
   }
   :deep(.content) {
-    bottom: 10px;
+    bottom: 5px;
     top: unset;
     h2 {
       font-size: 1rem;

@@ -9,15 +9,19 @@
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 5;
   .content {
-    position: absolute;
-    width: calc(100% - 30px);
-    max-width: 350px;
+    position: relative;
+    width: auto;
+    height: auto;
+    max-width: 600px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     background-color: rgba(245, 245, 245, 1);
     padding: 30px;
     border-radius: 18px;
+    @include sm {
+      width: calc(100% - 30px);
+    }
     .text {
       text-align: center;
       margin-bottom: 40px;
