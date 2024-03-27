@@ -52,8 +52,17 @@ app.component('closeBtn', closeBtn)
 
 
 app.config.globalProperties.$global_getImgUrl = function (name, place) {
-  if (name === null) return;
-  return new URL(`/src/image/${place}/${name}.svg`, import.meta.url)
+  if (name === null || place === null) return;
+  let route = null;
+
+  switch (place) {
+    case 'player':
+      route = 'player_icon'
+      break;
+  }
+
+
+  return new URL(`/src/image/${route || place}/${name}.svg`, import.meta.url)
     .href;
 }
 

@@ -256,13 +256,11 @@ export default {
             this.$store.commit('updateLoading', true);
           }
 
-          // next run will return looby by "id_check" by backEnd after clearUserRoom;
-          if (this.handler.time >= 20) {
+          if (this.$store.state.loopStore.tryTime >= 20) {
             this.$store.commit('loopHandlerDelete');
             this.$store.commit('clearUserRoom');
+            this.state.connected = false;
           }
-
-          console.log(this.$store.state.loopStore.tryTime, '2');
         }, 1000)
       );
 
@@ -270,15 +268,18 @@ export default {
         // make sure backEnd data same as frontEnd.
         const userData = JSON.parse(localStorage.getItem('userData'));
 
-        if (!that.state.gameRooms.state)
+        if (!that.state.gameRooms.state) {
           that.socket.emit('id_check', {
             id: userData.userName,
             room: userData.userRoom,
-            icon: 'chips',
+            icon: userData.icon,
           });
+          return false;
+        }
 
-        if (!that.state.gameRooms.state) return false;
-        if (that.state.gameRooms.state) return true;
+        if (that.state.gameRooms.state) {
+          return true;
+        }
       }
     },
     socketConnectCheck() {
@@ -297,7 +298,6 @@ export default {
           ) {
             this.$store.commit('loopHandlerDelete');
           }
-          console.log(this.$store.state.loopStore.tryTime, '1');
         }, 1000)
       );
     },
@@ -321,16 +321,6 @@ export default {
       this.$nextTick(() => {
         this.sliceGameRoom();
       });
-
-      // console.log(this.slide.pageSum);
-      // if (width >= 1140) {
-      //   this.slide.pageSum = 1;
-      //   this.slide.currentPage = 0;
-      //   this.sliceGameRoom();
-      // } else {
-      //   this.slide.pageSum = 2;
-      //   this.sliceGameRoom();
-      // }
     },
   },
   watch: {
@@ -366,11 +356,16 @@ export default {
   props: ['socket', 'state'],
   created() {
     const userStore = this.$store.state.userStore;
-    this.userName = userStore.userName;
-    this.userRoom =
-      userStore.userRoom === undefined ? null : userStore.userRoom;
-    this.userIcon = userStore.icon;
-    this.onResize();
+
+    if (userStore.userName != null) {
+      this.userName = userStore.userName;
+      this.userRoom =
+        userStore.userRoom === undefined ? null : userStore.userRoom;
+      this.userIcon = userStore.icon;
+      this.onResize();
+    } else {
+      this.$router.replace('/');
+    }
   },
   mounted() {
     this.$store.state.userStore.loading = false;
@@ -380,7 +375,7 @@ export default {
     this.socketConnectCheck();
   },
 
-  beforeUnMount() {
+  beforeUnmount() {
     this.$store.commit('loopHandlerDelete');
   },
 };

@@ -1,5 +1,6 @@
 <template>
   <div id="yellowCard">
+    <leaveGameHadnler></leaveGameHadnler>
     <userNameBox
       :userName="getUserName"
       :userIcon="getUserIcon"
@@ -138,6 +139,7 @@ import userNameBox from '@/../src/components/layout/userNameBox.vue';
 import handCardHandler from '@/../src/components/yellowCard/handCardHandler.vue';
 import voteHandler from '@/../src/components/yellowCard/voteHandler.vue';
 import dropHandler from '@/../src/components/yellowCard/dropHandler.vue';
+import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
 
 export default {
   data() {
@@ -189,7 +191,13 @@ export default {
       backToLobbyTimer: null,
     };
   },
-  components: { userNameBox, handCardHandler, voteHandler, dropHandler },
+  components: {
+    userNameBox,
+    handCardHandler,
+    voteHandler,
+    dropHandler,
+    leaveGameHadnler,
+  },
   props: ['socket', 'state'],
   watch: {
     'state.yellowCard': {

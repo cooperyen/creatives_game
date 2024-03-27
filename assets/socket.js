@@ -10,7 +10,7 @@ export const state = reactive({
   socketId: '',
   userName: null,
   goUrl: null,
-  gameRooms: { state: false, gameList: null },
+  gameRooms: { state: false, gameList: null },  // wehn get gameList data that state will be true.
   lobbyPlayerList: null,
   currentPlayers: null,
   updateCurrentPlayers: null,
@@ -108,6 +108,7 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
+  console.log(data);
 
   switch (data.way) {
 
@@ -127,6 +128,9 @@ function router(data) {
       if (data.url === 'lobby') {
         state.gameOne.gameOver = data;
       }
+
+      if (data.go === 'lobby') state.goUrl = `lobby`;
+
 
       if (data.go === 'waiting_room') {
         state.goUrl = `waiting_room/${data.url}`

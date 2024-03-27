@@ -24,6 +24,7 @@
         </h2>
       </div>
     </div>
+    <leaveGameHadnler :socket="socket"></leaveGameHadnler>
 
     <!-- main container -->
     <div class="container">
@@ -35,16 +36,18 @@
             <div class="layout-inner">
               <!-- name -->
               <div class="info_box">
-                <!-- <p>{{ selfPlayer.toUpperCase() }}</p> -->
+                <p>
+                  {{ selfPlayer != null ? selfPlayer.toUpperCase() : null }}
+                </p>
               </div>
 
               <!-- icon -->
               <div class="icon_box">
                 <div class="user_icon">
-                  <img :src="getImgUrl(userIcon)" alt="" />
+                  <img :src="$global_getImgUrl(userIcon, 'player')" alt="" />
                 </div>
                 <div class="bg_icon">
-                  <img :src="getImgUrl('plate')" alt="" />
+                  <img :src="$global_getImgUrl('plate', 'player')" alt="" />
                 </div>
               </div>
 
@@ -69,10 +72,10 @@
               <!-- icon -->
               <div class="icon_box">
                 <div class="user_icon">
-                  <img :src="getImgUrl(i.icon)" alt="" />
+                  <img :src="$global_getImgUrl(i.icon, 'player')" alt="" />
                 </div>
                 <div class="bg_icon">
-                  <img :src="getImgUrl('plate')" alt="" />
+                  <img :src="$global_getImgUrl('plate', 'player')" alt="" />
                 </div>
               </div>
 
@@ -97,7 +100,7 @@
                   <p>EMPTY</p>
                 </div>
                 <div class="bg_icon">
-                  <img :src="getImgUrl('plate')" alt="" />
+                  <img :src="$global_getImgUrl('plate', 'player')" alt="" />
                 </div>
               </div>
             </div>
@@ -170,6 +173,7 @@
 
 <script>
 import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHandler.vue';
+import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
 export default {
   data() {
     return {
@@ -197,7 +201,7 @@ export default {
       openInstruction: false,
     };
   },
-  components: { changeUserRoleHandler },
+  components: { changeUserRoleHandler, leaveGameHadnler },
   computed: {
     game() {
       return this.$store.state.userStore.userRoom;
@@ -283,22 +287,6 @@ export default {
   emits: ['loadingLoop'],
   props: ['socket', 'state'],
   methods: {
-    // setUserRole() {
-    //   this.role.userDefault = this.role.userSelectIcon;
-    //   this.userIcon = this.role.userSelectIcon;
-    //   this.$store.commit('updateUserIcon', this.role.userSelectIcon);
-    //   this.role.open = false;
-    //   this.socket.emit('id_check', {
-    //     id: this.selfPlayer,
-    //     room: this.userRoom,
-    //     icon: this.userIcon,
-    //   });
-    // },
-    getImgUrl(name) {
-      if (name === null) return;
-      return new URL(`/src/image/player_icon/${name}.svg`, import.meta.url)
-        .href;
-    },
     readyGameUI(boolean) {
       if (boolean) {
         this.isShowCountDown = true;
@@ -410,13 +398,13 @@ export default {
     loadCheck() {
       const that = this;
       this.$store.commit(
-        'socketConnect',
+        'loopHandler',
         setInterval(() => {
           const result = doCheck();
-          this.$store.commit('connectedTimePlus');
+          this.$store.commit('loopTimePlus');
 
           if (result) {
-            this.$store.commit('socketDelete');
+            this.$store.commit('loopHandlerDelete');
             this.$store.commit('updateLoading', true);
           }
 
@@ -441,7 +429,12 @@ export default {
     },
   },
   mounted() {
-    if (this.userRoom === null || this.userRoom === undefined)
+    if (this.selfPlayer === null || this.selfPlayer === undefined)
+      this.$router.replace('/');
+    if (
+      (this.selfPlayer != null && this.userRoom === null) ||
+      (this.selfPlayer != undefined && this.userRoom === undefined)
+    )
       this.$router.replace('/lobby');
 
     this.loadCheck();
@@ -453,6 +446,7 @@ export default {
     this.userIcon = localStorageData.icon;
   },
   beforeUnmount() {
+    this.$store.commit('loopHandlerDelete');
     clearTimeout(this.countDownFun);
     clearTimeout(this.countDownStart);
     this.$store.commit('clearUserRoom');

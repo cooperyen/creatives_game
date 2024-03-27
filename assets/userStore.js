@@ -38,7 +38,6 @@ const userStore = {
     },
     updateUserRoom(state, data) {
       state.userRoom = data;
-      console.log(state);
       localStorage.setItem('userData', JSON.stringify(state))
     },
     updateUserIcon(state, data) {

@@ -1,6 +1,9 @@
 <template>
   <transition name="connect">
-    <div id="connect" v-if="!$store.state.userStore.loading">
+    <div
+      id="connect"
+      v-if="!$store.state.userStore.loading && $route.name != 'not-found'"
+    >
       <div class="loading-box active" v-if="state.connected != false">
         <div class="flex">
           <h2>Connecting</h2>
@@ -54,7 +57,7 @@ export default {
   },
   components: { loadingLoop, transferPageCountDown, copyright },
   watch: {
-    $route(el) {
+    $route() {
       this.$store.commit('loopHandlerDelete');
       this.$store.commit('loadRoomLoopDelete');
       this.$store.commit('updateLoading', false);
@@ -80,21 +83,10 @@ export default {
       if (data === null) this.$store.commit('createDefaultData');
 
       const auth = await this.$store.commit('authCheck');
-      console.log(data);
     },
   },
-  mounted() {},
   created() {
     this.cookieCheck();
-    const userName = this.$store.state.userStore.userName;
-    const userRoom = this.$store.state.userStore.userRoom;
-    if (userName === null || userName === undefined || userRoom === undefined)
-      this.$router.replace('/');
-    if (this.$route.path === '/') return;
-    // this.socket.emit('id_check', { id: userName, room: userRoom });
-  },
-  beforeUnmount() {
-    // this.socket.off();
   },
 };
 </script>
