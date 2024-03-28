@@ -71,9 +71,15 @@
   }
 }
 
-.game-container {
+.container_ {
   height: 100vh;
   width: 100vw;
+  position: fixed;
+}
+.game-container {
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
   position: fixed;
   background-color: #1e183f;
   .game-info {
@@ -95,7 +101,7 @@
     border-radius: 5px;
     padding: 15px;
     @include sm {
-      margin: 80px auto 0 auto;
+      margin: 60px auto 0 auto;
       width: calc(100% - 15px);
       padding: 15px 10px;
     }
@@ -138,6 +144,9 @@
   // left: 50%;
   // transform: translateX(-50%);
   bottom: 0;
+  @include sm {
+    margin: 10px auto 0 auto;
+  }
 
   .card-container {
     margin-top: 25px;
@@ -147,7 +156,11 @@
     height: 250px;
     @include sm {
       height: 220px;
+      margin-top: 5px;
     }
+    // @include xs {
+    //   height: 180px;
+    // }
     .card-box {
       position: absolute;
       transition: transform 0.2s;
@@ -158,13 +171,14 @@
     margin-bottom: 50px;
     text-align: center;
     position: relative;
+    z-index: 2;
     button {
       &:first-child {
         margin-bottom: 10px;
       }
       @include xs {
-        width: calc(100% - 20px);
-        margin: 0;
+        // width: calc(100% - 20px);
+        margin: 0 4px;
       }
     }
     .disabled {
@@ -209,16 +223,36 @@
   }
 }
 
-.footer {
+.option_content {
   position: fixed;
   left: 0;
   bottom: 0;
   top: unset;
   z-index: 1;
   width: 100%;
+  align-items: center;
+  .players_box {
+    justify-content: center;
+
+    .player {
+      align-items: center;
+      margin: 0 5px;
+      .img_box {
+        max-width: 20px;
+      }
+      .name_box {
+        color: $text;
+      }
+      .card_info {
+        width: auto;
+        white-space: nowrap;
+        color: $text;
+      }
+    }
+  }
 }
 
-.name_box {
+.user-container.name_content {
   width: 100%;
 
   @include sm {
@@ -230,12 +264,15 @@
   > .content {
     position: unset;
   }
+  :deep(#leave_game .bg) {
+    background-color: rgba($color: $bg_pevent, $alpha: 0.1);
+  }
   :deep(.content) {
-    bottom: 5px;
-    top: unset;
-    h2 {
-      font-size: 1rem;
-    }
+    // bottom: 5px;
+    // top: unset;
+    // h2 {
+    //   font-size: 1rem;
+    // }
   }
 }
 
@@ -438,6 +475,12 @@
     font-weight: bold;
     margin: 0 15px;
     box-shadow: 4px 4px 8px rgba($color: $shadowcolor, $alpha: 0.4);
+    @include sm {
+      margin-top: 15px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 0.9rem;
+    }
     &.agree,
     &.reject {
       position: relative;

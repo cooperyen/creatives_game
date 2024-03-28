@@ -232,7 +232,7 @@ function lunchGame() {
   })
 
   socket.on('re_draw', function (data) {
-    state.drawVote = null;
+    console.log(data);
     if (data.message === 'draw') state.drawVote = { isPass: true }
     if (data.message === 'play') state.drawVote = { isPass: false, card: data.card };
 

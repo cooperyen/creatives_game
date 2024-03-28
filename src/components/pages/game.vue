@@ -1,19 +1,4 @@
 <template>
-  <div class="footer">
-    <div class="players_box flex">
-      <div v-for="player in players" :key="player">
-        <div>{{ player.icon }}</div>
-        <div>{{ player.user_id }}</div>
-        <div>
-          {{ wholeData[player.user_id].length || wholeData[player.user_id] }}
-        </div>
-      </div>
-    </div>
-    <userNameBox :userName="player" :userIcon="userIcon" class="name_box">
-      <leaveGameHadnler :socket="socket" game="card"></leaveGameHadnler>
-    </userNameBox>
-  </div>
-
   <!-- next round -->
   <div class="transition" v-show="passNotice != false">
     <div class="next-container">
@@ -123,27 +108,59 @@
   </div>
 
   <!-- game content -->
-  <div v-show="!passNotice" class="game-container">
-    <div id="in_play">
-      <div v-if="gameData === null"></div>
-      <div class="game-info" v-else>
-        <p>
-          Level:<span>{{ level }}</span>
-        </p>
+  <div v-show="!passNotice" class="game-container_">
+    <div class="game-container">
+      <div id="in_play">
+        <div v-if="gameData === null"></div>
+        <div class="game-info" v-else>
+          <p>
+            Level:<span>{{ level }}</span>
+          </p>
+        </div>
       </div>
-    </div>
 
-    <template v-if="!leaveGame.open">
-      <!-- current card tent -->
-      <div class="dsdsa">
-        <div class="current-card">
-          <div class="title">
-            <p>檯面上的牌 :</p>
+      <!-- game -->
+      <template v-if="!leaveGame.open">
+        <!-- current card tent -->
+        <div class="dsdsa">
+          <div class="current-card">
+            <div class="title">
+              <p>檯面上的牌 :</p>
+            </div>
+            <div class="flex">
+              <div
+                class="card-box card-style"
+                v-for="i in currentCard"
+                :key="i"
+              >
+                <div class="card-num">
+                  <p>
+                    <span>{{ i }}</span>
+                  </p>
+                </div>
+                <div class="card-bg">
+                  <img src="./../../image/card/01.svg" />
+                </div>
+              </div>
+              <div
+                class="card-box card-style wait"
+                v-for="i in 5 - currentCard.length"
+                :key="i"
+              >
+                <div class="card-bg">
+                  <img src="./../../image/card/01.svg" />
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex">
-            <div class="card-box card-style" v-for="i in currentCard" :key="i">
+        </div>
+
+        <!-- hand card content -->
+        <div id="hand-card">
+          <div class="card-container">
+            <div class="card-box card-style" v-for="i in handCard" :key="i">
               <div class="card-num">
-                <p>
+                <p :class="{ large: String(i).length >= 3 }">
                   <span>{{ i }}</span>
                 </p>
               </div>
@@ -151,84 +168,84 @@
                 <img src="./../../image/card/01.svg" />
               </div>
             </div>
-            <div
-              class="card-box card-style wait"
-              v-for="i in 5 - currentCard.length"
-              :key="i"
-            >
-              <div class="card-bg">
-                <img src="./../../image/card/01.svg" />
-              </div>
+          </div>
+          <div class="card-play" v-if="!drawVote.state">
+            <div class="click-btn">
+              <button
+                @click="playcard()"
+                :class="{ disabled: handCard.length === 0 }"
+                :disabled="handCard.length === 0"
+              >
+                我覺得應該輪到我
+              </button>
+              <button
+                @click="startDart()"
+                :class="{ disabled: dart === 0 }"
+                :disabled="dart === 0 || dart === null"
+              >
+                {{ dart === 0 || dart === null ? '飛鏢不足' : '丟飛鏢' }}
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </template>
 
-      <!-- hand card content -->
-      <div id="hand-card">
-        <div class="card-container">
-          <div class="card-box card-style" v-for="i in handCard" :key="i">
-            <div class="card-num">
-              <p :class="{ large: String(i).length >= 3 }">
-                <span>{{ i }}</span>
-              </p>
+      <!-- bottom info -->
+      <div class="option_content">
+        <div class="players_box flex">
+          <div class="flex player" v-for="player in players" :key="player">
+            <div class="img_box">
+              <img :src="$global_getImgUrl(player.icon, 'player')" alt="" />
             </div>
-            <div class="card-bg">
-              <img src="./../../image/card/01.svg" />
+            <div class="name_box">{{ player.user_id }}</div>
+            <div class="card_info">
+              /
+              {{
+                wholeData[player.user_id].length || wholeData[player.user_id]
+              }}
             </div>
           </div>
         </div>
-        <div class="card-play" v-if="!drawVote.state">
-          <div class="click-btn">
-            <button
-              @click="playcard()"
-              :class="{ disabled: handCard.length === 0 }"
-              :disabled="handCard.length === 0"
-            >
-              我覺得應該輪到我
-            </button>
-            <button
-              @click="startDart()"
-              :class="{ disabled: dart === 0 }"
-              :disabled="dart === 0 || dart === null"
-            >
-              {{ dart === 0 || dart === null ? '飛鏢不足' : '丟飛鏢' }}
-            </button>
-          </div>
-        </div>
+        <userNameBox
+          :userName="player"
+          :userIcon="userIcon"
+          class="name_content"
+        >
+          <leaveGameHadnler :socket="socket" game="card"></leaveGameHadnler>
+        </userNameBox>
       </div>
-    </template>
+    </div>
+  </div>
 
-    <!-- game informaion -->
-    <div class="game_info">
-      <!-- life -->
-      <div class="flex">
-        <div class="img-box">
-          <img src="./../../image/ui/heart.png" />
-        </div>
-        <div class="num-box">
-          <p>x {{ hp }}</p>
-        </div>
+  <!-- game informaion -->
+  <div id="top_right_info" class="game_info">
+    <!-- life -->
+    <div class="flex">
+      <div class="img-box">
+        <img src="./../../image/ui/heart.png" />
       </div>
-
-      <!-- dart -->
-      <div class="flex dart">
-        <div class="img-box">
-          <img src="./../../image/ui/gem.png" />
-        </div>
-        <div class="num-box">
-          <p>x {{ dart }}</p>
-        </div>
+      <div class="num-box">
+        <p>x {{ hp }}</p>
       </div>
+    </div>
 
-      <!-- dart -->
-      <div class="flex dart">
-        <div class="img-box">
-          <font-awesome-icon icon="fa-solid fa-clock" />
-        </div>
-        <div class="num-box">
-          <p>{{ $store.state.loopStore.tryTime }}</p>
-        </div>
+    <!-- dart -->
+    <div class="flex dart">
+      <div class="img-box">
+        <img src="./../../image/ui/gem.png" />
+      </div>
+      <div class="num-box">
+        <p>x {{ dart }}</p>
+      </div>
+    </div>
+
+    <!-- dart -->
+    <div class="flex dart">
+      <div class="img-box">
+        <font-awesome-icon icon="fa-solid fa-clock" />
+      </div>
+      <div class="num-box">
+        <p>{{ $store.state.loopStore.tryTime }}</p>
       </div>
     </div>
   </div>
@@ -325,6 +342,7 @@ export default {
     },
     'state.drawVote': {
       handler(el) {
+        console.log(el);
         if (el != null && el.isPass) this.drawVote.state = el;
         if (el != null && !el.isPass) {
           this.drawVote.state = false;

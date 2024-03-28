@@ -59,7 +59,7 @@ export default {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 999;
+    z-index: 9999;
     background-color: $bg_pevent;
     .content {
       height: 50px;
@@ -67,6 +67,7 @@ export default {
   }
   .text {
     font-size: 1.5rem;
+    cursor: pointer;
   }
 }
 </style>
