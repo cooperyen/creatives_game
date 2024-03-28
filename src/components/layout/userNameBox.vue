@@ -83,6 +83,7 @@ export default {
   :deep(.user_box) {
     right: 20px;
     position: absolute;
+    z-index: 1;
     @include sm {
       right: 15px;
       top: 10px;

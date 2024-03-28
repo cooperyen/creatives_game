@@ -1,13 +1,81 @@
 @import './color.scss';
 @import './rwd.scss';
 
+#leave_info {
+  background-color: rgba($color: $bg_pevent, $alpha: 0.2);
+  .content_box {
+    background-color: $bg_light;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 25px 30px;
+    border-radius: 8px;
+    top: 40%;
+    @include med {
+      width: calc(100% - 30px);
+    }
+    @include xs {
+      width: calc(100% - 10px);
+      padding: 30px 12px;
+    }
+    .title {
+      text-align: center;
+      font-size: clamp(1.2rem, 2rem, 10vw);
+      margin-bottom: 20px;
+    }
+    .user_box {
+      width: auto;
+      margin: 0 auto;
+      align-items: center;
+      > div {
+        align-items: flex-end;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+      .img {
+        min-width: 35px;
+        max-width: 35px;
+        display: block;
+      }
+      .name {
+        margin-left: 10px;
+        width: auto;
+        font-size: 1.5rem;
+        overflow: hidden;
+        p {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+    .content {
+      margin-top: 30px;
+      text-align: center;
+      .btn {
+        margin-top: 30px;
+        button {
+          cursor: pointer;
+          margin: 15px;
+          padding: 10px 20px;
+          border-radius: 8px;
+          background-color: $agree_btn;
+          @include min-L {
+            &:hover {
+              background-color: $agree_btn_hover;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 .game-container {
-  // position: relative;
   height: 100vh;
   width: 100vw;
   position: fixed;
   background-color: #1e183f;
-  // overflow: hidden;
   .game-info {
     width: 200px;
     color: $text;
@@ -17,12 +85,9 @@
     font-size: 1.5rem;
   }
   .current-card {
-    // position: relative;
     color: $text;
     width: calc(100% - 30px);
     max-width: 600px;
-    // left: 50%;
-    // transform: translate(-50%, -50%);
     margin: 100px auto 0 auto;
     background-color: rgba(28, 32, 77, 0.242);
     box-shadow: -4px -4px 20px rgba($color: rgb(70 109 125), $alpha: 0.6),
@@ -92,6 +157,7 @@
   .card-play {
     margin-bottom: 50px;
     text-align: center;
+    position: relative;
     button {
       &:first-child {
         margin-bottom: 10px;
@@ -143,12 +209,18 @@
   }
 }
 
-.name {
+.footer {
   position: fixed;
   left: 0;
   bottom: 0;
   top: unset;
   z-index: 1;
+  width: 100%;
+}
+
+.name_box {
+  width: 100%;
+
   @include sm {
     height: 65px;
   }
@@ -409,23 +481,27 @@
 
 .game_info {
   position: absolute;
-  right: 20px;
+  right: 12px;
   top: 20px;
   color: $text;
-  img {
-    max-width: 30px;
-  }
+
   .dart {
     margin-top: 5px;
   }
   .img-box {
     margin-right: 5px;
+    max-width: 30px;
+    width: 100%;
+    text-align: center;
   }
   .num-box {
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
+    p {
+      max-width: 35px;
+    }
   }
 }
 

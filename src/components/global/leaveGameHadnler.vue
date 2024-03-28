@@ -51,7 +51,7 @@ export default {
 #leave_game {
   position: absolute;
   width: auto;
-  left: 10px;
+  left: 15px;
   z-index: 9999;
   .bg {
     width: 100vw;

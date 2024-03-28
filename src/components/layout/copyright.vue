@@ -23,9 +23,10 @@ export default {
   transform: translate(-50%, -50%);
   font-size: 0.9rem;
   color: rgb(157 166 187);
-  width: 100%;
+  width: auto;
   text-align: center;
-  z-index: 1;
+  z-index: 5;
+  white-space: nowrap;
   @include L {
     bottom: 2px;
     font-size: 0.7rem;

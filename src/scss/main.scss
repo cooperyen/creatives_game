@@ -12,6 +12,22 @@
   background-color: rgb(243 243 243);
 }
 
+.full_container {
+  width: 100%;
+  &.bg {
+    height: 100vh;
+    background-color: $bg_pevent;
+    position: fixed;
+    z-index: 999;
+  }
+  .middle {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+  }
+}
+
 @keyframes open {
   to {
     display: block;

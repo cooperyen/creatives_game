@@ -108,7 +108,7 @@ const loopStore = {
     loopTimePlus(state) {
       state.tryTime += 1;
     },
-    connectedTimeMinus(state) {
+    loopTimeMinus(state) {
       state.tryTime -= 1;
     },
   }

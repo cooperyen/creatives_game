@@ -18,6 +18,8 @@
         </div>
         <div><p>please reload page and try again!</p></div>
       </div>
+
+      <transferPageCountDown></transferPageCountDown>
     </div>
   </transition>
 
@@ -33,7 +35,6 @@
   </router-view>
 
   <copyright></copyright>
-  <transferPageCountDown></transferPageCountDown>
 </template>
 
 <script setup>

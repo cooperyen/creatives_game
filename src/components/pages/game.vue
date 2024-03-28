@@ -1,7 +1,18 @@
 <template>
-  <userNameBox :userName="player" :userIcon="userIcon" class="name">
-    <leaveGameHadnler :socket="socket" game="card"></leaveGameHadnler>
-  </userNameBox>
+  <div class="footer">
+    <div class="players_box flex">
+      <div v-for="player in players" :key="player">
+        <div>{{ player.icon }}</div>
+        <div>{{ player.user_id }}</div>
+        <div>
+          {{ wholeData[player.user_id].length || wholeData[player.user_id] }}
+        </div>
+      </div>
+    </div>
+    <userNameBox :userName="player" :userIcon="userIcon" class="name_box">
+      <leaveGameHadnler :socket="socket" game="card"></leaveGameHadnler>
+    </userNameBox>
+  </div>
 
   <!-- next round -->
   <div class="transition" v-show="passNotice != false">
@@ -122,16 +133,43 @@
       </div>
     </div>
 
-    <!-- current card tent -->
-    <div class="dsdsa">
-      <div class="current-card">
-        <div class="title">
-          <p>檯面上的牌 :</p>
+    <template v-if="!leaveGame.open">
+      <!-- current card tent -->
+      <div class="dsdsa">
+        <div class="current-card">
+          <div class="title">
+            <p>檯面上的牌 :</p>
+          </div>
+          <div class="flex">
+            <div class="card-box card-style" v-for="i in currentCard" :key="i">
+              <div class="card-num">
+                <p>
+                  <span>{{ i }}</span>
+                </p>
+              </div>
+              <div class="card-bg">
+                <img src="./../../image/card/01.svg" />
+              </div>
+            </div>
+            <div
+              class="card-box card-style wait"
+              v-for="i in 5 - currentCard.length"
+              :key="i"
+            >
+              <div class="card-bg">
+                <img src="./../../image/card/01.svg" />
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="flex">
-          <div class="card-box card-style" v-for="i in currentCard" :key="i">
+      </div>
+
+      <!-- hand card content -->
+      <div id="hand-card">
+        <div class="card-container">
+          <div class="card-box card-style" v-for="i in handCard" :key="i">
             <div class="card-num">
-              <p>
+              <p :class="{ large: String(i).length >= 3 }">
                 <span>{{ i }}</span>
               </p>
             </div>
@@ -139,55 +177,31 @@
               <img src="./../../image/card/01.svg" />
             </div>
           </div>
-          <div
-            class="card-box card-style wait"
-            v-for="i in 5 - currentCard.length"
-            :key="i"
-          >
-            <div class="card-bg">
-              <img src="./../../image/card/01.svg" />
-            </div>
+        </div>
+        <div class="card-play" v-if="!drawVote.state">
+          <div class="click-btn">
+            <button
+              @click="playcard()"
+              :class="{ disabled: handCard.length === 0 }"
+              :disabled="handCard.length === 0"
+            >
+              我覺得應該輪到我
+            </button>
+            <button
+              @click="startDart()"
+              :class="{ disabled: dart === 0 }"
+              :disabled="dart === 0 || dart === null"
+            >
+              {{ dart === 0 || dart === null ? '飛鏢不足' : '丟飛鏢' }}
+            </button>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- hand card content -->
-    <div id="hand-card">
-      <div class="card-container">
-        <div class="card-box card-style" v-for="i in handCard" :key="i">
-          <div class="card-num">
-            <p :class="{ large: String(i).length >= 3 }">
-              <span>{{ i }}</span>
-            </p>
-          </div>
-          <div class="card-bg">
-            <img src="./../../image/card/01.svg" />
-          </div>
-        </div>
-      </div>
-      <div class="card-play" v-if="!drawVote.state">
-        <div class="click-btn">
-          <button
-            @click="playcard()"
-            :class="{ disabled: handCard.length === 0 }"
-            :disabled="handCard.length === 0"
-          >
-            我覺得應該輪到我
-          </button>
-          <button
-            @click="startDart()"
-            :class="{ disabled: dart === 0 }"
-            :disabled="dart === 0 || dart === null"
-          >
-            {{ dart === 0 || dart === null ? '飛鏢不足' : '丟飛鏢' }}
-          </button>
-        </div>
-      </div>
-    </div>
+    </template>
 
     <!-- game informaion -->
     <div class="game_info">
+      <!-- life -->
       <div class="flex">
         <div class="img-box">
           <img src="./../../image/ui/heart.png" />
@@ -197,12 +211,57 @@
         </div>
       </div>
 
+      <!-- dart -->
       <div class="flex dart">
         <div class="img-box">
           <img src="./../../image/ui/gem.png" />
         </div>
         <div class="num-box">
           <p>x {{ dart }}</p>
+        </div>
+      </div>
+
+      <!-- dart -->
+      <div class="flex dart">
+        <div class="img-box">
+          <font-awesome-icon icon="fa-solid fa-clock" />
+        </div>
+        <div class="num-box">
+          <p>{{ $store.state.loopStore.tryTime }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="leave_info" class="full_container bg" v-if="leaveGame.open">
+    <div class="middle content_box">
+      <!-- title -->
+      <div class="title">
+        <h2>{{ 'game close'.toUpperCase() }}</h2>
+      </div>
+      <!-- user info -->
+      <div class="user_box flex">
+        <div class="flex">
+          <div class="img">
+            <img
+              :src="$global_getImgUrl(leaveGame.who.icon, 'player')"
+              alt=""
+            />
+          </div>
+          <div class="name">
+            <p>
+              {{ leaveGame.who.user_id }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- content -->
+      <div class="content">
+        <div>
+          離開了遊戲, 將在{{ $store.state.loopStore.tryTime }}秒後自動返回大廳
+        </div>
+        <div class="btn">
+          <button @click="goLobby()">返回大廳</button>
         </div>
       </div>
     </div>
@@ -228,10 +287,15 @@ export default {
       drawVote: { state: false, countTimer: null, time: 20 },
       isDrawVoted: null,
       passNotice: false,
-      backGameTime: 5,
+      backGameTime: 3,
       gameOver: { state: null, countTimer: null, time: 60 },
       players: null,
       voteFail: false,
+      leaveGame: {
+        who: null,
+        open: false,
+      },
+      wholeData: null,
     };
   },
   components: { userNameBox, leaveGameHadnler },
@@ -243,6 +307,15 @@ export default {
         this.backGameTime = 5;
         this.countDownInGameAction();
       }
+    },
+    'state.lunch.leaveGame': {
+      handler(el) {
+        this.$store.commit('clearUserRoom');
+        this.leaveGame.who = el.who;
+        this.leaveGame.open = true;
+        this.createCountTime(10, true);
+      },
+      deep: true,
     },
     'state.loginError': {
       handler(el) {
@@ -267,33 +340,51 @@ export default {
     },
     'state.gameDataFirstLoad': {
       handler(el) {
-        console.log(el);
         if (el === null || el === undefined) return;
+        this.wholeData = el;
         this.gameData = true;
         this.hp = el.hp;
         this.dart = el.dart;
         this.remain = el.remain;
         this.level = el.level;
         this.handCard = el[this.player];
+        this.players = el['player_info'];
         this.$store.commit('updateLoading', true);
+        this.$store.commit('loopHandlerDelete');
+        setTimeout(() => {
+          this.createCountTime(300);
+        }, 2000);
       },
       deep: true,
     },
     'state.gameDataUpdate': {
       handler(el) {
-        if (this.level != el.level) this.currentCard = [];
-        if (!isNaN(el.card)) {
-          if (this.currentCard.length >= 5) this.currentCard.shift();
-          this.currentCard.push(el.card);
-        } else this.passNotice = { msg: el.card, states: 'msg' };
-
-        if (tureFalse('hp')) {
-          this.hp = el.hp;
+        if (el['cardLength'] != undefined) {
+          this.wholeData = el['cardLength'];
         }
-        if (tureFalse('dart')) this.dart = el.dart;
-        if (tureFalse('remain')) this.remain = el.remain;
-        if (tureFalse('hand')) this.handCard = el.hand;
-        if (tureFalse('level')) this.level = el.level;
+
+        if (el['cardLength'] === undefined) {
+          if (this.level != el.level) {
+            this.$store.commit('loopHandlerDelete');
+            this.currentCard = [];
+            setTimeout(() => {
+              this.createCountTime(100);
+            }, 5000);
+          }
+          if (!isNaN(el.card)) {
+            if (this.currentCard.length >= 5) this.currentCard.shift();
+            this.currentCard.push(el.card);
+          } else this.passNotice = { msg: el.card, states: 'msg' };
+
+          if (tureFalse('hp')) {
+            this.hp = el.hp;
+          }
+          if (tureFalse('dart')) this.dart = el.dart;
+          if (tureFalse('remain')) this.remain = el.remain;
+          if (tureFalse('hand')) this.handCard = el.hand;
+          if (tureFalse('level')) this.level = el.level;
+        }
+
         function tureFalse(key) {
           const check = el[key];
           return check != null || check != undefined ? true : false;
@@ -304,6 +395,8 @@ export default {
     'state.gameOne.gameOver': {
       handler(el) {
         if (el.url === null && el.url != 'lobby') return;
+        this.$store.commit('loopHandlerDelete');
+
         this.gameOver.state = true;
         this.dart = el.dart;
         this.hp = el.hp;
@@ -315,6 +408,7 @@ export default {
         this.gameOver.countTimer = setInterval(() => {
           this.gameOver.time -= 1;
           if (this.gameOver.time <= 0) {
+            this.$store.commit('loopHandlerDelete');
             this.gameOver.time = 0;
             this.goLobby();
           }
@@ -343,6 +437,33 @@ export default {
     },
   },
   methods: {
+    createCountTime(time, back = false) {
+      this.$store.commit('loopHandlerDelete');
+      this.$store.state.loopStore.tryTime = time;
+      this.$store.commit(
+        'loopHandler',
+        setInterval(() => {
+          this.$store.commit('loopTimeMinus');
+          if (this.$store.state.loopStore.tryTime <= 0) {
+            const data = {
+              game: 'card',
+              id: this.$store.state.userStore.userName,
+              room: this.$store.state.userStore.userRoom,
+              icon: this.$store.state.userStore.icon,
+            };
+
+            this.socket.emit('gamesLeave', data);
+            this.$store.commit('loopHandlerDelete');
+            console.log('fail');
+
+            if (back)
+              setTimeout(() => {
+                this.goLobby();
+              }, 1000);
+          }
+        }, 1000)
+      );
+    },
     countDownInGameAction() {
       this.backGameTime -= 1;
       if (this.backGameTime <= 0) {
@@ -428,17 +549,17 @@ export default {
         'loopHandler',
         setInterval(() => {
           const result = doCheck(this);
-          this.$store.state.loopStore.connectedTime += 1;
+          this.$store.state.loopStore.tryTime += 1;
 
-          if (this.$store.state.loopStore.connectedTime >= 15) {
+          if (this.$store.state.loopStore.tryTime >= 15) {
             alert('Connection failed, will return to lobby.');
             this.$store.commit('loopHandlerDelete');
-            this.$store.state.loopStore.connectedTime = 0;
+            this.$store.state.loopStore.tryTime = 0;
             this.goLobby();
           }
 
           if (result) {
-            this.$store.state.loopStore.connectedTime = 0;
+            this.$store.state.loopStore.tryTime = 0;
             this.$store.commit('loopHandlerDelete');
           }
         }, 1000)
@@ -448,6 +569,7 @@ export default {
         that.socket.emit('id_check', {
           id: that.$store.state.userStore.userName,
           room: that.$store.state.userStore.userRoom,
+          icon: that.$store.state.userStore.icon,
         });
 
         return that.$store.state.userStore.loading;
@@ -480,6 +602,7 @@ export default {
     this.cardAnimate();
   },
   beforeUnmount() {
+    this.$store.commit('loopHandlerDelete');
     clearInterval(this.drawVote.countTimer);
     clearInterval(this.gameOver.countTimer);
     this.$store.state.userStore.userRoom = null;

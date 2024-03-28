@@ -30,6 +30,9 @@ export const state = reactive({
   },
   blackJack: null,
   yellowCard: null,
+  lunch: {
+    leaveGame: null,
+  }
 });
 
 // const testURL = 'http://200.69.21.59:88'
@@ -211,7 +214,6 @@ socket.on('update_lobby', function (data) {
 })
 
 socket.on('updata_ready', function (data) {
-  // console.log(data);
   state.gameOne.readyToGo = false;
   state.gameOne.readyList = data.reduce((key, val, index) => {
     key[val] = val
@@ -219,34 +221,45 @@ socket.on('updata_ready', function (data) {
   }, {})
 })
 
-socket.on('game_update_game', function (data) {
-  state.gameDataUpdate = data
-  state.drawVote = null
-})
+/**
+ *  lunch game.
+ */
+lunchGame()
+function lunchGame() {
+  socket.on('game_update_game', function (data) {
+    state.gameDataUpdate = data
+    state.drawVote = null
+  })
 
-socket.on('re_flash', function (data) {
-  state.gameDataUpdate = data
-})
+  socket.on('re_draw', function (data) {
+    state.drawVote = null;
+    if (data.message === 'draw') state.drawVote = { isPass: true }
+    if (data.message === 'play') state.drawVote = { isPass: false, card: data.card };
 
-socket.on('re_draw', function (data) {
+  })
 
-  state.drawVote = null;
-  if (data.message === 'draw') state.drawVote = { isPass: true }
-  if (data.message === 'play') state.drawVote = { isPass: false, card: data.card };
-
-})
-
-socket.on('re_lunch', function (data) {
-  // state.gameOne.readyToGo = false;
-  if (data.isReady != null || data.isReady != undefined)
-    state.gameOne.readyToGo = data.isReady;
-
-})
+  socket.on('re_flash', function (data) {
+    state.gameDataUpdate = data
+  })
 
 
-// blackjack
+  socket.on('re_lunch', function (data) {
+    // state.gameOne.readyToGo = false;
+    if (data.isReady != null || data.isReady != undefined)
+      state.gameOne.readyToGo = data.isReady;
+  })
+  socket.on('lunch_leaveGame', function (data) {
+    console.log(data);
+    state.lunch.leaveGame = data;
+  })
+}
+
+
+
+/**
+ * blackjack
+ */
 socket.on('re_bj', function (data) {
-  // console.log(data);
   if (data === null || data === undefined) return;
   state.blackJack = null;
 
