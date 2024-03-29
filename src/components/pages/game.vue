@@ -71,6 +71,13 @@
                 我覺得應該輪到我
               </button>
               <button
+                @click="sendSticker()"
+                :class="{ disabled: handCard.length === 0 }"
+                :disabled="handCard.length === 0"
+              >
+                應該不是我吧
+              </button>
+              <button
                 @click="startDart()"
                 :class="{ disabled: dart === 0 }"
                 :disabled="dart === 0 || dart === null"
@@ -319,6 +326,8 @@ export default {
       wholeData: null,
       timeoutLeave: false,
       game: { time: 300 },
+      sendStickerBtn: true,
+      playerSticker: {},
     };
   },
   components: { userNameBox, leaveGameHadnler },
@@ -438,6 +447,11 @@ export default {
         }, 1000);
       },
     },
+    'state.gameOne.sendSticker': {
+      handler(el) {
+        console.log(el);
+      },
+    },
     'drawVote.state'(el) {
       this.drawVote.time = 5;
       if (el)
@@ -460,6 +474,19 @@ export default {
     },
   },
   methods: {
+    sendSticker() {
+      if (!sendStickerBtn) return;
+      this.sendStickerBtn = false;
+      const data = {
+        id: this.$store.state.userStore.userName,
+        room: this.$store.state.userStore.userRoom,
+        act: 'no',
+      };
+      this.socket.emit('Lunch_sticker', data);
+      setTimeout(() => {
+        this.sendStickerBtn = true;
+      }, 2000);
+    },
     playerCardLength(el) {
       return this.wholeData[el]?.length || this.wholeData[el];
     },
