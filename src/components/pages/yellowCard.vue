@@ -4,7 +4,11 @@
       <leaveGameHadnler :socket="socket" game="yc"></leaveGameHadnler>
     </userNameBox>
 
-    <template v-if="playerMove.currentStep != 'end'">
+    <popupAnnunce :show="annunceShow" @close="(n) => (annunceShow = n)"
+      >至少選 1 個</popupAnnunce
+    >
+
+    <div v-show="playerMove.currentStep != 'end'">
       <div class="header">
         <div class="title">
           <p>Players</p>
@@ -12,14 +16,7 @@
         <div class="items">
           <div v-for="i in gameData.yellowCard" :key="i" class="item flex">
             <div class="img_box">
-              <img
-                :src="
-                  $global_getImgUrl(
-                    gameData.icon[Object.keys(i)[0]]['icon'],
-                    'player_icon'
-                  )
-                "
-              />
+              <img :src="$global_getImgUrl('apple', 'player_icon')" />
             </div>
             <div class="text">
               <p>
@@ -77,6 +74,7 @@
         @repickCard="repickCard"
       ></dropHandler>
 
+      <!-- game transitions -->
       <div id="await" v-if="isShowAwait(playerMove.currentStep)">
         <div
           class="await"
@@ -107,7 +105,7 @@
       >
         <h1>回合計算中</h1>
       </div>
-    </template>
+    </div>
 
     <div
       v-if="playerMove.currentStep === 'end'"
@@ -186,6 +184,7 @@ export default {
       },
       gameFinal: null,
       backToLobbyTimer: null,
+      annunceShow: false,
     };
   },
   components: {
@@ -199,7 +198,6 @@ export default {
   watch: {
     'state.goUrl': {
       handler(el) {
-        console.log(el);
         if (el === null) return;
         // update user room before redirect.
         this.$router.replace(`/${el}`);
@@ -208,7 +206,6 @@ export default {
     },
     'state.yellowCard': {
       handler(el) {
-        console.log(el);
         this.playerMove.usedOpen = false;
         this.playerMove.voteOpen = false;
         this.playerMove.dropOpen = false;
@@ -420,17 +417,19 @@ export default {
     },
     drop(auto = false) {
       if (this.timeOutCheck()) return;
-
       let leng = this.playerMove.pickCard.length;
 
       if (auto === false) {
-        if (leng <= 0) alert('最少棄一張牌，最多3張牌');
+        if (leng <= 0) this.annunceShow = true;
         if (leng > 0 && leng <= 3) {
           this.socket.emit('yc', {
             id: this.getUserName,
             room: this.getUserRoom,
             drop: this.playerMove.pickCard,
           });
+          this.playerMove.currentStep = 'statistic';
+          this.playerMove.pickCard = [];
+          this.cleanTimer();
         }
       }
 
@@ -440,11 +439,11 @@ export default {
           room: this.getUserRoom,
           drop: this.gameData.selfHand[0],
         });
-      }
 
-      this.playerMove.currentStep = 'statistic';
-      this.playerMove.pickCard = [];
-      this.cleanTimer();
+        this.playerMove.currentStep = 'statistic';
+        this.playerMove.pickCard = [];
+        this.cleanTimer();
+      }
     },
     vote(auto = false) {
       if (this.timeOutCheck()) return;
@@ -611,16 +610,10 @@ export default {
     //   room: this.$store.state.userStore.userRoom,
     // });
   },
-  beforeMount() {
-    // this.$store.commit('backGorund', 'yellowCard');
-  },
+  beforeMount() {},
   beforeUnmount() {
     this.$store.commit('clearUserRoom');
     this.cleanTimer();
-    // this.socket.emit('id_check', {
-    //   id: this.$store.state.userStore.userName,
-    //   room: this.$store.state.userStore.userRoom,
-    // });
   },
 };
 </script>

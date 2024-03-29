@@ -8,6 +8,7 @@ import backGroundAnimate from '@/../src/components/animation/backGround.vue';
 import answerHandler from '@/../src/components/global/answerHandler.vue';
 import instructionsCompent from '@/../src/components/global/instructionsCompent.vue';
 import closeBtn from '@/../src/components/global/closeBtn.vue';
+import popupAnnunce from '@/../src/components/global/popupAnnunce.vue';
 import App from '@/App.vue'
 import { createStore } from 'vuex';
 
@@ -47,6 +48,8 @@ app.component('backGroundAnimate', backGroundAnimate)
 app.component('answerHandler', answerHandler)
 app.component('instructionsCompent', instructionsCompent)
 app.component('closeBtn', closeBtn)
+app.component('popupAnnunce', popupAnnunce)
+
 
 
 

@@ -34,13 +34,13 @@ export default {
       const usedCards = this.splitUsedCard(el);
 
       usedCards.forEach((card) => {
-        result = result.replace('__', `<span class="insert">${card}</span>`);
+        result = result.replace('___', `<span class="insert">${card}</span>`);
       });
 
       return result;
     },
     splitUsedCard(el) {
-      const quest = this.gameData.quest.split('__');
+      const quest = this.gameData.quest.split('___');
       let st = el;
 
       quest.forEach((els) => {

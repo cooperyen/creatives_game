@@ -1,112 +1,4 @@
 <template>
-  <!-- next round -->
-  <div class="transition" v-show="passNotice != false">
-    <div class="next-container">
-      <div class="msg-box">
-        <h2>
-          {{ passNotice.msg }}
-        </h2>
-      </div>
-      <div class="countDown">
-        <div class="title" v-show="!voteFail">即將進入下一關</div>
-        <div class="title" v-show="voteFail">返回遊戲</div>
-        <div class="time">
-          {{ backGameTime }}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- dart vote UI -->
-  <div class="transition" v-if="drawVote.state">
-    <div id="dart">
-      <div class="title">
-        <h2>有人現在要使用飛鏢, 同意使用嗎?</h2>
-      </div>
-      <img src="./../../image/ui/gem_large.png" />
-      <!-- vote option -->
-      <div class="click-btn" v-if="isDrawVoted === null">
-        <button
-          class="agree"
-          :class="{ disabled: isDrawVoted === 'no' }"
-          :disabled="isDrawVoted === 'no'"
-          @click="votedDart('yes')"
-        >
-          <p>&nbsp;&nbsp;同意&nbsp;&nbsp;</p>
-        </button>
-        <button
-          class="reject"
-          :class="{ disabled: isDrawVoted === 'yes' }"
-          @click="votedDart('no')"
-          :disabled="isDrawVoted === 'yes'"
-        >
-          不要咧
-        </button>
-      </div>
-      <!-- waiting other player vote -->
-      <div v-else class="click-btn unclick">
-        <p>你已投票, 等待其他玩家中</p>
-        <button
-          unclick
-          :class="{
-            agree: this.isDrawVoted === 'yes',
-            reject: this.isDrawVoted === 'no',
-          }"
-        >
-          {{ this.isDrawVoted }}
-        </button>
-      </div>
-    </div>
-    <div class="t-countdown" v-show="this.drawVote.time != 0">
-      will vote "no" in {{ this.drawVote.time }} s
-    </div>
-  </div>
-
-  <!-- GAME OVER UI -->
-  <div class="transition" v-if="gameOver.state">
-    <div id="gameover">
-      <!-- title -->
-      <div class="title">
-        <h2>game over</h2>
-      </div>
-      <div class="container">
-        <!-- options -->
-        <div class="options">
-          <!-- level -->
-          <div class="item-box">
-            <div class="item-title">Last level</div>
-            <div class="item-content">{{ level }}</div>
-          </div>
-          <!-- dart -->
-          <div class="item-box">
-            <div class="item-title">darts remaining</div>
-            <div class="flex" v-if="dart != 0">
-              <div v-for="i in dart" :key="i">
-                <img src="./../../image/ui/gem.png" />
-              </div>
-            </div>
-            <div class="item-content" v-else>
-              <p>0</p>
-            </div>
-          </div>
-          <!-- plaeyr -->
-          <div class="item-box">
-            <div class="item-title">game plaeyrs</div>
-            <div class="item-content" v-for="i in player" :key="i">
-              {{ i }}
-            </div>
-          </div>
-        </div>
-        <div class="click-btn">
-          <button @click="goLobby()">leave</button>
-        </div>
-      </div>
-    </div>
-    <div class="t-countdown" v-show="this.gameOver.time != 0">
-      will return to LOBBY in {{ this.gameOver.time }} s
-    </div>
-  </div>
-
   <!-- game content -->
   <div v-show="!passNotice" class="game-container_">
     <div class="game-container">
@@ -200,9 +92,9 @@
             <div class="name_box">{{ player.user_id }}</div>
             <div class="card_info">
               /
-              {{
-                wholeData[player.user_id].length || wholeData[player.user_id]
-              }}
+              <span :class="{ remind: playerCardLength(player.user_id) <= 0 }">
+                {{ playerCardLength(player.user_id) }}
+              </span>
             </div>
           </div>
         </div>
@@ -217,10 +109,73 @@
     </div>
   </div>
 
+  <!-- dart vote UI -->
+  <div class="transition" v-if="drawVote.state">
+    <div id="dart">
+      <div class="title">
+        <h2>有人現在要使用飛鏢, 同意使用嗎?</h2>
+      </div>
+      <img src="./../../image/ui/gem_large.png" />
+      <!-- vote option -->
+      <div class="click-btn" v-if="isDrawVoted === null">
+        <button
+          class="agree"
+          :class="{ disabled: isDrawVoted === 'no' }"
+          :disabled="isDrawVoted === 'no'"
+          @click="votedDart('yes')"
+        >
+          <p>&nbsp;&nbsp;同意&nbsp;&nbsp;</p>
+        </button>
+        <button
+          class="reject"
+          :class="{ disabled: isDrawVoted === 'yes' }"
+          @click="votedDart('no')"
+          :disabled="isDrawVoted === 'yes'"
+        >
+          不要咧
+        </button>
+      </div>
+      <!-- waiting other player vote -->
+      <div v-else class="click-btn unclick">
+        <p>你已投票, 等待其他玩家中</p>
+        <button
+          unclick
+          :class="{
+            agree: this.isDrawVoted === 'yes',
+            reject: this.isDrawVoted === 'no',
+          }"
+        >
+          {{ this.isDrawVoted }}
+        </button>
+      </div>
+    </div>
+    <div class="t-countdown" v-show="this.drawVote.time != 0">
+      will vote "no" in {{ this.drawVote.time }} s
+    </div>
+  </div>
+
+  <!-- next round -->
+  <div class="transition" v-show="passNotice != false">
+    <div class="next-container">
+      <div class="msg-box">
+        <h2>
+          {{ passNotice.msg }}
+        </h2>
+      </div>
+      <div class="countDown">
+        <div class="title" v-show="!voteFail">即將進入下一關</div>
+        <div class="title" v-show="voteFail">返回遊戲</div>
+        <div class="time">
+          {{ backGameTime }}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- game informaion -->
-  <div id="top_right_info" class="game_info">
+  <div id="top_right_info" class="game_info" v-show="!passNotice">
     <!-- life -->
-    <div class="flex">
+    <div class="flex item">
       <div class="img-box">
         <img src="./../../image/ui/heart.png" />
       </div>
@@ -230,7 +185,7 @@
     </div>
 
     <!-- dart -->
-    <div class="flex dart">
+    <div class="flex dart item">
       <div class="img-box">
         <img src="./../../image/ui/gem.png" />
       </div>
@@ -240,7 +195,7 @@
     </div>
 
     <!-- dart -->
-    <div class="flex dart">
+    <div class="flex item">
       <div class="img-box">
         <font-awesome-icon icon="fa-solid fa-clock" />
       </div>
@@ -250,37 +205,86 @@
     </div>
   </div>
 
+  <!-- leave game popup -->
   <div id="leave_info" class="full_container bg" v-if="leaveGame.open">
     <div class="middle content_box">
       <!-- title -->
       <div class="title">
         <h2>{{ 'game close'.toUpperCase() }}</h2>
       </div>
-      <!-- user info -->
-      <div class="user_box flex">
-        <div class="flex">
-          <div class="img">
-            <img
-              :src="$global_getImgUrl(leaveGame.who.icon, 'player')"
-              alt=""
-            />
-          </div>
-          <div class="name">
-            <p>
-              {{ leaveGame.who.user_id }}
-            </p>
+      <template v-if="!timeoutLeave">
+        <!-- user info -->
+        <div class="user_box flex">
+          <div class="flex">
+            <div class="img">
+              <img
+                :src="$global_getImgUrl(leaveGame.who.icon, 'player')"
+                alt=""
+              />
+            </div>
+            <div class="name">
+              <p>
+                {{ leaveGame.who.user_id }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </template>
       <!-- content -->
       <div class="content">
-        <div>
+        <div v-if="!timeoutLeave">
           離開了遊戲, 將在{{ $store.state.loopStore.tryTime }}秒後自動返回大廳
         </div>
+        <div v-else>超過出牌時間啦!</div>
         <div class="btn">
           <button @click="goLobby()">返回大廳</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER popup -->
+  <div class="transition" v-if="gameOver.state">
+    <div id="gameover">
+      <!-- title -->
+      <div class="title">
+        <h2>game over</h2>
+      </div>
+      <div class="container">
+        <!-- options -->
+        <div class="options">
+          <!-- level -->
+          <div class="item-box">
+            <div class="item-title">Last level</div>
+            <div class="item-content">{{ level }}</div>
+          </div>
+          <!-- dart -->
+          <div class="item-box">
+            <div class="item-title">darts remaining</div>
+            <div class="flex" v-if="dart != 0">
+              <div v-for="i in dart" :key="i">
+                <img src="./../../image/ui/gem.png" />
+              </div>
+            </div>
+            <div class="item-content" v-else>
+              <p>0</p>
+            </div>
+          </div>
+          <!-- plaeyr -->
+          <div class="item-box">
+            <div class="item-title">game plaeyrs</div>
+            <div class="item-content" v-for="i in player" :key="i">
+              {{ i }}
+            </div>
+          </div>
+        </div>
+        <div class="click-btn">
+          <button @click="goLobby()">leave</button>
+        </div>
+      </div>
+    </div>
+    <div class="t-countdown" v-show="this.gameOver.time != 0">
+      will return to LOBBY in {{ this.gameOver.time }} s
     </div>
   </div>
 </template>
@@ -313,13 +317,14 @@ export default {
         open: false,
       },
       wholeData: null,
+      timeoutLeave: false,
+      game: { time: 300 },
     };
   },
   components: { userNameBox, leaveGameHadnler },
   props: ['socket', 'state'],
   watch: {
     passNotice(el) {
-      // console.log(el);
       if (el.msg != null && el.states === 'msg') {
         this.backGameTime = 5;
         this.countDownInGameAction();
@@ -328,9 +333,12 @@ export default {
     'state.lunch.leaveGame': {
       handler(el) {
         this.$store.commit('clearUserRoom');
+
+        if (el.msg === 'whoLeave') this.createCountTime(10, true);
+        if (el.msg === 'whoFail') this.timeoutLeave = self;
+
         this.leaveGame.who = el.who;
         this.leaveGame.open = true;
-        this.createCountTime(10, true);
       },
       deep: true,
     },
@@ -370,7 +378,7 @@ export default {
         this.$store.commit('updateLoading', true);
         this.$store.commit('loopHandlerDelete');
         setTimeout(() => {
-          this.createCountTime(300);
+          this.createCountTime(this.game.time);
         }, 2000);
       },
       deep: true,
@@ -386,7 +394,7 @@ export default {
             this.$store.commit('loopHandlerDelete');
             this.currentCard = [];
             setTimeout(() => {
-              this.createCountTime(100);
+              this.createCountTime(this.game.time);
             }, 5000);
           }
           if (!isNaN(el.card)) {
@@ -414,15 +422,12 @@ export default {
       handler(el) {
         if (el.url === null && el.url != 'lobby') return;
         this.$store.commit('loopHandlerDelete');
-
         this.gameOver.state = true;
         this.dart = el.dart;
         this.hp = el.hp;
         this.level = el.level;
         this.player = el.player;
-
         this.gameOver.time = 10;
-
         this.gameOver.countTimer = setInterval(() => {
           this.gameOver.time -= 1;
           if (this.gameOver.time <= 0) {
@@ -448,14 +453,17 @@ export default {
       this.votedDart('no');
       clearInterval(this.drawVote.countTimer);
     },
-    handCard(el) {
+    handCard() {
       this.$nextTick(() => {
         this.cardAnimate();
       });
     },
   },
   methods: {
-    createCountTime(time, back = false) {
+    playerCardLength(el) {
+      return this.wholeData[el]?.length || this.wholeData[el];
+    },
+    createCountTime(time, back = false, self = false) {
       this.$store.commit('loopHandlerDelete');
       this.$store.state.loopStore.tryTime = time;
       this.$store.commit(
@@ -472,7 +480,6 @@ export default {
 
             this.socket.emit('gamesLeave', data);
             this.$store.commit('loopHandlerDelete');
-            console.log('fail');
 
             if (back)
               setTimeout(() => {

@@ -4,7 +4,7 @@
 #leave_info {
   background-color: rgba($color: $bg_pevent, $alpha: 0.2);
   .content_box {
-    background-color: $bg_light;
+    background-color: #fffbf1;
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
@@ -22,6 +22,9 @@
       text-align: center;
       font-size: clamp(1.2rem, 2rem, 10vw);
       margin-bottom: 20px;
+      @include sm {
+        font-size: 1.2rem;
+      }
     }
     .user_box {
       width: auto;
@@ -56,7 +59,7 @@
         margin-top: 30px;
         button {
           cursor: pointer;
-          margin: 15px;
+          // margin: 0 15px;
           padding: 10px 20px;
           border-radius: 8px;
           background-color: $agree_btn;
@@ -89,6 +92,11 @@
     top: 30px;
     left: 20px;
     font-size: 1.5rem;
+    @include sm {
+      top: 15px;
+      left: 15px;
+      font-size: 1rem;
+    }
   }
   .current-card {
     color: $text;
@@ -101,7 +109,7 @@
     border-radius: 5px;
     padding: 15px;
     @include sm {
-      margin: 60px auto 0 auto;
+      margin: 42px auto 0 auto;
       width: calc(100% - 15px);
       padding: 15px 10px;
     }
@@ -136,16 +144,13 @@
 }
 #hand-card {
   overflow: hidden;
-  // position: absolute;
   max-width: 500px;
   padding: 0 15px;
   width: 100%;
   margin: 30px auto 0 auto;
-  // left: 50%;
-  // transform: translateX(-50%);
   bottom: 0;
   @include sm {
-    margin: 10px auto 0 auto;
+    margin: 20px auto 0 auto;
   }
 
   .card-container {
@@ -156,7 +161,7 @@
     height: 250px;
     @include sm {
       height: 220px;
-      margin-top: 5px;
+      margin-top: 30px;
     }
     // @include xs {
     //   height: 180px;
@@ -233,20 +238,29 @@
   align-items: center;
   .players_box {
     justify-content: center;
-
+    max-width: 600px;
+    margin: 0 auto;
     .player {
       align-items: center;
       margin: 0 5px;
+      width: calc(100% / 4);
+      justify-content: center;
       .img_box {
         max-width: 20px;
+        margin-right: 1px;
       }
       .name_box {
+        overflow: hidden;
+        text-overflow: ellipsis;
         color: $text;
       }
       .card_info {
         width: auto;
         white-space: nowrap;
         color: $text;
+        .remind {
+          color: #6fffd8;
+        }
       }
     }
   }
@@ -267,13 +281,6 @@
   :deep(#leave_game .bg) {
     background-color: rgba($color: $bg_pevent, $alpha: 0.1);
   }
-  :deep(.content) {
-    // bottom: 5px;
-    // top: unset;
-    // h2 {
-    //   font-size: 1rem;
-    // }
-  }
 }
 
 .transition {
@@ -281,7 +288,7 @@
   width: 100%;
   height: 100vh;
   position: fixed;
-  z-index: 999;
+  z-index: 99;
   .title {
     h2 {
       font-size: 1.8rem;
@@ -527,6 +534,9 @@
   right: 12px;
   top: 20px;
   color: $text;
+  @include sm {
+    top: 15px;
+  }
 
   .dart {
     margin-top: 5px;
@@ -536,6 +546,9 @@
     max-width: 30px;
     width: 100%;
     text-align: center;
+    @include sm {
+      max-width: 25px;
+    }
   }
   .num-box {
     font-weight: bold;
