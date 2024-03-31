@@ -4,14 +4,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  computed: {
-    time() {
-      return new Date().getFullYear();
-    },
-  },
-};
+<script setup>
+const time = new Date().getFullYear();
 </script>
 
 <style lang="scss" scoped>

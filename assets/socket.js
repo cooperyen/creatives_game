@@ -78,7 +78,6 @@ function handleErrors(el) {
 // export const conntect = () => {
 socket.on('connect_error', err => handleErrors(err))
 
-
 socket.on("connect", (el) => {
   // alert(el);
   state.connected = true;

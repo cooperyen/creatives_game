@@ -280,13 +280,16 @@
 .user-container.name_content {
   width: 100%;
   background-color: rgba(255, 255, 255, 0.1);
-
+  color: $text;
   @include sm {
     height: 50px;
   }
 
   > .content {
     position: unset;
+  }
+  #leave_game {
+    color: $text;
   }
 }
 

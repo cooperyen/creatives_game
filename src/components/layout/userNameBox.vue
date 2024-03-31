@@ -6,12 +6,12 @@
           <div class="flex">
             <div class="icon">
               <img
-                :src="this.$global_getImgUrl(userIcon, 'player_icon')"
+                :src="this.$global_getImgUrl(props.userIcon, 'player_icon')"
                 alt=""
               />
             </div>
             <div class="user flex">
-              <p>勇者 : {{ userName }}</p>
+              <p>勇者 : {{ props.userName }}</p>
             </div>
           </div>
         </div>
@@ -21,31 +21,15 @@
   </transition>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      ani: false,
-      on: false,
-    };
-  },
-  props: ['userName', 'userIcon'],
-  watch: {
-    $route: {
-      handler(to, from) {
-        this.ani = false;
-      },
-    },
-  },
-  mounted() {
-    this.on =
-      this.$route.meta.style?.userName != undefined
-        ? this.$route.meta.style.userName
-        : false;
-    // console.log(this.on);
-    if (this.userName != null) this.ani = true;
-    else this.ani = false;
-  },
+<script setup>
+const props = defineProps(['userName', 'userIcon']);
+const ani = () => {
+  return props.userName != null ? true : false;
+};
+const on = () => {
+  return $route.meta.style?.userName != undefined
+    ? $route.meta.style.userName
+    : false;
 };
 </script>
 

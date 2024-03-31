@@ -341,8 +341,8 @@ export default {
       }
     },
     'state.lunch.sticker': {
-      handler(el) {
-        console.log(el);
+      handler(el, cl) {
+        console.log(el, cl);
         this.playerSticker = el;
       },
       deep: true,
