@@ -32,6 +32,7 @@ export const state = reactive({
   yellowCard: null,
   lunch: {
     leaveGame: null,
+    sticker: {}, // {id:boolen}
   }
 });
 
@@ -111,7 +112,6 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
-
   switch (data.way) {
 
     case 'id_check':
@@ -226,9 +226,19 @@ socket.on('updata_ready', function (data) {
  */
 lunchGame()
 function lunchGame() {
+
+  socket.on('lunch_sticker', function (data) {
+    console.log(data);
+    state.lunch.sticker = data;
+  })
+
+  socket.on('lunch_leaveGame', function (data) {
+    state.lunch.leaveGame = data;
+  })
+
   socket.on('game_update_game', function (data) {
-    state.gameDataUpdate = data
-    state.drawVote = null
+    state.gameDataUpdate = data;
+    state.drawVote = null;
   })
 
   socket.on('re_draw', function (data) {
@@ -239,7 +249,7 @@ function lunchGame() {
   })
 
   socket.on('re_flash', function (data) {
-    state.gameDataUpdate = data
+    state.gameDataUpdate = data;
   })
 
 
@@ -248,10 +258,7 @@ function lunchGame() {
     if (data.isReady != null || data.isReady != undefined)
       state.gameOne.readyToGo = data.isReady;
   })
-  socket.on('lunch_leaveGame', function (data) {
-    console.log(data);
-    state.lunch.leaveGame = data;
-  })
+
 }
 
 
@@ -263,7 +270,7 @@ socket.on('re_bj', function (data) {
   if (data === null || data === undefined) return;
   state.blackJack = null;
 
-  state.blackJack = data
+  state.blackJack = data;
 })
 
 // yellow card

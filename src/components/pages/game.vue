@@ -1,10 +1,10 @@
 <template>
   <!-- game content -->
   <div v-show="!passNotice" class="game-container_">
-    <div class="game-container">
+    <div class="game_container">
       <div id="in_play">
         <div v-if="gameData === null"></div>
-        <div class="game-info" v-else>
+        <div class="level" v-else>
           <p>
             Level:<span>{{ level }}</span>
           </p>
@@ -17,7 +17,7 @@
         <div class="dsdsa">
           <div class="current-card">
             <div class="title">
-              <p>檯面上的牌 :</p>
+              <p>檯面上的牌</p>
             </div>
             <div class="flex">
               <div
@@ -103,6 +103,7 @@
                 {{ playerCardLength(player.user_id) }}
               </span>
             </div>
+            <div>{{ playerSticker[player.user_id] }}</div>
           </div>
         </div>
         <userNameBox
@@ -112,6 +113,39 @@
         >
           <leaveGameHadnler :socket="socket" game="card"></leaveGameHadnler>
         </userNameBox>
+      </div>
+
+      <!-- game informaion -->
+      <div id="game_info" v-show="!passNotice">
+        <!-- life -->
+        <div class="flex item">
+          <div class="img-box">
+            <img src="./../../image/ui/heart.png" />
+          </div>
+          <div class="num-box">
+            <p>x {{ hp }}</p>
+          </div>
+        </div>
+
+        <!-- dart -->
+        <div class="flex dart item">
+          <div class="img-box">
+            <img src="./../../image/ui/gem.png" />
+          </div>
+          <div class="num-box">
+            <p>x {{ dart }}</p>
+          </div>
+        </div>
+
+        <!-- time -->
+        <div class="flex item">
+          <div class="img-box">
+            <font-awesome-icon icon="fa-solid fa-clock" />
+          </div>
+          <div class="num-box">
+            <p>{{ $store.state.loopStore.tryTime }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -179,42 +213,9 @@
     </div>
   </div>
 
-  <!-- game informaion -->
-  <div id="top_right_info" class="game_info" v-show="!passNotice">
-    <!-- life -->
-    <div class="flex item">
-      <div class="img-box">
-        <img src="./../../image/ui/heart.png" />
-      </div>
-      <div class="num-box">
-        <p>x {{ hp }}</p>
-      </div>
-    </div>
-
-    <!-- dart -->
-    <div class="flex dart item">
-      <div class="img-box">
-        <img src="./../../image/ui/gem.png" />
-      </div>
-      <div class="num-box">
-        <p>x {{ dart }}</p>
-      </div>
-    </div>
-
-    <!-- dart -->
-    <div class="flex item">
-      <div class="img-box">
-        <font-awesome-icon icon="fa-solid fa-clock" />
-      </div>
-      <div class="num-box">
-        <p>{{ $store.state.loopStore.tryTime }}</p>
-      </div>
-    </div>
-  </div>
-
   <!-- leave game popup -->
   <div id="leave_info" class="full_container bg" v-if="leaveGame.open">
-    <div class="middle content_box">
+    <div class="align_middle content_box">
       <!-- title -->
       <div class="title">
         <h2>{{ 'game close'.toUpperCase() }}</h2>
@@ -338,6 +339,13 @@ export default {
         this.backGameTime = 5;
         this.countDownInGameAction();
       }
+    },
+    'state.lunch.sticker': {
+      handler(el) {
+        console.log(el);
+        this.playerSticker = el;
+      },
+      deep: true,
     },
     'state.lunch.leaveGame': {
       handler(el) {
@@ -475,14 +483,15 @@ export default {
   },
   methods: {
     sendSticker() {
-      if (!sendStickerBtn) return;
+      if (!this.sendStickerBtn) return;
+
       this.sendStickerBtn = false;
       const data = {
         id: this.$store.state.userStore.userName,
         room: this.$store.state.userStore.userRoom,
         act: 'no',
       };
-      this.socket.emit('Lunch_sticker', data);
+      this.socket.emit('lunch_sticker', data);
       setTimeout(() => {
         this.sendStickerBtn = true;
       }, 2000);

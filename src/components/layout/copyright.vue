@@ -31,5 +31,9 @@ export default {
     bottom: 2px;
     font-size: 0.7rem;
   }
+  @include sm {
+    bottom: 0px;
+    font-size: 0.5rem;
+  }
 }
 </style>

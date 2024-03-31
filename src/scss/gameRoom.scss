@@ -2,9 +2,10 @@
 @import './rwd.scss';
 
 #leave_info {
-  background-color: rgba($color: $bg_pevent, $alpha: 0.2);
+  // background-color: rgba($color: $bg_pevent, $alpha: 0.6);
   .content_box {
-    background-color: #fffbf1;
+    position: absolute;
+    background-color: #e9e6de;
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
@@ -15,7 +16,7 @@
       width: calc(100% - 30px);
     }
     @include xs {
-      width: calc(100% - 10px);
+      width: calc(100% - 20px);
       padding: 30px 12px;
     }
     .title {
@@ -58,8 +59,8 @@
       .btn {
         margin-top: 30px;
         button {
+          font-size: 1rem;
           cursor: pointer;
-          // margin: 0 15px;
           padding: 10px 20px;
           border-radius: 8px;
           background-color: $agree_btn;
@@ -79,13 +80,13 @@
   width: 100vw;
   position: fixed;
 }
-.game-container {
+.game_container {
   overflow-y: auto;
   height: 100%;
   width: 100%;
   position: fixed;
   background-color: #1e183f;
-  .game-info {
+  .level {
     width: 200px;
     color: $text;
     position: absolute;
@@ -93,8 +94,7 @@
     left: 20px;
     font-size: 1.5rem;
     @include sm {
-      top: 15px;
-      left: 15px;
+      top: 20px;
       font-size: 1rem;
     }
   }
@@ -109,9 +109,9 @@
     border-radius: 5px;
     padding: 15px;
     @include sm {
-      margin: 42px auto 0 auto;
+      margin: 15px auto 0 auto;
       width: calc(100% - 15px);
-      padding: 15px 10px;
+      padding: 8px 10px 15px 10px;
     }
     .flex {
       flex-wrap: wrap;
@@ -119,6 +119,10 @@
     }
     .title {
       margin-bottom: 15px;
+      text-align: center;
+      @include sm {
+        margin-bottom: 12px;
+      }
     }
     .card-box {
       position: relative;
@@ -163,9 +167,6 @@
       height: 220px;
       margin-top: 30px;
     }
-    // @include xs {
-    //   height: 180px;
-    // }
     .card-box {
       position: absolute;
       transition: transform 0.2s;
@@ -206,30 +207,33 @@
   }
 }
 
-.card-style {
-  border: 2px solid rgb(121, 111, 98);
-  box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  .card-bg {
-    max-width: 130px;
-  }
-  .card-num {
-    position: absolute;
-    left: 50%;
-    width: 80%;
-    height: 50%;
-    top: 15px;
-    border-radius: 4px;
-    transform: translateX(-50%);
-    // background-color: rgba(255, 237, 219, 0.7);
-    p {
-      font-size: 4rem;
-      text-align: center;
-      color: rgb(223, 174, 109);
-      font-weight: bold;
-      text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.4);
-      &.large {
-        font-size: 3rem;
+.card-box {
+  overflow: hidden;
+  &.card-style {
+    border: 2px solid rgb(121, 111, 98);
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    .card-bg {
+      max-width: 130px;
+    }
+    .card-num {
+      position: absolute;
+      left: 50%;
+      width: 80%;
+      height: 50%;
+      top: 15px;
+      border-radius: 4px;
+      transform: translateX(-50%);
+      // background-color: rgba(255, 237, 219, 0.7);
+      p {
+        font-size: 4rem;
+        text-align: center;
+        color: rgb(223, 174, 109);
+        font-weight: bold;
+        text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.4);
+        &.large {
+          font-size: 3rem;
+        }
       }
     }
   }
@@ -246,7 +250,7 @@
   .players_box {
     justify-content: center;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0 auto 3px auto;
     .player {
       align-items: center;
       margin: 0 5px;
@@ -275,18 +279,14 @@
 
 .user-container.name_content {
   width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
 
   @include sm {
-    height: 65px;
+    height: 50px;
   }
-  &.user-container {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
+
   > .content {
     position: unset;
-  }
-  :deep(#leave_game .bg) {
-    background-color: rgba($color: $bg_pevent, $alpha: 0.1);
   }
 }
 
@@ -536,16 +536,17 @@
   }
 }
 
-.game_info {
+#game_info {
   position: absolute;
   right: 12px;
   top: 20px;
   color: $text;
   @include sm {
-    top: 15px;
+    top: 280px;
+    transform: translateY(-50%);
   }
 
-  .dart {
+  .item {
     margin-top: 5px;
   }
   .img-box {
