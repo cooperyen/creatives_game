@@ -273,7 +273,35 @@
           color: #6fffd8;
         }
       }
+      .sticker_box {
+        position: absolute;
+        width: 40px;
+        top: 0;
+        &.active {
+          animation: sticker 0.2s ease-in-out forwards;
+        }
+        // .item {
+        //   width: 20px;
+        //   position: absolute;
+        //   top: 0;
+        //   left: 0;
+        // }
+      }
     }
+  }
+}
+
+@keyframes sticker {
+  0% {
+    opacity: 0;
+    transform: translateY(-45px);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50px);
   }
 }
 

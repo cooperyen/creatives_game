@@ -93,6 +93,26 @@
       <div class="option_content">
         <div class="players_box flex">
           <div class="flex player" v-for="player in players" :key="player">
+            <div
+              class="sticker_box"
+              :class="{ active: playerStickerOpen[player.user_id] }"
+              v-if="playerStickerOpen[player.user_id]"
+            >
+              <!-- playerStickerOpen[player.user_id] -->
+              <div class="item">
+                <img
+                  :src="
+                    this.$global_getImgUrl(
+                      playerSticker[player.user_id]
+                        ? playerSticker[player.user_id]['msg']
+                        : null,
+                      'lunch'
+                    )
+                  "
+                />
+              </div>
+            </div>
+
             <div class="img_box">
               <img :src="$global_getImgUrl(player.icon, 'player')" alt="" />
             </div>
@@ -103,7 +123,6 @@
                 {{ playerCardLength(player.user_id) }}
               </span>
             </div>
-            <div>{{ playerSticker[player.user_id] }}</div>
           </div>
         </div>
         <userNameBox
@@ -329,6 +348,7 @@ export default {
       game: { time: 300 },
       sendStickerBtn: true,
       playerSticker: {},
+      playerStickerOpen: {},
     };
   },
   components: { userNameBox, leaveGameHadnler },
@@ -342,13 +362,18 @@ export default {
     },
     'state.lunch.sticker': {
       handler(cur, pre) {
-        console.log({ cur: cur, pre: pre });
-
-        this.players;
-
-        this.playerSticker[this.players?.user_id];
-
         this.playerSticker = cur;
+        Object.keys(cur).forEach((el) => {
+          if (!(el in pre)) return;
+
+          if (cur[el]['num'] === 0 || cur[el]['num'] != pre[el]['num']) {
+            this.playerStickerOpen[el] = true;
+            setTimeout(() => {
+              this.playerStickerOpen[el] = false;
+            }, 800);
+          }
+        });
+        console.log(this.playerStickerOpen);
       },
       deep: true,
     },
@@ -499,7 +524,7 @@ export default {
       this.socket.emit('lunch_sticker', data);
       setTimeout(() => {
         this.sendStickerBtn = true;
-      }, 2000);
+      }, 1000);
     },
     playerCardLength(el) {
       return this.wholeData[el]?.length || this.wholeData[el];
