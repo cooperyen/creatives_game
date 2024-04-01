@@ -227,7 +227,6 @@ lunchGame()
 function lunchGame() {
 
   socket.on('lunch_sticker', function (data) {
-    console.log(data);
     state.lunch.sticker = data;
   })
 

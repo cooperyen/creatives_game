@@ -341,9 +341,14 @@ export default {
       }
     },
     'state.lunch.sticker': {
-      handler(el, cl) {
-        console.log(el, cl);
-        this.playerSticker = el;
+      handler(cur, pre) {
+        console.log({ cur: cur, pre: pre });
+
+        this.players;
+
+        this.playerSticker[this.players?.user_id];
+
+        this.playerSticker = cur;
       },
       deep: true,
     },

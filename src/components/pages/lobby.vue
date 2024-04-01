@@ -13,7 +13,7 @@
       >
         <!-- each room -->
         <template v-for="(x, y) in gameRoomsData.sliceRoom" :key="y">
-          <div class="page-room flex" v-show="y === slide.currentPage">
+          <div class="page-room flex" v-show="y === gameRoomSlide.currentPage">
             <div class="room-box exist" v-for="room in x" :key="room">
               <!-- room -->
               <div class="room-layout">
@@ -61,17 +61,17 @@
         <!-- end -->
 
         <!-- pagination -->
-        <div class="pagination" v-if="slide.pageSum > 1">
+        <div class="pagination" v-if="gameRoomSlide.pageSum > 1">
           <button
             @click="moveRoomPage(false)"
-            :class="{ none: slide.currentPage === 0 }"
+            :class="{ none: gameRoomSlide.currentPage === 0 }"
           >
             <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
           </button>
           <button
             @click="moveRoomPage(true)"
             :class="{
-              none: slide.currentPage === slide.pageSum - 1,
+              none: gameRoomSlide.currentPage === gameRoomSlide.pageSum - 1,
             }"
           >
             <font-awesome-icon icon="fa-solid fa-arrow-right-long" />
@@ -155,7 +155,7 @@ const props = defineProps(['socket', 'state']);
 const store = useStore();
 
 const answer = ref({ open: false, text: '即將返回首頁, 確定?' });
-const slide = reactive({
+const gameRoomSlide = reactive({
   pageSum: 1,
   currentPage: 0,
   breakpoints: {
@@ -243,7 +243,7 @@ watch(
 // functions
 function sliceGameRoom() {
   const xxxx = gameRoomsData.value.gameRooms;
-  let sum = xxxx.length / slide.pageSum;
+  let sum = xxxx.length / gameRoomSlide.pageSum;
   if (sum <= 4) sum = 4;
 
   let y = [];
@@ -256,20 +256,20 @@ function sliceGameRoom() {
 
 function onResize() {
   const width = window.innerWidth;
-  const breakpoints = Object.keys(slide.breakpoints);
+  const breakpoints = Object.keys(gameRoomSlide.breakpoints);
   let pageSum = 1;
   for (let i = 0; i < breakpoints.length; i++) {
     if (width <= breakpoints[i] && width <= breakpoints[i + 1]) {
-      pageSum = slide.breakpoints[breakpoints[i]].pageSum;
+      pageSum = gameRoomSlide.breakpoints[breakpoints[i]].pageSum;
     }
 
     if (width > breakpoints[breakpoints.length - 1]) {
-      pageSum = slide.breakpoints[breakpoints[i]].pageSum;
-      slide.currentPage = 0;
+      pageSum = gameRoomSlide.breakpoints[breakpoints[i]].pageSum;
+      gameRoomSlide.currentPage = 0;
     }
   }
 
-  slide.pageSum = pageSum;
+  gameRoomSlide.pageSum = pageSum;
 
   nextTick(() => {
     sliceGameRoom();
@@ -362,12 +362,13 @@ function getRoomDetail(el, item = null) {
 
 function moveRoomPage(boolean = true) {
   if (boolean) {
-    if (gameRoomsData.value.length <= slide.currentPage + 1) return;
-    if (slide.currentPage < slide.pageSum - 1) slide.currentPage += 1;
+    if (gameRoomsData.value.length <= gameRoomSlide.currentPage + 1) return;
+    if (gameRoomSlide.currentPage < gameRoomSlide.pageSum - 1)
+      gameRoomSlide.currentPage += 1;
   }
   if (!boolean) {
-    if (slide.currentPage <= 0) return;
-    slide.currentPage -= 1;
+    if (gameRoomSlide.currentPage <= 0) return;
+    gameRoomSlide.currentPage -= 1;
   }
 }
 
