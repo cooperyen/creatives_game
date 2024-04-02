@@ -61,6 +61,8 @@
               </div>
             </div>
           </div>
+
+          <!-- play move -->
           <div class="card-play" v-if="!drawVote.state">
             <div class="click-btn">
               <button
@@ -68,21 +70,26 @@
                 :class="{ disabled: handCard.length === 0 }"
                 :disabled="handCard.length === 0"
               >
-                我覺得應該輪到我
+                {{ lastPlayerTheRound() ? '就是我了' : '我覺得應該輪到我' }}
               </button>
               <button
                 @click="sendSticker()"
-                :class="{ disabled: handCard.length === 0 }"
-                :disabled="handCard.length === 0"
+                :class="{
+                  disabled: handCard.length === 0 || lastPlayerTheRound(),
+                }"
+                :disabled="handCard.length === 0 || lastPlayerTheRound()"
               >
                 應該不是我吧
               </button>
               <button
                 @click="startDart()"
-                :class="{ disabled: dart === 0 }"
-                :disabled="dart === 0 || dart === null"
+                :class="{
+                  disabled:
+                    dart === 0 || handCard.length === 0 || lastPlayerTheRound(),
+                }"
+                :disabled="dart === 0 || handCard.length === 0"
               >
-                {{ dart === 0 || dart === null ? '飛鏢不足' : '丟飛鏢' }}
+                {{ dart === 0 ? '飛鏢不足' : '丟飛鏢' }}
               </button>
             </div>
           </div>
@@ -96,10 +103,9 @@
             <div
               class="sticker_box"
               :class="{ active: playerStickerOpen[player.user_id] }"
-              v-if="playerStickerOpen[player.user_id]"
+              v-show="playerStickerOpen[player.user_id]"
             >
-              <!-- playerStickerOpen[player.user_id] -->
-              <div class="item">
+              <div>
                 <img
                   :src="
                     this.$global_getImgUrl(
@@ -119,8 +125,8 @@
             <div class="name_box">{{ player.user_id }}</div>
             <div class="card_info">
               /
-              <span :class="{ remind: playerCardLength(player.user_id) <= 0 }">
-                {{ playerCardLength(player.user_id) }}
+              <span :class="{ remind: wholeData[player.user_id] <= 0 }">
+                {{ wholeData[player.user_id] }}
               </span>
             </div>
           </div>
@@ -260,9 +266,13 @@
       <!-- content -->
       <div class="content">
         <div v-if="!timeoutLeave">
-          離開了遊戲, 將在{{ $store.state.loopStore.tryTime }}秒後自動返回大廳
+          <p>
+            離開了遊戲, 將在{{ $store.state.loopStore.tryTime }}秒後自動返回大廳
+          </p>
         </div>
-        <div v-else>超過出牌時間啦!</div>
+        <div v-else>
+          <p>超過出牌時間啦!</p>
+        </div>
         <div class="btn">
           <button @click="goLobby()">返回大廳</button>
         </div>
@@ -328,7 +338,7 @@ export default {
       gameData: false,
       handCard: [],
       hp: null,
-      dart: null,
+      dart: 0,
       remain: null,
       level: null,
       currentCard: [],
@@ -343,12 +353,13 @@ export default {
         who: null,
         open: false,
       },
-      wholeData: null,
+      wholeData: [],
       timeoutLeave: false,
       game: { time: 300 },
       sendStickerBtn: true,
       playerSticker: {},
       playerStickerOpen: {},
+      playerStickerHandler: {},
     };
   },
   components: { userNameBox, leaveGameHadnler },
@@ -364,16 +375,24 @@ export default {
       handler(cur, pre) {
         this.playerSticker = cur;
         Object.keys(cur).forEach((el) => {
-          if (!(el in pre)) return;
+          if (!(el in pre))
+            if (cur[el]['num'] === 0) {
+              this.playerStickerOpen[el] = true;
+              clearTimeout(this.playerStickerHandler[el]);
+              this.playerStickerHandler[el] = setTimeout(() => {
+                this.playerStickerOpen[el] = false;
+              }, 5000);
+            }
 
-          if (cur[el]['num'] === 0 || cur[el]['num'] != pre[el]['num']) {
-            this.playerStickerOpen[el] = true;
-            setTimeout(() => {
-              this.playerStickerOpen[el] = false;
-            }, 800);
-          }
+          if (el in pre)
+            if (cur[el]['num'] != pre[el]['num']) {
+              this.playerStickerOpen[el] = true;
+              clearTimeout(this.playerStickerHandler[el]);
+              this.playerStickerHandler[el] = setTimeout(() => {
+                this.playerStickerOpen[el] = false;
+              }, 5000);
+            }
         });
-        console.log(this.playerStickerOpen);
       },
       deep: true,
     },
@@ -414,7 +433,7 @@ export default {
     'state.gameDataFirstLoad': {
       handler(el) {
         if (el === null || el === undefined) return;
-        this.wholeData = el;
+        this.wholeData = figout(el);
         this.gameData = true;
         this.hp = el.hp;
         this.dart = el.dart;
@@ -427,16 +446,26 @@ export default {
         setTimeout(() => {
           this.createCountTime(this.game.time);
         }, 2000);
+
+        function figout(data) {
+          const player = data['player'];
+          let res = {};
+          player.forEach((name) => {
+            res[name] = data[name].length;
+          });
+
+          return res;
+        }
       },
       deep: true,
     },
     'state.gameDataUpdate': {
       handler(el) {
-        if (el['cardLength'] != undefined) {
+        if ('cardLength' in el) {
           this.wholeData = el['cardLength'];
         }
 
-        if (el['cardLength'] === undefined) {
+        if (!('cardLength' in el)) {
           if (this.level != el.level) {
             this.$store.commit('loopHandlerDelete');
             this.currentCard = [];
@@ -528,6 +557,13 @@ export default {
     },
     playerCardLength(el) {
       return this.wholeData[el]?.length || this.wholeData[el];
+    },
+    lastPlayerTheRound() {
+      let sum = 0;
+      Object.values(this.wholeData).forEach((val) => {
+        if (val >= 1) sum += 1;
+      });
+      return sum <= 1 ? true : false;
     },
     createCountTime(time, back = false, self = false) {
       this.$store.commit('loopHandlerDelete');

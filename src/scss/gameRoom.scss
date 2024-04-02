@@ -23,6 +23,7 @@
       text-align: center;
       font-size: clamp(1.2rem, 2rem, 10vw);
       margin-bottom: 20px;
+      font-size: 1.6rem;
       @include sm {
         font-size: 1.2rem;
       }
@@ -185,12 +186,16 @@
       justify-content: center;
     }
     button {
-      &:first-child {
-        // margin-bottom: 10px;
+      transition: 0.2s transform;
+      font-size: 1rem;
+      &:active {
+        background-color: #dfb8ad;
       }
+      &:hover {
+        background-color: #dfb8ad;
+      }
+
       @include xs {
-        // width: calc(100% - 20px);
-        // width: 100%;
         margin: 0 4px 10px 4px;
       }
     }
@@ -278,14 +283,8 @@
         width: 40px;
         top: 0;
         &.active {
-          animation: sticker 0.2s ease-in-out forwards;
+          animation: sticker 2s ease-in-out forwards;
         }
-        // .item {
-        //   width: 20px;
-        //   position: absolute;
-        //   top: 0;
-        //   left: 0;
-        // }
       }
     }
   }
@@ -298,6 +297,7 @@
   }
   10% {
     opacity: 1;
+    transform: translateY(-50px);
   }
   100% {
     opacity: 1;
@@ -403,6 +403,7 @@
   }
   .click-btn {
     margin-top: 35px;
+
     @include xs {
       button:first-child {
         margin-bottom: 20px;
