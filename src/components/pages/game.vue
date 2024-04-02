@@ -70,8 +70,14 @@
                 :class="{ disabled: handCard.length === 0 }"
                 :disabled="handCard.length === 0"
               >
-                {{ lastPlayerTheRound() ? '就是我了' : '我覺得應該輪到我' }}
+                <template v-if="handCard.length != 0">
+                  {{ lastPlayerTheRound() ? '就是我了' : '我覺得應該輪到我' }}
+                </template>
+                <template v-else>
+                  {{ lastPlayerTheRound() ? '已無手牌' : '我覺得應該輪到我' }}
+                </template>
               </button>
+
               <button
                 @click="sendSticker()"
                 :class="{
@@ -79,10 +85,16 @@
                 }"
                 :disabled="handCard.length === 0 || lastPlayerTheRound()"
               >
-                應該不是我吧
+                {{ lastPlayerTheRound() ? '一定不是我' : '應該不是我吧' }}
               </button>
               <button
-                @click="startDart()"
+                @click="
+                  startDart(
+                    inGameInfo.dart === 0 ||
+                      handCard.length === 0 ||
+                      lastPlayerTheRound()
+                  )
+                "
                 :class="{
                   disabled:
                     inGameInfo.dart === 0 ||
@@ -110,7 +122,7 @@
               <div>
                 <img
                   :src="
-                    this.$global_getImgUrl(
+                    $global_getImgUrl(
                       playerSticker[player.user_id]
                         ? playerSticker[player.user_id]['msg']
                         : null,
@@ -188,7 +200,7 @@
       </div>
       <img src="./../../image/ui/gem_large.png" />
       <!-- vote option -->
-      <div class="click-btn" v-if="isDrawVoted === null">
+      <div class="click-btn" v-if="!isDrawVoted">
         <button
           class="agree"
           :class="{ disabled: isDrawVoted === 'no' }"
@@ -212,16 +224,16 @@
         <button
           unclick
           :class="{
-            agree: this.isDrawVoted === 'yes',
-            reject: this.isDrawVoted === 'no',
+            agree: isDrawVoted === 'yes',
+            reject: isDrawVoted === 'no',
           }"
         >
-          {{ this.isDrawVoted }}
+          {{ isDrawVoted }}
         </button>
       </div>
     </div>
-    <div class="t-countdown" v-show="this.drawVote.time != 0">
-      will vote "no" in {{ this.drawVote.time }} s
+    <div class="t-countdown" v-show="drawVote.time != 0">
+      will vote "no" in {{ drawVote.time }} s
     </div>
   </div>
 
@@ -325,8 +337,8 @@
         </div>
       </div>
     </div>
-    <div class="t-countdown" v-show="this.gameOver.time != 0">
-      will return to LOBBY in {{ this.gameOver.time }} s
+    <div class="t-countdown">
+      will return to LOBBY in {{ store.state.loopStore.tryTime }} s
     </div>
   </div>
 </template>
@@ -340,6 +352,7 @@ import {
   watch,
   nextTick,
   onBeforeUnmount,
+  computed,
 } from 'vue';
 import { useStore } from 'vuex';
 import { router } from '@/../assets/router.js';
@@ -356,12 +369,13 @@ const gameRoom = ref(false);
 const gameData = ref(false);
 const handCard = ref([]);
 const inGameInfo = reactive({ hp: 0, dart: 0, level: 1 });
-const currentCard = reactive([]);
+const currentCard = ref([]);
 const drawVote = reactive({ state: false, countTimer: null, time: 20 });
 const isDrawVoted = ref(false);
 const passNotice = ref(false);
 const backGameTime = ref(3);
-const gameOver = reactive({ state: null, countTimer: null, time: 60 });
+const countDownFun = ref(false);
+const gameOver = reactive({ state: false, countTimer: null, time: 10 });
 const players = ref(false);
 const voteFail = ref(false);
 const leaveGame = reactive({
@@ -371,10 +385,10 @@ const leaveGame = reactive({
 const wholeData = ref({});
 const timeoutLeave = ref(false);
 const gamePlayTime = 300;
-const sendStickerBtn = ref(true);
-const playerSticker = reactive({});
-const playerStickerOpen = reactive({});
-const playerStickerHandler = reactive({});
+const sendStickerBtn = ref(false);
+const playerSticker = ref({});
+const playerStickerOpen = ref({});
+const playerStickerHandler = ref({});
 
 watch(passNotice, (el) => {
   if (el.msg != null && el.states === 'msg') {
@@ -386,17 +400,17 @@ watch(passNotice, (el) => {
 watch(
   () => props.state.lunch.sticker,
   (cur, pre) => {
-    playerSticker = cur;
+    playerSticker.value = cur;
     Object.keys(cur).forEach((el) => {
       if (!(el in pre)) if (cur[el]['num'] === 0) sticker_(el);
       if (el in pre) if (cur[el]['num'] != pre[el]['num']) sticker_(el);
     });
 
     function sticker_(el) {
-      playerStickerOpen[el] = true;
-      clearTimeout(playerStickerHandler[el]);
-      playerStickerHandler[el] = setTimeout(() => {
-        playerStickerOpen[el] = false;
+      playerStickerOpen.value[el] = true;
+      clearTimeout(playerStickerHandler.value[el]);
+      playerStickerHandler.value[el] = setTimeout(() => {
+        playerStickerOpen.value[el] = false;
       }, 5000);
     }
   }
@@ -434,7 +448,7 @@ watch(
     if (el === null) {
       drawVote.state = false;
     }
-    isDrawVoted.vale = null;
+    isDrawVoted.value = null;
   }
 );
 
@@ -464,27 +478,28 @@ watch(
       });
       return res;
     }
-  }
+  },
+  { once: true }
 );
 
 watch(
   () => props.state.gameDataUpdate,
   (el) => {
     if ('cardLength' in el) {
-      wholeData = el['cardLength'];
+      wholeData.value = el['cardLength'];
     }
 
     if (!('cardLength' in el)) {
       if (inGameInfo.level != el.level) {
         store.commit('loopHandlerDelete');
-        currentCard = [];
+        currentCard.value = [];
         setTimeout(() => {
           createCountTime(gamePlayTime);
         }, 5000);
       }
       if (!isNaN(el.card)) {
-        if (currentCard.length >= 5) currentCard.shift();
-        currentCard.push(el.card);
+        if (currentCard.value.length >= 5) currentCard.value.shift();
+        currentCard.value.push(el.card);
       } else passNotice.value = { msg: el.card, states: 'msg' };
 
       if (tureFalse('hp')) inGameInfo['hp'] = el.hp;
@@ -501,25 +516,29 @@ watch(
 );
 
 watch(
-  () => props.state.gameOver,
+  () => props.state.gameOne.gameOver,
   (el) => {
+    console.log(el);
     if (el.url === null && el.url != 'lobby') return;
     store.commit('loopHandlerDelete');
     inGameInfo['hp'] = el.hp;
     inGameInfo['dart'] = el.dart;
     inGameInfo['level'] = el.level;
-    player = el.player;
+    player.value = el.player;
     gameOver.state = true;
-    gameOver.time = 10;
-    gameOver.countTimer = setInterval(() => {
-      gameOver.time -= 1;
-      if (gameOver.time <= 0) {
-        store.commit('loopHandlerDelete');
-        gameOver.time = 0;
-        goLobby();
-      }
-    }, 1000);
-  }
+    store.state.loopStore.tryTime = gameOver.time;
+    store.commit(
+      'loopHandler',
+      setInterval(() => {
+        store.commit('loopTimeMinus');
+        if (store.state.loopStore.tryTime <= 0) {
+          store.commit('loopHandlerDelete');
+          goLobby();
+        }
+      }, 1000)
+    );
+  },
+  { once: true }
 );
 
 watch(
@@ -551,9 +570,9 @@ watch(handCard, (time) => {
 });
 
 function sendSticker() {
-  if (!sendStickerBtn) return;
+  if (sendStickerBtn.value) return;
 
-  sendStickerBtn = false;
+  sendStickerBtn.value = true;
   const data = {
     id: store.state.userStore.userName,
     room: store.state.userStore.userRoom,
@@ -561,7 +580,7 @@ function sendSticker() {
   };
   props.socket.emit('lunch_sticker', data);
   setTimeout(() => {
-    sendStickerBtn = true;
+    sendStickerBtn.value = false;
   }, 1000);
 }
 
@@ -610,7 +629,7 @@ function countDownInGameAction() {
     passNotice.value = false;
   }
   if (backGameTime.value != 0) {
-    countDownFun = setTimeout(() => {
+    countDownFun.value = setTimeout(() => {
       countDownInGameAction();
     }, 1000);
   }
@@ -656,10 +675,11 @@ function cardAnimate() {
   }
 }
 
-function startDart() {
+function startDart(el) {
+  if (el) return;
   const userRoom = store.state.userStore.userRoom;
 
-  if (dart > 0) {
+  if (inGameInfo.dart > 0) {
     props.socket.emit('draw', {
       message: 'go',
       room: userRoom.substring(userRoom.indexOf('/') + 1),
@@ -670,7 +690,7 @@ function startDart() {
 }
 
 function votedDart(data) {
-  if (isDrawVoted != null) return;
+  if (isDrawVoted.value != null) return;
   if (data != 'yes' && data != 'no') return;
 
   const userRoom = store.state.userStore.userRoom;
@@ -695,16 +715,12 @@ function socketConnectCheck() {
       store.state.loopStore.tryTime += 1;
 
       if (store.state.loopStore.tryTime >= 15) {
-        alert('Connection failed, will return to lobby.');
         store.commit('loopHandlerDelete');
-        store.state.loopStore.tryTime = 0;
+        alert('Connection failed, will return to lobby.');
         goLobby();
       }
 
-      if (result) {
-        store.state.loopStore.tryTime = 0;
-        store.commit('loopHandlerDelete');
-      }
+      if (result) store.commit('loopHandlerDelete');
     }, 1000)
   );
 

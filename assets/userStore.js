@@ -90,6 +90,7 @@ const loopStore = {
   },
   mutations: {
     loopHandler(state, el) {
+      this.loopHandlerDelete;
       state.loopHandler = el;
     },
     loopHandlerDelete(state, el) {
