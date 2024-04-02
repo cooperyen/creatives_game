@@ -174,7 +174,7 @@ const userInfo = reactive({
   icon: store.state.userStore.icon,
 });
 
-const gameRoomsData = ref({
+const gameRoomsData = reactive({
   gameRooms: {},
   sliceRoom: {},
 });
@@ -242,7 +242,7 @@ watch(
 
 // functions
 function sliceGameRoom() {
-  const xxxx = gameRoomsData.value.gameRooms;
+  const xxxx = gameRoomsData.gameRooms;
   let sum = xxxx.length / gameRoomSlide.pageSum;
   if (sum <= 4) sum = 4;
 
@@ -251,7 +251,7 @@ function sliceGameRoom() {
   for (let i = 0; i < xxxx.length; i += sum) {
     y.push(xxxx.slice(i, i + sum));
   }
-  gameRoomsData.value.sliceRoom = y;
+  gameRoomsData.sliceRoom = y;
 }
 
 function onResize() {
@@ -302,16 +302,16 @@ function loadRoomData() {
       if (result) {
         store.commit('loopHandlerDelete');
         // display particular room with "chGameName".
-        gameRoomsData.value.gameRooms = props.state.gameRooms.gameList.filter(
+        gameRoomsData.gameRooms = props.state.gameRooms.gameList.filter(
           (x, y) => {
             if (chGameName[x] != undefined) return x;
           }
         );
 
-        if (gameRoomsData.value.gameRooms.length <= 6) {
-          const sum = 8 - gameRoomsData.value.gameRooms.length;
+        if (gameRoomsData.gameRooms.length <= 6) {
+          const sum = 8 - gameRoomsData.gameRooms.length;
           for (let i = 0; i < sum; i++) {
-            gameRoomsData.value.gameRooms.push('soon');
+            gameRoomsData.gameRooms.push('soon');
           }
         }
 
@@ -362,7 +362,7 @@ function getRoomDetail(el, item = null) {
 
 function moveRoomPage(boolean = true) {
   if (boolean) {
-    if (gameRoomsData.value.length <= gameRoomSlide.currentPage + 1) return;
+    if (gameRoomsData.length <= gameRoomSlide.currentPage + 1) return;
     if (gameRoomSlide.currentPage < gameRoomSlide.pageSum - 1)
       gameRoomSlide.currentPage += 1;
   }

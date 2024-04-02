@@ -6,7 +6,7 @@
         <div v-if="gameData === null"></div>
         <div class="level" v-else>
           <p>
-            Level:<span>{{ level }}</span>
+            Level:<span>{{ inGameInfo.level }}</span>
           </p>
         </div>
       </div>
@@ -85,11 +85,13 @@
                 @click="startDart()"
                 :class="{
                   disabled:
-                    dart === 0 || handCard.length === 0 || lastPlayerTheRound(),
+                    inGameInfo.dart === 0 ||
+                    handCard.length === 0 ||
+                    lastPlayerTheRound(),
                 }"
-                :disabled="dart === 0 || handCard.length === 0"
+                :disabled="inGameInfo.dart === 0 || handCard.length === 0"
               >
-                {{ dart === 0 ? '飛鏢不足' : '丟飛鏢' }}
+                {{ inGameInfo.dart === 0 ? '飛鏢不足' : '丟飛鏢' }}
               </button>
             </div>
           </div>
@@ -136,7 +138,10 @@
           :userIcon="userIcon"
           class="name_content"
         >
-          <leaveGameHadnler :socket="socket" game="card"></leaveGameHadnler>
+          <leaveGameHadnler
+            :socket="props.socket"
+            game="card"
+          ></leaveGameHadnler>
         </userNameBox>
       </div>
 
@@ -148,7 +153,7 @@
             <img src="./../../image/ui/heart.png" />
           </div>
           <div class="num-box">
-            <p>x {{ hp }}</p>
+            <p>x {{ inGameInfo.hp }}</p>
           </div>
         </div>
 
@@ -158,7 +163,7 @@
             <img src="./../../image/ui/gem.png" />
           </div>
           <div class="num-box">
-            <p>x {{ dart }}</p>
+            <p>x {{ inGameInfo.dart }}</p>
           </div>
         </div>
 
@@ -168,7 +173,7 @@
             <font-awesome-icon icon="fa-solid fa-clock" />
           </div>
           <div class="num-box">
-            <p>{{ $store.state.loopStore.tryTime }}</p>
+            <p>{{ store.state.loopStore.tryTime }}</p>
           </div>
         </div>
       </div>
@@ -267,7 +272,7 @@
       <div class="content">
         <div v-if="!timeoutLeave">
           <p>
-            離開了遊戲, 將在{{ $store.state.loopStore.tryTime }}秒後自動返回大廳
+            離開了遊戲, 將在{{ store.state.loopStore.tryTime }}秒後自動返回大廳
           </p>
         </div>
         <div v-else>
@@ -293,13 +298,13 @@
           <!-- level -->
           <div class="item-box">
             <div class="item-title">Last level</div>
-            <div class="item-content">{{ level }}</div>
+            <div class="item-content">{{ inGameInfo.level }}</div>
           </div>
           <!-- dart -->
           <div class="item-box">
             <div class="item-title">darts remaining</div>
-            <div class="flex" v-if="dart != 0">
-              <div v-for="i in dart" :key="i">
+            <div class="flex" v-if="inGameInfo.dart != 0">
+              <div v-for="i in inGameInfo.dart" :key="i">
                 <img src="./../../image/ui/gem.png" />
               </div>
             </div>
@@ -326,415 +331,429 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import {
+  ref,
+  reactive,
+  onBeforeMount,
+  onMounted,
+  watch,
+  nextTick,
+  onBeforeUnmount,
+} from 'vue';
+import { useStore } from 'vuex';
+import { router } from '@/../assets/router.js';
+
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
-export default {
-  data() {
-    return {
-      userIcon: null,
-      player: null,
-      gameRoom: null,
-      gameData: false,
-      handCard: [],
-      hp: null,
-      dart: 0,
-      remain: null,
-      level: null,
-      currentCard: [],
-      drawVote: { state: false, countTimer: null, time: 20 },
-      isDrawVoted: null,
-      passNotice: false,
-      backGameTime: 3,
-      gameOver: { state: null, countTimer: null, time: 60 },
-      players: null,
-      voteFail: false,
-      leaveGame: {
-        who: null,
-        open: false,
-      },
-      wholeData: [],
-      timeoutLeave: false,
-      game: { time: 300 },
-      sendStickerBtn: true,
-      playerSticker: {},
-      playerStickerOpen: {},
-      playerStickerHandler: {},
-    };
-  },
-  components: { userNameBox, leaveGameHadnler },
-  props: ['socket', 'state'],
-  watch: {
-    passNotice(el) {
-      if (el.msg != null && el.states === 'msg') {
-        this.backGameTime = 5;
-        this.countDownInGameAction();
-      }
-    },
-    'state.lunch.sticker': {
-      handler(cur, pre) {
-        this.playerSticker = cur;
-        Object.keys(cur).forEach((el) => {
-          if (!(el in pre))
-            if (cur[el]['num'] === 0) {
-              this.playerStickerOpen[el] = true;
-              clearTimeout(this.playerStickerHandler[el]);
-              this.playerStickerHandler[el] = setTimeout(() => {
-                this.playerStickerOpen[el] = false;
-              }, 5000);
-            }
 
-          if (el in pre)
-            if (cur[el]['num'] != pre[el]['num']) {
-              this.playerStickerOpen[el] = true;
-              clearTimeout(this.playerStickerHandler[el]);
-              this.playerStickerHandler[el] = setTimeout(() => {
-                this.playerStickerOpen[el] = false;
-              }, 5000);
-            }
-        });
-      },
-      deep: true,
-    },
-    'state.lunch.leaveGame': {
-      handler(el) {
-        this.$store.commit('clearUserRoom');
+const props = defineProps(['socket', 'state']);
+const store = useStore();
 
-        if (el.msg === 'whoLeave') this.createCountTime(10, true);
-        if (el.msg === 'whoFail') this.timeoutLeave = self;
+const userIcon = ref(false);
+const player = ref(false);
+const gameRoom = ref(false);
+const gameData = ref(false);
+const handCard = ref([]);
+const inGameInfo = reactive({ hp: 0, dart: 0, level: 1 });
+const currentCard = reactive([]);
+const drawVote = reactive({ state: false, countTimer: null, time: 20 });
+const isDrawVoted = ref(false);
+const passNotice = ref(false);
+const backGameTime = ref(3);
+const gameOver = reactive({ state: null, countTimer: null, time: 60 });
+const players = ref(false);
+const voteFail = ref(false);
+const leaveGame = reactive({
+  who: null,
+  open: false,
+});
+const wholeData = ref({});
+const timeoutLeave = ref(false);
+const gamePlayTime = 300;
+const sendStickerBtn = ref(true);
+const playerSticker = reactive({});
+const playerStickerOpen = reactive({});
+const playerStickerHandler = reactive({});
 
-        this.leaveGame.who = el.who;
-        this.leaveGame.open = true;
-      },
-      deep: true,
-    },
-    'state.loginError': {
-      handler(el) {
-        if (el === 'fail') this.$router.replace('/lobby');
-      },
-      deep: true,
-    },
-    'state.drawVote': {
-      handler(el) {
-        console.log(el);
-        if (el != null && el.isPass) this.drawVote.state = el;
-        if (el != null && !el.isPass) {
-          this.drawVote.state = false;
-          this.passNotice = { msg: el.card, states: 'msg' };
-          this.voteFail = true;
-        }
-        if (el === null) {
-          this.drawVote.state = false;
-        }
-        this.isDrawVoted = null;
-      },
-      deep: true,
-    },
-    'state.gameDataFirstLoad': {
-      handler(el) {
-        if (el === null || el === undefined) return;
-        this.wholeData = figout(el);
-        this.gameData = true;
-        this.hp = el.hp;
-        this.dart = el.dart;
-        this.remain = el.remain;
-        this.level = el.level;
-        this.handCard = el[this.player];
-        this.players = el['player_info'];
-        this.$store.commit('updateLoading', true);
-        this.$store.commit('loopHandlerDelete');
+watch(passNotice, (el) => {
+  if (el.msg != null && el.states === 'msg') {
+    backGameTime.value = 5;
+    countDownInGameAction();
+  }
+});
+
+watch(
+  () => props.state.lunch.sticker,
+  (cur, pre) => {
+    playerSticker = cur;
+    Object.keys(cur).forEach((el) => {
+      if (!(el in pre)) if (cur[el]['num'] === 0) sticker_(el);
+      if (el in pre) if (cur[el]['num'] != pre[el]['num']) sticker_(el);
+    });
+
+    function sticker_(el) {
+      playerStickerOpen[el] = true;
+      clearTimeout(playerStickerHandler[el]);
+      playerStickerHandler[el] = setTimeout(() => {
+        playerStickerOpen[el] = false;
+      }, 5000);
+    }
+  }
+);
+
+watch(
+  () => props.state.lunch.leaveGame,
+  (el) => {
+    store.commit('clearUserRoom');
+
+    if (el.msg === 'whoLeave') createCountTime(10, true);
+    // if (el.msg === 'whoFail') timeoutLeave = self;
+
+    leaveGame.who = el.who;
+    leaveGame.open = true;
+  }
+);
+
+watch(
+  () => props.state.loginError,
+  (el) => {
+    if (el === 'fail') router.replace('/lobby');
+  }
+);
+
+watch(
+  () => props.state.drawVote,
+  (el) => {
+    if (el != null && el.isPass) drawVote.state = el;
+    if (el != null && !el.isPass) {
+      drawVote.state = false;
+      passNotice.value = { msg: el.card, states: 'msg' };
+      voteFail.value = true;
+    }
+    if (el === null) {
+      drawVote.state = false;
+    }
+    isDrawVoted.vale = null;
+  }
+);
+
+watch(
+  () => props.state.gameDataFirstLoad,
+  (el) => {
+    console.log(el);
+    if (el === null || el === undefined) return;
+    wholeData.value = figout(el);
+    gameData.value = true;
+    inGameInfo['hp'] = el.hp;
+    inGameInfo['dart'] = el.dart;
+    inGameInfo['level'] = el.level;
+    handCard.value = el[player.value];
+    players.value = el['player_info'];
+    store.commit('updateLoading', true);
+    store.commit('loopHandlerDelete');
+    setTimeout(() => {
+      createCountTime(gamePlayTime);
+    }, 2000);
+
+    function figout(data) {
+      const player = data['player'];
+      let res = {};
+      player.forEach((name) => {
+        res[name] = data[name].length;
+      });
+      return res;
+    }
+  }
+);
+
+watch(
+  () => props.state.gameDataUpdate,
+  (el) => {
+    if ('cardLength' in el) {
+      wholeData = el['cardLength'];
+    }
+
+    if (!('cardLength' in el)) {
+      if (inGameInfo.level != el.level) {
+        store.commit('loopHandlerDelete');
+        currentCard = [];
         setTimeout(() => {
-          this.createCountTime(this.game.time);
-        }, 2000);
+          createCountTime(gamePlayTime);
+        }, 5000);
+      }
+      if (!isNaN(el.card)) {
+        if (currentCard.length >= 5) currentCard.shift();
+        currentCard.push(el.card);
+      } else passNotice.value = { msg: el.card, states: 'msg' };
 
-        function figout(data) {
-          const player = data['player'];
-          let res = {};
-          player.forEach((name) => {
-            res[name] = data[name].length;
-          });
+      if (tureFalse('hp')) inGameInfo['hp'] = el.hp;
+      if (tureFalse('dart')) inGameInfo['dart'] = el.dart;
+      if (tureFalse('hand')) handCard.value = el.hand;
+      if (tureFalse('level')) inGameInfo['level'] = el.level;
+    }
 
-          return res;
-        }
-      },
-      deep: true,
-    },
-    'state.gameDataUpdate': {
-      handler(el) {
-        if ('cardLength' in el) {
-          this.wholeData = el['cardLength'];
-        }
+    function tureFalse(key) {
+      const check = el[key];
+      return check != null || check != undefined ? true : false;
+    }
+  }
+);
 
-        if (!('cardLength' in el)) {
-          if (this.level != el.level) {
-            this.$store.commit('loopHandlerDelete');
-            this.currentCard = [];
-            setTimeout(() => {
-              this.createCountTime(this.game.time);
-            }, 5000);
-          }
-          if (!isNaN(el.card)) {
-            if (this.currentCard.length >= 5) this.currentCard.shift();
-            this.currentCard.push(el.card);
-          } else this.passNotice = { msg: el.card, states: 'msg' };
+watch(
+  () => props.state.gameOver,
+  (el) => {
+    if (el.url === null && el.url != 'lobby') return;
+    store.commit('loopHandlerDelete');
+    inGameInfo['hp'] = el.hp;
+    inGameInfo['dart'] = el.dart;
+    inGameInfo['level'] = el.level;
+    player = el.player;
+    gameOver.state = true;
+    gameOver.time = 10;
+    gameOver.countTimer = setInterval(() => {
+      gameOver.time -= 1;
+      if (gameOver.time <= 0) {
+        store.commit('loopHandlerDelete');
+        gameOver.time = 0;
+        goLobby();
+      }
+    }, 1000);
+  }
+);
 
-          if (tureFalse('hp')) {
-            this.hp = el.hp;
-          }
-          if (tureFalse('dart')) this.dart = el.dart;
-          if (tureFalse('remain')) this.remain = el.remain;
-          if (tureFalse('hand')) this.handCard = el.hand;
-          if (tureFalse('level')) this.level = el.level;
-        }
-
-        function tureFalse(key) {
-          const check = el[key];
-          return check != null || check != undefined ? true : false;
-        }
-      },
-      deep: true,
-    },
-    'state.gameOne.gameOver': {
-      handler(el) {
-        if (el.url === null && el.url != 'lobby') return;
-        this.$store.commit('loopHandlerDelete');
-        this.gameOver.state = true;
-        this.dart = el.dart;
-        this.hp = el.hp;
-        this.level = el.level;
-        this.player = el.player;
-        this.gameOver.time = 10;
-        this.gameOver.countTimer = setInterval(() => {
-          this.gameOver.time -= 1;
-          if (this.gameOver.time <= 0) {
-            this.$store.commit('loopHandlerDelete');
-            this.gameOver.time = 0;
-            this.goLobby();
-          }
-        }, 1000);
-      },
-    },
-    'state.gameOne.sendSticker': {
-      handler(el) {
-        console.log(el);
-      },
-    },
-    'drawVote.state'(el) {
-      this.drawVote.time = 5;
-      if (el)
-        this.drawVote.countTimer = setInterval(() => {
-          if (this.drawVote.time <= 0) this.drawVote.time = 0;
-          if (this.drawVote.time > 0) this.drawVote.time -= 1;
-          console.log(this.drawVote.time);
-        }, 1000);
-      if (!el) clearInterval(this.drawVote.countTimer);
-    },
-    'drawVote.time'(time) {
-      if (time > 0) return;
-      this.votedDart('no');
-      clearInterval(this.drawVote.countTimer);
-    },
-    handCard() {
-      this.$nextTick(() => {
-        this.cardAnimate();
-      });
-    },
-  },
-  methods: {
-    sendSticker() {
-      if (!this.sendStickerBtn) return;
-
-      this.sendStickerBtn = false;
-      const data = {
-        id: this.$store.state.userStore.userName,
-        room: this.$store.state.userStore.userRoom,
-        act: 'no',
-      };
-      this.socket.emit('lunch_sticker', data);
-      setTimeout(() => {
-        this.sendStickerBtn = true;
+watch(
+  () => drawVote.state,
+  (el) => {
+    drawVote.time = 5;
+    if (el)
+      drawVote.countTimer = setInterval(() => {
+        if (drawVote.time <= 0) drawVote.time = 0;
+        if (drawVote.time > 0) drawVote.time -= 1;
       }, 1000);
-    },
-    playerCardLength(el) {
-      return this.wholeData[el]?.length || this.wholeData[el];
-    },
-    lastPlayerTheRound() {
-      let sum = 0;
-      Object.values(this.wholeData).forEach((val) => {
-        if (val >= 1) sum += 1;
-      });
-      return sum <= 1 ? true : false;
-    },
-    createCountTime(time, back = false, self = false) {
-      this.$store.commit('loopHandlerDelete');
-      this.$store.state.loopStore.tryTime = time;
-      this.$store.commit(
-        'loopHandler',
-        setInterval(() => {
-          this.$store.commit('loopTimeMinus');
-          if (this.$store.state.loopStore.tryTime <= 0) {
-            const data = {
-              game: 'card',
-              id: this.$store.state.userStore.userName,
-              room: this.$store.state.userStore.userRoom,
-              icon: this.$store.state.userStore.icon,
-            };
+    if (!el) clearInterval(drawVote.countTimer);
+  }
+);
 
-            this.socket.emit('gamesLeave', data);
-            this.$store.commit('loopHandlerDelete');
+watch(
+  () => drawVote.time,
+  (time) => {
+    if (time > 0) return;
+    votedDart('no');
+    clearInterval(drawVote.countTimer);
+  }
+);
 
-            if (back)
-              setTimeout(() => {
-                this.goLobby();
-              }, 1000);
-          }
-        }, 1000)
-      );
-    },
-    countDownInGameAction() {
-      this.backGameTime -= 1;
-      if (this.backGameTime <= 0) {
-        this.passNotice = false;
+watch(handCard, (time) => {
+  nextTick(() => {
+    cardAnimate();
+  });
+});
+
+function sendSticker() {
+  if (!sendStickerBtn) return;
+
+  sendStickerBtn = false;
+  const data = {
+    id: store.state.userStore.userName,
+    room: store.state.userStore.userRoom,
+    act: 'no',
+  };
+  props.socket.emit('lunch_sticker', data);
+  setTimeout(() => {
+    sendStickerBtn = true;
+  }, 1000);
+}
+
+function playerCardLength(el) {
+  return wholeData[el]?.length || wholeData[el];
+}
+
+function lastPlayerTheRound() {
+  let sum = 0;
+  Object.values(wholeData.value).forEach((val) => {
+    if (val >= 1) sum += 1;
+  });
+  return sum <= 1 ? true : false;
+}
+
+function createCountTime(time, back = false, self = false) {
+  store.commit('loopHandlerDelete');
+  store.state.loopStore.tryTime = time;
+  store.commit(
+    'loopHandler',
+    setInterval(() => {
+      store.commit('loopTimeMinus');
+      if (store.state.loopStore.tryTime <= 0) {
+        const data = {
+          game: 'card',
+          id: store.state.userStore.userName,
+          room: store.state.userStore.userRoom,
+          icon: store.state.userStore.icon,
+        };
+
+        props.socket.emit('gamesLeave', data);
+        store.commit('loopHandlerDelete');
+
+        if (back)
+          setTimeout(() => {
+            goLobby();
+          }, 1000);
       }
-      if (this.backGameTime != 0) {
-        this.countDownFun = setTimeout(() => {
-          this.countDownInGameAction();
-        }, 1000);
-      }
-    },
-    playcard() {
-      const userRoom = this.$store.state.userStore.userRoom;
+    }, 1000)
+  );
+}
 
-      this.socket.emit('play', {
-        player: this.player,
-        room: userRoom.substring(userRoom.indexOf('/') + 1),
-      });
-    },
-    cardAnimate() {
-      const handCardBox = document.querySelectorAll('#hand-card .card-box');
-      const handCardLength = handCardBox.length;
-      let dx = 0;
-      let dy = 0;
-      let fsdfsd = -15;
+function countDownInGameAction() {
+  backGameTime.value -= 1;
+  if (backGameTime.value <= 0) {
+    passNotice.value = false;
+  }
+  if (backGameTime.value != 0) {
+    countDownFun = setTimeout(() => {
+      countDownInGameAction();
+    }, 1000);
+  }
+}
 
-      for (let i = 0; i < handCardBox.length; i++) {
-        const DOM = handCardBox[i];
-        const degrees = i === 0 ? 0 : ((13 * i * 0.3) / i) * (2 * i);
+function playcard() {
+  const userRoom = store.state.userStore.userRoom;
 
-        if (i >= 1) dx = 25;
+  props.socket.emit('play', {
+    player: store.state.userStore.userName,
+    room: userRoom.substring(userRoom.indexOf('/') + 1),
+  });
+}
 
-        dy = (10 * 2) / 10;
-        fsdfsd += dy;
+function cardAnimate() {
+  const handCardBox = document.querySelectorAll('#hand-card .card-box');
+  const handCardLength = handCardBox.length;
+  let dx = 0;
+  let dy = 0;
+  let fsdfsd = -15;
 
-        DOM.style.transform = '';
-        DOM.style.transform = `
+  for (let i = 0; i < handCardBox.length; i++) {
+    const DOM = handCardBox[i];
+    const degrees = i === 0 ? 0 : ((13 * i * 0.3) / i) * (2 * i);
+
+    if (i >= 1) dx = 25;
+
+    dy = (10 * 2) / 10;
+    fsdfsd += dy;
+
+    DOM.style.transform = '';
+    DOM.style.transform = `
           translate(${-50 + i * 5}% , ${fsdfsd * i}px)
           rotate(${degrees}deg)
           scale(${(20 - i) * 0.05})
         `;
 
-        DOM.style.zIndex = handCardLength - i;
+    DOM.style.zIndex = handCardLength - i;
 
-        if (i >= 10) {
-          DOM.style.display = 'none';
-        }
+    if (i >= 10) {
+      DOM.style.display = 'none';
+    }
+  }
+}
+
+function startDart() {
+  const userRoom = store.state.userStore.userRoom;
+
+  if (dart > 0) {
+    props.socket.emit('draw', {
+      message: 'go',
+      room: userRoom.substring(userRoom.indexOf('/') + 1),
+    });
+  } else {
+    alert('沒飛鏢啊!!按屁按逆!!');
+  }
+}
+
+function votedDart(data) {
+  if (isDrawVoted != null) return;
+  if (data != 'yes' && data != 'no') return;
+
+  const userRoom = store.state.userStore.userRoom;
+  const room = userRoom.substring(userRoom.indexOf('/') + 1);
+
+  // { message:value, room:value }
+  props.socket.emit('draw', {
+    message: data,
+    room,
+  });
+
+  clearInterval(drawVote.countTimer);
+  drawVote.time = 0;
+  isDrawVoted.value = data;
+}
+
+function socketConnectCheck() {
+  store.commit(
+    'loopHandler',
+    setInterval(() => {
+      const result = doCheck();
+      store.state.loopStore.tryTime += 1;
+
+      if (store.state.loopStore.tryTime >= 15) {
+        alert('Connection failed, will return to lobby.');
+        store.commit('loopHandlerDelete');
+        store.state.loopStore.tryTime = 0;
+        goLobby();
       }
-    },
-    startDart() {
-      const userRoom = this.$store.state.userStore.userRoom;
 
-      if (this.dart > 0) {
-        this.socket.emit('draw', {
-          message: 'go',
-          room: userRoom.substring(userRoom.indexOf('/') + 1),
-        });
-      } else {
-        alert('沒飛鏢啊!!按屁按逆!!');
+      if (result) {
+        store.state.loopStore.tryTime = 0;
+        store.commit('loopHandlerDelete');
       }
-    },
-    votedDart(data) {
-      if (this.isDrawVoted != null) return;
-      if (data != 'yes' && data != 'no') return;
+    }, 1000)
+  );
 
-      const userRoom = this.$store.state.userStore.userRoom;
-      const room = userRoom.substring(userRoom.indexOf('/') + 1);
+  function doCheck() {
+    props.socket.emit('id_check', {
+      id: store.state.userStore.userName,
+      room: store.state.userStore.userRoom,
+      icon: store.state.userStore.icon,
+    });
 
-      // { message:value, room:value }
-      this.socket.emit('draw', {
-        message: data,
-        room,
-      });
+    return store.state.userStore.loading;
+  }
+}
 
-      clearInterval(this.drawVote.countTimer);
-      this.drawVote.time = 0;
-      this.isDrawVoted = data;
-    },
-    socketConnectCheck() {
-      const that = this;
+function goLobby() {
+  store.commit('clearUserRoom');
+  router.replace('/lobby');
+}
 
-      this.$store.commit(
-        'loopHandler',
-        setInterval(() => {
-          const result = doCheck(this);
-          this.$store.state.loopStore.tryTime += 1;
+function isGoLobby() {
+  setTimeout(() => {
+    if (store.state.userStore.userRoom != null) return;
+    goLobby();
+  }, 500);
+}
 
-          if (this.$store.state.loopStore.tryTime >= 15) {
-            alert('Connection failed, will return to lobby.');
-            this.$store.commit('loopHandlerDelete');
-            this.$store.state.loopStore.tryTime = 0;
-            this.goLobby();
-          }
+function updateUserRoom() {
+  if (props.state.activeGameRoom != null)
+    store.commit('updateUserRoom', props.state.activeGameRoom);
+}
 
-          if (result) {
-            this.$store.state.loopStore.tryTime = 0;
-            this.$store.commit('loopHandlerDelete');
-          }
-        }, 1000)
-      );
+onBeforeMount(() => {
+  player.value = store.state.userStore.userName;
+  userIcon.value = store.state.userStore.icon;
+});
 
-      function doCheck() {
-        that.socket.emit('id_check', {
-          id: that.$store.state.userStore.userName,
-          room: that.$store.state.userStore.userRoom,
-          icon: that.$store.state.userStore.icon,
-        });
+onMounted(() => {
+  socketConnectCheck();
+  isGoLobby();
+  updateUserRoom();
+  cardAnimate();
+});
 
-        return that.$store.state.userStore.loading;
-      }
-    },
-    goLobby() {
-      this.$store.commit('clearUserRoom');
-      this.$router.replace('/lobby');
-    },
-    isGoLobby() {
-      setTimeout(() => {
-        if (this.$store.state.userStore.userRoom != null) return;
-        this.goLobby();
-      }, 500);
-    },
-    updateUserRoom() {
-      if (this.state.activeGameRoom != null)
-        this.$store.commit('updateUserRoom', this.state.activeGameRoom);
-    },
-  },
-  beforeMount() {
-    this.player = this.$store.state.userStore.userName;
-    this.userIcon = this.$store.state.userStore.icon;
-    // :userIcon="userIcon"
-  },
-  mounted() {
-    this.socketConnectCheck();
-    this.isGoLobby();
-    this.updateUserRoom();
-    this.cardAnimate();
-  },
-  beforeUnmount() {
-    this.$store.commit('loopHandlerDelete');
-    clearInterval(this.drawVote.countTimer);
-    clearInterval(this.gameOver.countTimer);
-    this.$store.state.userStore.userRoom = null;
-  },
-};
+onBeforeUnmount(() => {
+  store.commit('loopHandlerDelete');
+  clearInterval(drawVote.countTimer);
+  clearInterval(gameOver.countTimer);
+  store.state.userStore.userRoom = null;
+});
 </script>
 
 <style scoped>
