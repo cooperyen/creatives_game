@@ -1,4 +1,5 @@
 <template>
+  {{ userInfo.id }}
   <!-- game content -->
   <div v-show="!passNotice" class="game-container_">
     <div class="game_container">
@@ -12,7 +13,7 @@
       </div>
 
       <!-- game -->
-      <template v-if="!leaveGame.open">
+      <template v-if="!leaveGameOpen">
         <!-- current card tent -->
         <div class="dsdsa">
           <div class="current-card">
@@ -146,8 +147,8 @@
           </div>
         </div>
         <userNameBox
-          :userName="player"
-          :userIcon="userIcon"
+          :userName="userInfo.id"
+          :userIcon="userInfo.icon"
           class="name_content"
         >
           <leaveGameHadnler
@@ -200,20 +201,20 @@
       </div>
       <img src="./../../image/ui/gem_large.png" />
       <!-- vote option -->
-      <div class="click-btn" v-if="!isDrawVoted">
+      <div class="click-btn" v-if="!voteAnswer">
         <button
           class="agree"
-          :class="{ disabled: isDrawVoted === 'no' }"
-          :disabled="isDrawVoted === 'no'"
+          :class="{ disabled: voteAnswer === 'no' }"
+          :disabled="voteAnswer === 'no'"
           @click="votedDart('yes')"
         >
           <p>&nbsp;&nbsp;同意&nbsp;&nbsp;</p>
         </button>
         <button
           class="reject"
-          :class="{ disabled: isDrawVoted === 'yes' }"
+          :class="{ disabled: voteAnswer === 'yes' }"
           @click="votedDart('no')"
-          :disabled="isDrawVoted === 'yes'"
+          :disabled="voteAnswer === 'yes'"
         >
           不要咧
         </button>
@@ -224,16 +225,19 @@
         <button
           unclick
           :class="{
-            agree: isDrawVoted === 'yes',
-            reject: isDrawVoted === 'no',
+            agree: voteAnswer === 'yes',
+            reject: voteAnswer === 'no',
           }"
         >
-          {{ isDrawVoted }}
+          {{ voteAnswer }}
         </button>
       </div>
     </div>
-    <div class="t-countdown" v-show="drawVote.time != 0">
-      will vote "no" in {{ drawVote.time }} s
+    <div class="t-countdown" v-show="voteCountTimer.time != 0">
+      <p v-show="voteAnswer">
+        wait other player in {{ voteCountTimer.time }} s
+      </p>
+      <p v-show="!voteAnswer">will vote "no" in {{ voteCountTimer.time }} s</p>
     </div>
   </div>
 
@@ -246,8 +250,8 @@
         </h2>
       </div>
       <div class="countDown">
-        <div class="title" v-show="!voteFail">即將進入下一關</div>
-        <div class="title" v-show="voteFail">返回遊戲</div>
+        <div class="title" v-show="!voteResult">即將進入下一關</div>
+        <div class="title" v-show="voteResult">返回遊戲</div>
         <div class="time">
           {{ backGameTime }}
         </div>
@@ -256,25 +260,29 @@
   </div>
 
   <!-- leave game popup -->
-  <div id="leave_info" class="full_container bg" v-if="leaveGame.open">
+  <div
+    id="leave_info"
+    class="full_container bg"
+    v-if="leaveGameWho.open && leaveGameOpen"
+  >
     <div class="align_middle content_box">
       <!-- title -->
       <div class="title">
         <h2>{{ 'game close'.toUpperCase() }}</h2>
       </div>
-      <template v-if="!timeoutLeave">
+      <template v-if="!leaveGameWho.timeoutLeave">
         <!-- user info -->
         <div class="user_box flex">
           <div class="flex">
             <div class="img">
               <img
-                :src="$global_getImgUrl(leaveGame.who.icon, 'player')"
+                :src="$global_getImgUrl(leaveGameWho.who.icon, 'player')"
                 alt=""
               />
             </div>
             <div class="name">
               <p>
-                {{ leaveGame.who.user_id }}
+                {{ leaveGameWho.who.user_id }}
               </p>
             </div>
           </div>
@@ -282,7 +290,7 @@
       </template>
       <!-- content -->
       <div class="content">
-        <div v-if="!timeoutLeave">
+        <div v-if="!leaveGameWho.timeoutLeave">
           <p>
             離開了遊戲, 將在{{ store.state.loopStore.tryTime }}秒後自動返回大廳
           </p>
@@ -327,7 +335,7 @@
           <!-- plaeyr -->
           <div class="item-box">
             <div class="item-title">game plaeyrs</div>
-            <div class="item-content" v-for="i in player" :key="i">
+            <div class="item-content" v-for="i in inGameInfo.gameOver" :key="i">
               {{ i }}
             </div>
           </div>
@@ -363,32 +371,122 @@ import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
 const props = defineProps(['socket', 'state']);
 const store = useStore();
 
+const userInfo = computed(() => {
+  const res = {
+    id: store.state.userStore.userName,
+    room: store.state.userStore.userRoom,
+    icon: store.state.userStore.icon,
+  };
+  console.log(res);
+  return res;
+});
+
 const userIcon = ref(false);
 const player = ref(false);
 const gameRoom = ref(false);
 const gameData = ref(false);
 const handCard = ref([]);
-const inGameInfo = reactive({ hp: 0, dart: 0, level: 1 });
+const inGameInfo = reactive({ hp: 0, dart: 0, level: 1, gameOver: '' });
 const currentCard = ref([]);
-const drawVote = reactive({ state: false, countTimer: null, time: 20 });
-const isDrawVoted = ref(false);
+
 const passNotice = ref(false);
 const backGameTime = ref(3);
 const countDownFun = ref(false);
 const gameOver = reactive({ state: false, countTimer: null, time: 10 });
 const players = ref(false);
-const voteFail = ref(false);
-const leaveGame = reactive({
-  who: null,
-  open: false,
-});
+
 const wholeData = ref({});
-const timeoutLeave = ref(false);
 const gamePlayTime = 300;
+
+// sticker.
 const sendStickerBtn = ref(false);
 const playerSticker = ref({});
 const playerStickerOpen = ref({});
-const playerStickerHandler = ref({});
+const playerStickerTimerHandler = ref({});
+const playerStickerCountTime = 2 * 1000;
+
+// draw
+const voteResult = ref(false);
+const voteAnswer = ref(false);
+const voteCountTimer = reactive({ time: 0, content: null });
+const drawVote = computed(() => {
+  const data = props.state.drawVote;
+  let res = { state: false, time: 5 };
+
+  if (data != null) {
+    if (data.isPass) res.state = true;
+    if (!data.isPass) {
+      res.state = false;
+      passNotice.value = { msg: data.card, states: 'msg' };
+      voteResult.value = true;
+    }
+  }
+
+  count(res.state);
+  function count(el) {
+    if (el) {
+      voteCountTimer.time = res.time;
+      voteCountTimer.content = setInterval(() => {
+        if (voteCountTimer.time <= 0 && voteAnswer.value) {
+          clearInterval(voteCountTimer.content);
+        }
+        if (voteCountTimer.time <= 0 && !voteAnswer.value) {
+          votedDart('no');
+          voteAnswer.value = null;
+          clearInterval(voteCountTimer.content);
+        }
+        if (voteCountTimer.time > 0) voteCountTimer.time -= 1;
+      }, 1000);
+    }
+    if (!el) {
+      voteAnswer.value = null;
+      clearInterval(voteCountTimer.content);
+    }
+  }
+
+  return res;
+});
+
+// quit the game actively.
+const leaveGameOpen = ref(false);
+const leaveGameWho = computed(() => {
+  const data = props.state.lunch.leaveGame;
+  let res = {
+    who: null,
+    timeoutLeave: false,
+    open: false,
+  };
+
+  if (data != null) {
+    if (data.msg === 'whoLeave') createCountTime(10, true);
+    if (data.msg === 'whoFail')
+      res.timeoutLeave = data.who.user_id === userInfo.value.id ? true : false;
+
+    res.who = data.who;
+    res.open = true;
+    leaveGameOpen.value = true;
+    store.commit('clearUserRoom');
+  }
+  return res;
+});
+
+onMounted(() => {
+  // exchange check bk end.
+  socketConnectCheck();
+  // check where is current room.
+  isGoLobby();
+  // update user room by bk end.
+  updateUserRoom();
+  // card animation.
+  cardAnimate();
+});
+
+onBeforeUnmount(() => {
+  store.commit('loopHandlerDelete');
+  store.commit('clearUserRoom');
+  clearInterval(drawVote.countTimer);
+  clearInterval(gameOver.countTimer);
+});
 
 watch(passNotice, (el) => {
   if (el.msg != null && el.states === 'msg') {
@@ -408,24 +506,11 @@ watch(
 
     function sticker_(el) {
       playerStickerOpen.value[el] = true;
-      clearTimeout(playerStickerHandler.value[el]);
-      playerStickerHandler.value[el] = setTimeout(() => {
+      clearTimeout(playerStickerTimerHandler.value[el]);
+      playerStickerTimerHandler.value[el] = setTimeout(() => {
         playerStickerOpen.value[el] = false;
-      }, 5000);
+      }, playerStickerCountTime);
     }
-  }
-);
-
-watch(
-  () => props.state.lunch.leaveGame,
-  (el) => {
-    store.commit('clearUserRoom');
-
-    if (el.msg === 'whoLeave') createCountTime(10, true);
-    // if (el.msg === 'whoFail') timeoutLeave = self;
-
-    leaveGame.who = el.who;
-    leaveGame.open = true;
   }
 );
 
@@ -437,32 +522,15 @@ watch(
 );
 
 watch(
-  () => props.state.drawVote,
-  (el) => {
-    if (el != null && el.isPass) drawVote.state = el;
-    if (el != null && !el.isPass) {
-      drawVote.state = false;
-      passNotice.value = { msg: el.card, states: 'msg' };
-      voteFail.value = true;
-    }
-    if (el === null) {
-      drawVote.state = false;
-    }
-    isDrawVoted.value = null;
-  }
-);
-
-watch(
   () => props.state.gameDataFirstLoad,
   (el) => {
-    console.log(el);
     if (el === null || el === undefined) return;
     wholeData.value = figout(el);
     gameData.value = true;
     inGameInfo['hp'] = el.hp;
     inGameInfo['dart'] = el.dart;
     inGameInfo['level'] = el.level;
-    handCard.value = el[player.value];
+    handCard.value = el[userInfo.value.id];
     players.value = el['player_info'];
     store.commit('updateLoading', true);
     store.commit('loopHandlerDelete');
@@ -518,49 +586,23 @@ watch(
 watch(
   () => props.state.gameOne.gameOver,
   (el) => {
-    console.log(el);
     if (el.url === null && el.url != 'lobby') return;
     store.commit('loopHandlerDelete');
     inGameInfo['hp'] = el.hp;
     inGameInfo['dart'] = el.dart;
     inGameInfo['level'] = el.level;
-    player.value = el.player;
+    inGameInfo['gameOver'] = el.player;
     gameOver.state = true;
     store.state.loopStore.tryTime = gameOver.time;
     store.commit(
       'loopHandler',
       setInterval(() => {
         store.commit('loopTimeMinus');
-        if (store.state.loopStore.tryTime <= 0) {
-          store.commit('loopHandlerDelete');
-          goLobby();
-        }
+        if (store.state.loopStore.tryTime <= 0) goLobby();
       }, 1000)
     );
   },
   { once: true }
-);
-
-watch(
-  () => drawVote.state,
-  (el) => {
-    drawVote.time = 5;
-    if (el)
-      drawVote.countTimer = setInterval(() => {
-        if (drawVote.time <= 0) drawVote.time = 0;
-        if (drawVote.time > 0) drawVote.time -= 1;
-      }, 1000);
-    if (!el) clearInterval(drawVote.countTimer);
-  }
-);
-
-watch(
-  () => drawVote.time,
-  (time) => {
-    if (time > 0) return;
-    votedDart('no');
-    clearInterval(drawVote.countTimer);
-  }
 );
 
 watch(handCard, (time) => {
@@ -614,10 +656,7 @@ function createCountTime(time, back = false, self = false) {
         props.socket.emit('gamesLeave', data);
         store.commit('loopHandlerDelete');
 
-        if (back)
-          setTimeout(() => {
-            goLobby();
-          }, 1000);
+        if (back) goLobby();
       }
     }, 1000)
   );
@@ -690,7 +729,7 @@ function startDart(el) {
 }
 
 function votedDart(data) {
-  if (isDrawVoted.value != null) return;
+  if (voteAnswer.value != null) return;
   if (data != 'yes' && data != 'no') return;
 
   const userRoom = store.state.userStore.userRoom;
@@ -702,9 +741,7 @@ function votedDart(data) {
     room,
   });
 
-  clearInterval(drawVote.countTimer);
-  drawVote.time = 0;
-  isDrawVoted.value = data;
+  voteAnswer.value = data;
 }
 
 function socketConnectCheck() {
@@ -715,7 +752,6 @@ function socketConnectCheck() {
       store.state.loopStore.tryTime += 1;
 
       if (store.state.loopStore.tryTime >= 15) {
-        store.commit('loopHandlerDelete');
         alert('Connection failed, will return to lobby.');
         goLobby();
       }
@@ -751,25 +787,6 @@ function updateUserRoom() {
   if (props.state.activeGameRoom != null)
     store.commit('updateUserRoom', props.state.activeGameRoom);
 }
-
-onBeforeMount(() => {
-  player.value = store.state.userStore.userName;
-  userIcon.value = store.state.userStore.icon;
-});
-
-onMounted(() => {
-  socketConnectCheck();
-  isGoLobby();
-  updateUserRoom();
-  cardAnimate();
-});
-
-onBeforeUnmount(() => {
-  store.commit('loopHandlerDelete');
-  clearInterval(drawVote.countTimer);
-  clearInterval(gameOver.countTimer);
-  store.state.userStore.userRoom = null;
-});
 </script>
 
 <style scoped>

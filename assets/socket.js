@@ -63,7 +63,6 @@ function handleErrors(el) {
 
   const xx = setInterval(() => {
     time -= 1
-    console.log(time);
     if (time <= 0) {
       state.connected = false;
       socket.disconnect()
@@ -102,7 +101,8 @@ const int = () => {
 int();
 
 socket.on('re_act', function (datas) {
-  // console.log(datas)
+  state.drawVote = null;
+  state.lunch.leaveGame = null;
   state.goUrl = null;
   state.gameDataFirstLoad = null;
   state.loginError = null;
@@ -111,7 +111,6 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
-  // console.log(data);
   switch (data.way) {
 
     case 'id_check':
@@ -187,9 +186,9 @@ function router(data) {
       break;
 
     case 'lunch_start':
-      if (data.data === null || data.data === undefined) break;
 
-      state.gameDataFirstLoad = data
+      if (data.data === null || data.data === undefined) break;
+      state.gameDataFirstLoad = data;
       break;
 
     case 'lunch_start_fail':
@@ -232,6 +231,7 @@ function lunchGame() {
   })
 
   socket.on('lunch_leaveGame', function (data) {
+
     state.lunch.leaveGame = data;
   })
 
@@ -241,7 +241,6 @@ function lunchGame() {
   })
 
   socket.on('re_draw', function (data) {
-    console.log(data);
     if (data.message === 'draw') state.drawVote = { isPass: true }
     if (data.message === 'play') state.drawVote = { isPass: false, card: data.card };
 
@@ -282,13 +281,11 @@ socket.on('re_yc', function (data) {
 })
 
 socket.on('re_no_game', function (data) {
-  // console.log('re_no_game', data);
   state.goUrl = null;
   if (data.noRoom === null || data.noRoom === undefined) return;
   state.goUrl = 'lobby';
 })
 
 socket.on('update_wait_room', function (data) {
-  // console.log(data)
 })
 
