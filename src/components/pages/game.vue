@@ -1,13 +1,11 @@
 <template>
-  {{ userInfo.id }}
   <!-- game content -->
-  <div v-show="!passNotice" class="game-container_">
+  <div v-show="!nextRound" class="game-container_">
     <div class="game_container">
       <div id="in_play">
-        <div v-if="gameData === null"></div>
-        <div class="level" v-else>
+        <div class="level">
           <p>
-            Level:<span>{{ inGameInfo.level }}</span>
+            Level:<span>{{ gameStateHandler.level }}</span>
           </p>
         </div>
       </div>
@@ -23,7 +21,7 @@
             <div class="flex">
               <div
                 class="card-box card-style"
-                v-for="i in currentCard"
+                v-for="i in cardsPlayed"
                 :key="i"
               >
                 <div class="card-num">
@@ -37,7 +35,7 @@
               </div>
               <div
                 class="card-box card-style wait"
-                v-for="i in 5 - currentCard.length"
+                v-for="i in 5 - cardsPlayed.length"
                 :key="i"
               >
                 <div class="card-bg">
@@ -49,7 +47,7 @@
         </div>
 
         <!-- hand card content -->
-        <div id="hand-card">
+        <div id="hand-card" v-show="!isLeaveGameWindowOpen">
           <div class="card-container">
             <div class="card-box card-style" v-for="i in handCard" :key="i">
               <div class="card-num">
@@ -67,7 +65,7 @@
           <div class="card-play" v-if="!drawVote.state">
             <div class="click-btn">
               <button
-                @click="playcard()"
+                @click="playCard()"
                 :class="{ disabled: handCard.length === 0 }"
                 :disabled="handCard.length === 0"
               >
@@ -91,20 +89,20 @@
               <button
                 @click="
                   startDart(
-                    inGameInfo.dart === 0 ||
+                    gameStateHandler.dart === 0 ||
                       handCard.length === 0 ||
                       lastPlayerTheRound()
                   )
                 "
                 :class="{
                   disabled:
-                    inGameInfo.dart === 0 ||
+                    gameStateHandler.dart === 0 ||
                     handCard.length === 0 ||
                     lastPlayerTheRound(),
                 }"
-                :disabled="inGameInfo.dart === 0 || handCard.length === 0"
+                :disabled="gameStateHandler.dart === 0 || handCard.length === 0"
               >
-                {{ inGameInfo.dart === 0 ? '飛鏢不足' : '丟飛鏢' }}
+                {{ gameStateHandler.dart === 0 ? '飛鏢不足' : '丟飛鏢' }}
               </button>
             </div>
           </div>
@@ -140,8 +138,8 @@
             <div class="name_box">{{ player.user_id }}</div>
             <div class="card_info">
               /
-              <span :class="{ remind: wholeData[player.user_id] <= 0 }">
-                {{ wholeData[player.user_id] }}
+              <span :class="{ remind: playersCardLength[player.user_id] <= 0 }">
+                {{ playersCardLength[player.user_id] }}
               </span>
             </div>
           </div>
@@ -152,6 +150,7 @@
           class="name_content"
         >
           <leaveGameHadnler
+            @open="(el) => (isLeaveGameWindowOpen = el)"
             :socket="props.socket"
             game="card"
           ></leaveGameHadnler>
@@ -159,14 +158,14 @@
       </div>
 
       <!-- game informaion -->
-      <div id="game_info" v-show="!passNotice">
+      <div id="game_info" v-show="!nextRound">
         <!-- life -->
         <div class="flex item">
           <div class="img-box">
             <img src="./../../image/ui/heart.png" />
           </div>
           <div class="num-box">
-            <p>x {{ inGameInfo.hp }}</p>
+            <p>x {{ gameStateHandler.hp }}</p>
           </div>
         </div>
 
@@ -176,7 +175,7 @@
             <img src="./../../image/ui/gem.png" />
           </div>
           <div class="num-box">
-            <p>x {{ inGameInfo.dart }}</p>
+            <p>x {{ gameStateHandler.dart }}</p>
           </div>
         </div>
 
@@ -242,7 +241,7 @@
   </div>
 
   <!-- next round -->
-  <div class="transition" v-show="passNotice != false">
+  <div class="transition" v-if="nextRound != false">
     <div class="next-container">
       <div class="msg-box">
         <h2>
@@ -253,7 +252,7 @@
         <div class="title" v-show="!voteResult">即將進入下一關</div>
         <div class="title" v-show="voteResult">返回遊戲</div>
         <div class="time">
-          {{ backGameTime }}
+          {{ nextRoundHandler.time }}
         </div>
       </div>
     </div>
@@ -306,7 +305,7 @@
   </div>
 
   <!-- GAME OVER popup -->
-  <div class="transition" v-if="gameOver.state">
+  <div class="transition" v-if="gameOverHandler.state">
     <div id="gameover">
       <!-- title -->
       <div class="title">
@@ -318,13 +317,13 @@
           <!-- level -->
           <div class="item-box">
             <div class="item-title">Last level</div>
-            <div class="item-content">{{ inGameInfo.level }}</div>
+            <div class="item-content">{{ gameStateHandler.level }}</div>
           </div>
           <!-- dart -->
           <div class="item-box">
             <div class="item-title">darts remaining</div>
-            <div class="flex" v-if="inGameInfo.dart != 0">
-              <div v-for="i in inGameInfo.dart" :key="i">
+            <div class="flex" v-if="gameStateHandler.dart != 0">
+              <div v-for="i in gameStateHandler.dart" :key="i">
                 <img src="./../../image/ui/gem.png" />
               </div>
             </div>
@@ -335,7 +334,11 @@
           <!-- plaeyr -->
           <div class="item-box">
             <div class="item-title">game plaeyrs</div>
-            <div class="item-content" v-for="i in inGameInfo.gameOver" :key="i">
+            <div
+              class="item-content"
+              v-for="i in gameStateHandler.gameOver"
+              :key="i"
+            >
               {{ i }}
             </div>
           </div>
@@ -364,39 +367,54 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import { router } from '@/../assets/router.js';
-
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
 
 const props = defineProps(['socket', 'state']);
 const store = useStore();
 
+// option.
+const gamePlayTime = 300;
+const backGameTime = 5;
+
+// user information.
 const userInfo = computed(() => {
   const res = {
     id: store.state.userStore.userName,
     room: store.state.userStore.userRoom,
     icon: store.state.userStore.icon,
   };
-  console.log(res);
   return res;
 });
 
-const userIcon = ref(false);
-const player = ref(false);
-const gameRoom = ref(false);
-const gameData = ref(false);
+// game data
 const handCard = ref([]);
-const inGameInfo = reactive({ hp: 0, dart: 0, level: 1, gameOver: '' });
-const currentCard = ref([]);
-
-const passNotice = ref(false);
-const backGameTime = ref(3);
-const countDownFun = ref(false);
-const gameOver = reactive({ state: false, countTimer: null, time: 10 });
+const cardsPlayed = ref([]);
+const gameStateHandler = reactive({ hp: 0, dart: 0, level: 1, gameOver: '' });
 const players = ref(false);
+const playersCardLength = ref({});
 
-const wholeData = ref({});
-const gamePlayTime = 300;
+// transition
+const passNotice = ref(false);
+const nextRound = computed(() => {
+  let res;
+  if (!passNotice.value) {
+    res = false;
+  }
+  if (passNotice.value.msg != null && passNotice.value.states === 'msg') {
+    res = true;
+    countDownInGameAction();
+  }
+  return res;
+});
+const countDownFun = ref(false);
+const countDownFunTime = ref('');
+
+const nextRoundHandler = reactive({
+  time: '',
+  countTimer: null,
+});
+const gameOverHandler = reactive({ state: false, countTimer: null, time: 10 });
 
 // sticker.
 const sendStickerBtn = ref(false);
@@ -448,6 +466,7 @@ const drawVote = computed(() => {
 });
 
 // quit the game actively.
+const isLeaveGameWindowOpen = ref(false);
 const leaveGameOpen = ref(false);
 const leaveGameWho = computed(() => {
   const data = props.state.lunch.leaveGame;
@@ -485,16 +504,11 @@ onBeforeUnmount(() => {
   store.commit('loopHandlerDelete');
   store.commit('clearUserRoom');
   clearInterval(drawVote.countTimer);
-  clearInterval(gameOver.countTimer);
+  clearInterval(gameOverHandler.countTimer);
+  clearInterval(nextRoundHandler.countTimer);
 });
 
-watch(passNotice, (el) => {
-  if (el.msg != null && el.states === 'msg') {
-    backGameTime.value = 5;
-    countDownInGameAction();
-  }
-});
-
+// sticker
 watch(
   () => props.state.lunch.sticker,
   (cur, pre) => {
@@ -514,22 +528,24 @@ watch(
   }
 );
 
+// login Error.
 watch(
   () => props.state.loginError,
   (el) => {
     if (el === 'fail') router.replace('/lobby');
-  }
+  },
+  { once: true }
 );
 
+// pull data at game start.
 watch(
   () => props.state.gameDataFirstLoad,
   (el) => {
     if (el === null || el === undefined) return;
-    wholeData.value = figout(el);
-    gameData.value = true;
-    inGameInfo['hp'] = el.hp;
-    inGameInfo['dart'] = el.dart;
-    inGameInfo['level'] = el.level;
+    playersCardLength.value = figout(el);
+    gameStateHandler['hp'] = el.hp;
+    gameStateHandler['dart'] = el.dart;
+    gameStateHandler['level'] = el.level;
     handCard.value = el[userInfo.value.id];
     players.value = el['player_info'];
     store.commit('updateLoading', true);
@@ -550,50 +566,47 @@ watch(
   { once: true }
 );
 
+// monitor game data.
 watch(
   () => props.state.gameDataUpdate,
   (el) => {
     if ('cardLength' in el) {
-      wholeData.value = el['cardLength'];
+      playersCardLength.value = el['cardLength'];
     }
 
     if (!('cardLength' in el)) {
-      if (inGameInfo.level != el.level) {
+      if (gameStateHandler.level != el.level) {
         store.commit('loopHandlerDelete');
-        currentCard.value = [];
+        cardsPlayed.value = [];
         setTimeout(() => {
           createCountTime(gamePlayTime);
         }, 5000);
       }
       if (!isNaN(el.card)) {
-        if (currentCard.value.length >= 5) currentCard.value.shift();
-        currentCard.value.push(el.card);
+        if (cardsPlayed.value.length >= 5) cardsPlayed.value.shift();
+        cardsPlayed.value.push(el.card);
       } else passNotice.value = { msg: el.card, states: 'msg' };
 
-      if (tureFalse('hp')) inGameInfo['hp'] = el.hp;
-      if (tureFalse('dart')) inGameInfo['dart'] = el.dart;
-      if (tureFalse('hand')) handCard.value = el.hand;
-      if (tureFalse('level')) inGameInfo['level'] = el.level;
-    }
-
-    function tureFalse(key) {
-      const check = el[key];
-      return check != null || check != undefined ? true : false;
+      if (el['hp']) gameStateHandler['hp'] = el.hp;
+      if (el['dart']) gameStateHandler['dart'] = el.dart;
+      if (el['hand']) handCard.value = el.hand;
+      if (el['level']) gameStateHandler['level'] = el.level;
     }
   }
 );
 
+// game leave.
 watch(
   () => props.state.gameOne.gameOver,
   (el) => {
     if (el.url === null && el.url != 'lobby') return;
     store.commit('loopHandlerDelete');
-    inGameInfo['hp'] = el.hp;
-    inGameInfo['dart'] = el.dart;
-    inGameInfo['level'] = el.level;
-    inGameInfo['gameOver'] = el.player;
-    gameOver.state = true;
-    store.state.loopStore.tryTime = gameOver.time;
+    gameStateHandler['hp'] = el.hp;
+    gameStateHandler['dart'] = el.dart;
+    gameStateHandler['level'] = el.level;
+    gameStateHandler['gameOver'] = el.player;
+    gameOverHandler.state = true;
+    store.state.loopStore.tryTime = gameOverHandler.time;
     store.commit(
       'loopHandler',
       setInterval(() => {
@@ -605,6 +618,7 @@ watch(
   { once: true }
 );
 
+// hand card animation.
 watch(handCard, (time) => {
   nextTick(() => {
     cardAnimate();
@@ -616,8 +630,8 @@ function sendSticker() {
 
   sendStickerBtn.value = true;
   const data = {
-    id: store.state.userStore.userName,
-    room: store.state.userStore.userRoom,
+    id: userInfo.id,
+    room: userInfo.room,
     act: 'no',
   };
   props.socket.emit('lunch_sticker', data);
@@ -626,13 +640,9 @@ function sendSticker() {
   }, 1000);
 }
 
-function playerCardLength(el) {
-  return wholeData[el]?.length || wholeData[el];
-}
-
 function lastPlayerTheRound() {
   let sum = 0;
-  Object.values(wholeData.value).forEach((val) => {
+  Object.values(playersCardLength.value).forEach((val) => {
     if (val >= 1) sum += 1;
   });
   return sum <= 1 ? true : false;
@@ -648,9 +658,9 @@ function createCountTime(time, back = false, self = false) {
       if (store.state.loopStore.tryTime <= 0) {
         const data = {
           game: 'card',
-          id: store.state.userStore.userName,
-          room: store.state.userStore.userRoom,
-          icon: store.state.userStore.icon,
+          id: userInfo.id,
+          room: userInfo.room,
+          icon: userInfo.icon,
         };
 
         props.socket.emit('gamesLeave', data);
@@ -663,22 +673,21 @@ function createCountTime(time, back = false, self = false) {
 }
 
 function countDownInGameAction() {
-  backGameTime.value -= 1;
-  if (backGameTime.value <= 0) {
-    passNotice.value = false;
-  }
-  if (backGameTime.value != 0) {
-    countDownFun.value = setTimeout(() => {
-      countDownInGameAction();
-    }, 1000);
-  }
+  nextRoundHandler.time = backGameTime;
+  nextRoundHandler.countTimer = setInterval(() => {
+    nextRoundHandler.time -= 1;
+    if (nextRoundHandler.time <= 0) {
+      clearTimeout(nextRoundHandler.countTimer);
+      passNotice.value = false;
+    }
+  }, 1000);
 }
 
-function playcard() {
-  const userRoom = store.state.userStore.userRoom;
-
+function playCard() {
+  const userRoom = userInfo.room;
+  // { player:value, room:value }
   props.socket.emit('play', {
-    player: store.state.userStore.userName,
+    player: userInfo.id,
     room: userRoom.substring(userRoom.indexOf('/') + 1),
   });
 }
@@ -716,15 +725,14 @@ function cardAnimate() {
 
 function startDart(el) {
   if (el) return;
-  const userRoom = store.state.userStore.userRoom;
+  const userRoom = userInfo.room;
 
-  if (inGameInfo.dart > 0) {
+  if (gameStateHandler.dart > 0) {
+    // { message:value, room:value }
     props.socket.emit('draw', {
       message: 'go',
       room: userRoom.substring(userRoom.indexOf('/') + 1),
     });
-  } else {
-    alert('沒飛鏢啊!!按屁按逆!!');
   }
 }
 

@@ -1,13 +1,13 @@
 <template>
   <div id="leave_game">
-    <div class="text" @click="open = true">
+    <div class="text" @click="openHandler(true)">
       <font-awesome-icon icon="fa-regular fa-circle-left" />
     </div>
     <div class="bg" v-if="open">
       <div class="content">
         <answerHandler
           :show="open"
-          @close="(n) => (open = n)"
+          @close="(n) => openHandler(n)"
           @agree="leaveGame()"
         >
           <p>離開後就無法返回當前遊戲, 你確定要離開?</p>
@@ -29,6 +29,10 @@ export default {
   props: ['socket', 'state', 'game'],
   watch: {},
   methods: {
+    openHandler(el) {
+      this.open = el;
+      this.$emit('open', el);
+    },
     leaveGame() {
       const data = {
         game: this.game,
@@ -42,7 +46,6 @@ export default {
       this.$router.replace('/lobby');
     },
   },
-  mounted() {},
 };
 </script>
 
