@@ -1,28 +1,18 @@
-import { createApp } from 'vue'
-import { router, pageHandler } from '@/../assets/router.js';
-import { userStore, loopStore, gameData, playerIcon } from '@/../assets/userStore.js';
-import { style } from '@/../assets/style.js';
-import instructions from '@/../assets/instructions.js';
-import readyIcon from '@/../src/ui/ready.vue';
-import backGroundAnimate from '@/../src/components/animation/backGround.vue';
-import answerHandler from '@/../src/components/global/answerHandler.vue';
-import instructionsCompent from '@/../src/components/global/instructionsCompent.vue';
-import closeBtn from '@/../src/components/global/closeBtn.vue';
-import popupAnnunce from '@/../src/components/global/popupAnnunce.vue';
 import App from '@/App.vue'
-import { createStore } from 'vuex';
-
-/* import the fontawesome core */
-import { library } from '@fortawesome/fontawesome-svg-core'
-/* import font awesome icon component */
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-/* import specific icons */
-import { faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen, faCircleXmark, faClock, faBook, faCircleQuestion } from '@fortawesome/free-solid-svg-icons'
-import { faCircleLeft } from '@fortawesome/free-regular-svg-icons'
-
-/* add icons to the library */
-library.add(faChevronLeft, faMobileScreenButton, faGear, faArrowLeftLong, faArrowRightLong, faUserPen, faCircleXmark, faClock, faBook, faCircleQuestion, faCircleLeft)
-
+import { createApp } from 'vue'
+import { createStore } from 'vuex'
+import {
+  readyIcon,
+  backGroundAnimate,
+  answerHandler,
+  instructionsCompent,
+  closeBtn,
+  popupAnnunce
+} from '@/../assets/componentsHandler.js';
+import { router, pageHandler } from '@/../assets/router.js';
+import { userStore, loopStore, gameData, playerIcon, style, instructions } from '@/../assets/storeHandler.js';
+import FontAwesomeIcon from '@/../assets/fortawesomeHandler.js';
+;
 
 const store = createStore({
   modules: {
@@ -36,9 +26,6 @@ const store = createStore({
   }
 });
 
-
-
-
 const app = createApp(App);
 app.use(store);
 app.use(router);
@@ -50,11 +37,6 @@ app.component('instructionsCompent', instructionsCompent)
 app.component('closeBtn', closeBtn)
 app.component('popupAnnunce', popupAnnunce)
 
-
-
-
-
-
 app.config.globalProperties.$global_getImgUrl = function (name, place) {
   if (name === null || place === null) return;
   let route = null;
@@ -64,7 +46,6 @@ app.config.globalProperties.$global_getImgUrl = function (name, place) {
       route = 'player_icon'
       break;
   }
-
 
   return new URL(`/src/image/${route || place}/${name}.svg`, import.meta.url)
     .href;

@@ -449,16 +449,15 @@ export default {
     this.loadCheck();
   },
   created() {
-    const localStorageData = JSON.parse(localStorage.getItem('userData'));
-    this.selfPlayer = localStorageData.userName;
-    this.userRoom = localStorageData.userRoom;
-    this.userIcon = localStorageData.icon;
+    this.selfPlayer = this.$store.state.userStore.userName;
+    this.userRoom = this.$store.state.userStore.userRoom;
+    this.userIcon = this.$store.state.userStore.icon;
   },
   beforeUnmount() {
     this.$store.commit('loopHandlerDelete');
+    this.$store.commit('clearUserRoom');
     clearTimeout(this.countDownFun);
     clearTimeout(this.countDownStart);
-    this.$store.commit('clearUserRoom');
   },
 };
 </script>

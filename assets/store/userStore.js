@@ -84,13 +84,25 @@ const userStore = {
 const loopStore = {
   state() {
     return {
+      connectHandler: null,
+      connected: false,
       loopHandler: null,
       tryTime: 0,
     }
   },
   mutations: {
+    connected(state, el) {
+      state.connected = el;
+    },
+    connectHandler(state, el) {
+      state.connectHandler = el;
+    },
+    connectHandlerDelete(state) {
+      clearInterval(state.connectHandler);
+      state.connectHandler = null;
+      state.tryTime = 0;
+    },
     loopHandler(state, el) {
-      this.loopHandlerDelete;
       state.loopHandler = el;
     },
     loopHandlerDelete(state, el) {

@@ -240,6 +240,7 @@ h1 {
         flex-grow: 0;
       }
       .option {
+        cursor: pointer;
         border: 4px solid rgb(30, 30, 30);
         border-radius: 8px;
         padding: 10px 15px;
@@ -325,6 +326,7 @@ h1 {
   width: 100%;
   margin: 0 auto;
   .btn {
+    cursor: pointer;
     border-radius: 8px;
     margin: 5px;
     padding: 10px 6px 10px 10px;

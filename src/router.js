@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import lobby from '@/components/pages/lobby.vue';
+import lobby from './../src/components/pages/lobby.vue';
 import NotFound from '@/components/pages/404.vue';
 import game from '@/components/pages/game.vue';
 import blackJack from '@/components/pages/blackJack.vue';
 import yellowCard from '@/components/pages/yellowCard.vue';
 import login from '@/components/pages/login.vue';
 import waitingRoom from '@/components/pages/waitingRoom.vue';
-import { bg_style } from '@/../assets/store/style.js';
+import { bg_style } from '@/../assets/style.js';
+
 
 
 const pageHandler = {

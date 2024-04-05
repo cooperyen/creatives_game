@@ -205,7 +205,7 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  socketConnectCheck();
+  loadRoomData();
   onResize();
   nextTick(() => {
     window.addEventListener('resize', onResize);
@@ -274,23 +274,6 @@ function onResize() {
   nextTick(() => {
     sliceGameRoom();
   });
-}
-
-function socketConnectCheck() {
-  store.commit(
-    'loopHandler',
-    setInterval(() => {
-      store.commit('loopTimePlus');
-      if (props.state.connected) {
-        store.commit('loopHandlerDelete');
-        loadRoomData();
-      }
-
-      if (props.state.connected & (store.state.loopStore.tryTime >= 10)) {
-        store.commit('loopHandlerDelete');
-      }
-    }, 1000)
-  );
 }
 
 function loadRoomData() {

@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import { io } from "socket.io-client";
-import { userStore, gameData, playerIcon } from '@/../assets/userStore.js';
+import { userStore, gameData, playerIcon } from '@/../assets/store/userStore.js';
 
 
 export const state = reactive({
@@ -56,7 +56,7 @@ export const socket = io(URL, {
 
 
 function handleErrors(el) {
-  let time = 5
+  let time = 1;
 
   if (state.isConnected) return;
   state.isConnected = true
@@ -64,7 +64,7 @@ function handleErrors(el) {
   const xx = setInterval(() => {
     time -= 1
     if (time <= 0) {
-      state.connected = false;
+      state.connected = 'fail';
       socket.disconnect()
       clearInterval(xx)
     }
@@ -111,6 +111,7 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
+  console.log(data);
   switch (data.way) {
 
     case 'id_check':
@@ -146,6 +147,7 @@ function router(data) {
 
     case 'id_check_in_game':
       if (data.url != 'lobby') {
+
         state.gameDataFirstLoad = data.page;
         state.goUrl = data.url;
       };

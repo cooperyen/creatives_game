@@ -55,14 +55,13 @@ export default {
   position: absolute;
   width: auto;
   left: 15px;
-  z-index: 9999;
+  z-index: 99;
   .bg {
     width: 100vw;
     height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 9999;
     background-color: $bg_pevent;
     .content {
       height: 50px;

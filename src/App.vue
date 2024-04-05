@@ -4,7 +4,7 @@
       id="connect"
       v-if="!$store.state.userStore.loading && $route.name != 'not-found'"
     >
-      <div class="loading-box active" v-if="state.connected != false">
+      <div class="loading-box active" v-if="!connectedCheck()">
         <div class="flex">
           <h2>Connecting</h2>
           <span>......</span>
@@ -12,21 +12,29 @@
         <div><p>shouldn't take too long.</p></div>
         <div class="ani"></div>
       </div>
-      <div class="loading-box" v-if="connectedCheck()">
+      <div class="loading-box" v-else>
         <div class="flex">
           <h2>Connecting to service FAIL</h2>
         </div>
         <div><p>please reload page and try again!</p></div>
       </div>
 
-      <transferPageCountDown></transferPageCountDown>
+      <transferPageCountDown :state="state"></transferPageCountDown>
     </div>
   </transition>
 
   <loadingLoop v-show="clickLoading"></loadingLoop>
 
+  <!-- {{ $store.state.loopStore.connected }}
+  {{ state.connected }} -->
+
   <!-- content -->
-  <router-view :socket="socket" :state="state" v-slot="{ Component }">
+  <router-view
+    v-show="$store.state.loopStore.connected"
+    :socket="socket"
+    :state="state"
+    v-slot="{ Component }"
+  >
     <transition :name="$route.meta.transition || 'fade'">
       <div :key="$route.name">
         <component :is="Component" />
@@ -77,6 +85,7 @@ export default {
       const connected = this.state.connected;
       if (connected === undefined) return false;
       if (connected === false && connected != null) return true;
+      if (connected === 'fail') return true;
     },
     async cookieCheck() {
       const data = JSON.parse(localStorage.getItem('userData'));

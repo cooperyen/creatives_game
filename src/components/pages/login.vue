@@ -28,7 +28,7 @@
             />
           </div>
           <div class="login btn">
-            <button @click.prevent="connected ? login() : ' '">登入</button>
+            <button @click="login()">登入</button>
           </div>
         </div>
       </div>
@@ -134,28 +134,10 @@ export default {
     localStorage.removeItem('reloaded');
   },
   mounted() {
-    const x = this;
     this.$nextTick(() => this.titleAnimte());
     setTimeout(() => {
-      const conetectLoop = setInterval(() => {
-        this.tryTime += 1;
-        if (this.connected) {
-          this.tryTime = 0;
-          clearInterval(conetectLoop);
-          setTimeout(() => {
-            this.$store.commit('updateLoading', true);
-          }, 200);
-        }
-        if (this.tryTime >= 10) {
-          // this.$router.go(0);
-        }
-        if (this.connected === false && this.connected != null) {
-          this.$store.commit('loopHandlerDelete');
-          clearInterval(conetectLoop);
-          this.tryTime = 0;
-        }
-      }, 1000);
-    }, 200);
+      this.$store.commit('updateLoading', true);
+    }, 1000);
   },
 };
 </script>

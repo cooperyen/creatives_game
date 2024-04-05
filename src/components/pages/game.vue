@@ -1,6 +1,7 @@
 <template>
   <!-- game content -->
   <div v-show="!nextRound" class="game-container_">
+    {{ userInfo.room }}
     <div class="game_container">
       <div id="in_play">
         <div class="level">
@@ -490,14 +491,14 @@ const leaveGameWho = computed(() => {
 });
 
 onMounted(() => {
-  // exchange check bk end.
-  socketConnectCheck();
-  // check where is current room.
-  isGoLobby();
   // update user room by bk end.
   updateUserRoom();
+  // check where is current room.
+  isGoLobby();
   // card animation.
   cardAnimate();
+  // exchange check bk end.
+  exchange();
 });
 
 onBeforeUnmount(() => {
@@ -548,9 +549,9 @@ watch(
     gameStateHandler['level'] = el.level;
     handCard.value = el[userInfo.value.id];
     players.value = el['player_info'];
-    store.commit('updateLoading', true);
     store.commit('loopHandlerDelete');
     setTimeout(() => {
+      store.commit('updateLoading', true);
       createCountTime(gamePlayTime);
     }, 2000);
 
@@ -591,6 +592,9 @@ watch(
       if (el['dart']) gameStateHandler['dart'] = el.dart;
       if (el['hand']) handCard.value = el.hand;
       if (el['level']) gameStateHandler['level'] = el.level;
+      setTimeout(() => {
+        store.commit('updateLoading', true);
+      }, 2000);
     }
   }
 );
@@ -600,13 +604,13 @@ watch(
   () => props.state.gameOne.gameOver,
   (el) => {
     if (el.url === null && el.url != 'lobby') return;
-    store.commit('loopHandlerDelete');
     gameStateHandler['hp'] = el.hp;
     gameStateHandler['dart'] = el.dart;
     gameStateHandler['level'] = el.level;
     gameStateHandler['gameOver'] = el.player;
     gameOverHandler.state = true;
     store.state.loopStore.tryTime = gameOverHandler.time;
+    store.commit('loopHandlerDelete');
     store.commit(
       'loopHandler',
       setInterval(() => {
@@ -630,8 +634,8 @@ function sendSticker() {
 
   sendStickerBtn.value = true;
   const data = {
-    id: userInfo.id,
-    room: userInfo.room,
+    id: userInfo.value.id,
+    room: userInfo.value.room,
     act: 'no',
   };
   props.socket.emit('lunch_sticker', data);
@@ -658,9 +662,9 @@ function createCountTime(time, back = false, self = false) {
       if (store.state.loopStore.tryTime <= 0) {
         const data = {
           game: 'card',
-          id: userInfo.id,
-          room: userInfo.room,
-          icon: userInfo.icon,
+          id: userInfo.value.id,
+          room: userInfo.value.room,
+          icon: userInfo.value.icon,
         };
 
         props.socket.emit('gamesLeave', data);
@@ -684,10 +688,10 @@ function countDownInGameAction() {
 }
 
 function playCard() {
-  const userRoom = userInfo.room;
+  const userRoom = userInfo.value.room;
   // { player:value, room:value }
   props.socket.emit('play', {
-    player: userInfo.id,
+    player: userInfo.value.id,
     room: userRoom.substring(userRoom.indexOf('/') + 1),
   });
 }
@@ -725,7 +729,7 @@ function cardAnimate() {
 
 function startDart(el) {
   if (el) return;
-  const userRoom = userInfo.room;
+  const userRoom = userInfo.value.room;
 
   if (gameStateHandler.dart > 0) {
     // { message:value, room:value }
@@ -752,31 +756,14 @@ function votedDart(data) {
   voteAnswer.value = data;
 }
 
-function socketConnectCheck() {
-  store.commit(
-    'loopHandler',
-    setInterval(() => {
-      const result = doCheck();
-      store.state.loopStore.tryTime += 1;
-
-      if (store.state.loopStore.tryTime >= 15) {
-        alert('Connection failed, will return to lobby.');
-        goLobby();
-      }
-
-      if (result) store.commit('loopHandlerDelete');
-    }, 1000)
-  );
-
-  function doCheck() {
+function exchange() {
+  setTimeout(() => {
     props.socket.emit('id_check', {
       id: store.state.userStore.userName,
       room: store.state.userStore.userRoom,
       icon: store.state.userStore.icon,
     });
-
-    return store.state.userStore.loading;
-  }
+  }, 1000);
 }
 
 function goLobby() {
