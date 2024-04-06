@@ -33,11 +33,12 @@ button {
     padding: 8px 10px;
   }
   &.agree {
-    background-color: #7ad97a;
-    border-color: #54af54;
+    background-color: #a3d19f;
+    border-color: #3b873b;
   }
   &.cancel {
-    border-color: rgb(203, 91, 91);
+    border-color: rgb(195 136 136);
+    color: rgb(195 136 136);
   }
 }
 </style>

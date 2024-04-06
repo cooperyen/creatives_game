@@ -86,6 +86,7 @@ const loopStore = {
     return {
       connectHandler: null,
       connected: false,
+      connectTryTime: 0,
       loopHandler: null,
       tryTime: 0,
     }

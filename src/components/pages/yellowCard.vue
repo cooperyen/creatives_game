@@ -207,11 +207,11 @@ const annunceShow = ref(false);
 onMounted(() => {
   updateUserRoom();
 
-  // if (
-  //   props.state.gameDataFirstLoad === null ||
-  //   props.state.gameDataFirstLoad === undefined
-  // )
-  //   router.replace('/lobby');
+  if (
+    props.state.gameDataFirstLoad === null ||
+    props.state.gameDataFirstLoad === undefined
+  )
+    router.replace('/lobby');
 
   if (
     props.state.gameDataFirstLoad != undefined &&

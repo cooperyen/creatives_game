@@ -5,12 +5,12 @@
         <div class="title">
           <h1 class="">
             <span
-              :class="{ space: t === ' ' }"
+              :class="{ space: string === ' ' }"
               class="ani_text"
-              v-for="(t, i) in titleText()"
-              :key="i"
+              v-for="(string, index) in titleText()"
+              :key="index"
             >
-              {{ t }}
+              {{ string }}
             </span>
             <p class="ani_text">
               <span class="dot">.</span>
@@ -34,15 +34,21 @@
       </div>
     </div>
   </transition>
+
   <div class="connected" v-show="tryTime != 0">
     <div>connecting : {{ tryTime }}</div>
   </div>
   <backGroundAnimate></backGroundAnimate>
+  <popupAnnunce :show="annunceShow" @close="(n) => (annunceShow = n)"
+    >請輸入 3 - 15 字元
+
+    <template v-slot:notice>不含特殊符號 : $#!@...</template>
+  </popupAnnunce>
 </template>
 
 <script>
+import popupAnnunce from '@/../src/components/global/popupAnnunce.vue';
 export default {
-  emits: ['waitPageTrLoop'],
   data() {
     return {
       tryTime: 0,
@@ -50,20 +56,51 @@ export default {
       loading: false,
       connected: '',
       title: '幫自己取個名字吧',
-      // Give yourself a name
+      annunceShow: false,
     };
   },
   props: ['socket', 'state'],
+  components: [popupAnnunce],
   methods: {
+    /**
+     * Converts all characters between their fullwidth and halfwidth font.
+     *
+     */
+    toHalfwidth(chars) {
+      let halfwidth = '';
+      for (let i = 0, l = chars.length; i < l; i++) {
+        let c = chars[i].charCodeAt(0);
+
+        // convert to halfwidth.
+        if (c >= 0xff00 && c <= 0xffef) c = 0xff & (c + 0x20);
+
+        halfwidth += String.fromCharCode(c);
+      }
+      return halfwidth;
+    },
     login() {
       const nameLength = this.userName.length;
+      const searchString = new RegExp(
+        "[`~!@#$^&*()=|{}':;',\\[\\].<>《》/\?~！@#￥……&*（）——|{}【】‘；：”“'。，、？+-/ ]|[\\\\/]"
+      );
+      const string = this.toHalfwidth(this.userName);
+      console.log(string);
 
-      // character should between 1-15
-      if (this.userName === '' || nameLength > 15) alert('this.userName');
-      if (this.userName != '' && nameLength <= 15) {
-        this.$store.state.userStore.userName = this.userName;
+      // character should between 3-15
+      if (string.search(searchString) != -1) this.annunceShow = true;
+
+      if (string === '' || nameLength > 15 || nameLength < 3)
+        this.annunceShow = true;
+
+      if (
+        string.search(searchString) === -1 &&
+        string != '' &&
+        nameLength <= 15 &&
+        nameLength >= 3
+      ) {
+        this.$store.state.userStore.userName = string;
         this.socket.emit('login', {
-          id: this.userName,
+          id: string,
           icon: this.$store.state.userStore.icon,
         });
       }
@@ -126,9 +163,6 @@ export default {
   // create new database from local.
   created() {
     this.$store.commit('createDefaultData');
-  },
-  beforeMount() {
-    // this.$store.commit('backGorund', 'default');
   },
   beforeUnmount() {
     localStorage.removeItem('reloaded');

@@ -1,6 +1,6 @@
 <template>
-  <div class="connected" v-show="$store.state.loopStore.tryTime != 0">
-    <div>connecting : {{ $store.state.loopStore.tryTime }}</div>
+  <div class="connected" v-show="store.state.loopStore.tryTime != 0">
+    <div>connecting : {{ store.state.loopStore.tryTime }}</div>
   </div>
 </template>
 
@@ -22,10 +22,9 @@ function socketConnectCheck() {
     'connectHandler',
     setInterval(() => {
       store.commit('loopTimePlus');
-      if (props.state.connected || props.state.connected === 'fail') {
-        store.commit('connected', true);
+      if (props.state.connected) store.commit('connected', true);
+      if (props.state.connected === 'fail' || store.state.userStore.loading)
         store.commit('connectHandlerDelete');
-      }
     }, 1000)
   );
 }

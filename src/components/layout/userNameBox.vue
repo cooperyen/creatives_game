@@ -41,7 +41,7 @@ const on = () => {
   width: 100%;
   overflow: hidden;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.8);
   @include sm {
     height: 45px;
   }

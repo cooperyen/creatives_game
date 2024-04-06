@@ -14,8 +14,8 @@ $text: rgb(198, 190, 149);
 }
 
 .side_menu {
-  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
-  border: 3px solid rgb(247, 247, 247);
+  // box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+  border: 5px solid #d1b994;
   border-radius: 18px;
   overflow: hidden;
   @include sm {
@@ -52,7 +52,7 @@ $text: rgb(198, 190, 149);
       width: 80px;
     }
     svg {
-      filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.3));
+      filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.4));
     }
 
     .inner {
@@ -63,7 +63,7 @@ $text: rgb(198, 190, 149);
         position: relative;
       }
       .box {
-        color: rgb(255, 255, 255);
+        color: #d1b994;
         text-align: center;
         @include min-L {
           left: 50%;
@@ -210,7 +210,7 @@ $text: rgb(198, 190, 149);
       .room-content {
         cursor: no-drop;
         position: relative;
-        opacity: 0.4;
+        opacity: 0.25;
         &.active {
           opacity: 1;
           .img-box {
@@ -313,11 +313,7 @@ $text: rgb(198, 190, 149);
 // user's list
 .current-users-container {
   color: $text_default_title;
-  // margin-right: auto;
   margin: 0 15px;
-  // margin-left: 40px;
-  // max-height: 200px;
-
   @include min-L {
     flex: 1;
     padding-top: 10px;
@@ -355,9 +351,7 @@ $text: rgb(198, 190, 149);
     overflow-y: auto;
     border-radius: 10px;
     background-color: rgb(245, 245, 245);
-    // border: 5px solid rgb(185, 159, 32);
-    // border: 3px solid rgb(199 218 229);
-    box-shadow: 0 0 0px 5px rgb(185, 159, 32);
+    box-shadow: 0 0 0px 5px #c3d1d0;
     padding: 5px 7px;
     min-height: 100px;
     max-height: 300px;

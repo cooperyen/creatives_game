@@ -258,14 +258,13 @@ function onResize() {
   const width = window.innerWidth;
   const breakpoints = Object.keys(gameRoomSlide.breakpoints);
   let pageSum = 1;
+  gameRoomSlide.currentPage = 0;
   for (let i = 0; i < breakpoints.length; i++) {
     if (width <= breakpoints[i] && width <= breakpoints[i + 1]) {
       pageSum = gameRoomSlide.breakpoints[breakpoints[i]].pageSum;
     }
-
     if (width > breakpoints[breakpoints.length - 1]) {
       pageSum = gameRoomSlide.breakpoints[breakpoints[i]].pageSum;
-      gameRoomSlide.currentPage = 0;
     }
   }
 

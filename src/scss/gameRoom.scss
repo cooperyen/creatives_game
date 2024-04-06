@@ -157,6 +157,9 @@
   @include sm {
     margin: 20px auto 0 auto;
   }
+  @media (max-height: 750px) {
+    margin: 30px auto 60px auto;
+  }
 
   .card-container {
     margin-top: 25px;

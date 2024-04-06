@@ -99,6 +99,9 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
+  @media (max-height: 750px) {
+    margin: 0 0 50px 0;
+  }
 }
 
 .flex {

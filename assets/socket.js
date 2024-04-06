@@ -111,7 +111,6 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
-  console.log(data);
   switch (data.way) {
 
     case 'id_check':

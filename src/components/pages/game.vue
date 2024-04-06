@@ -1,7 +1,6 @@
 <template>
   <!-- game content -->
   <div v-show="!nextRound" class="game-container_">
-    {{ userInfo.room }}
     <div class="game_container">
       <div id="in_play">
         <div class="level">
@@ -550,6 +549,7 @@ watch(
     handCard.value = el[userInfo.value.id];
     players.value = el['player_info'];
     store.commit('loopHandlerDelete');
+    store.commit('updateLoading', true);
     setTimeout(() => {
       store.commit('updateLoading', true);
       createCountTime(gamePlayTime);
