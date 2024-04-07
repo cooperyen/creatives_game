@@ -34,14 +34,6 @@ class bg_style {
 
     this.class.includes(el) ? bodyClassHandle.add(el) : bodyClassHandle.add('default')
 
-    // switch (el) {
-    //   case 'yellowCard':
-    //     bodyClassHandle.add('yellowCard');
-    //     break;
-    //   default:
-    //     bodyClassHandle.add('default');
-    //     break;
-    // }
   }
 }
 

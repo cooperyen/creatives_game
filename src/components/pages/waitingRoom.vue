@@ -458,6 +458,9 @@ export default {
     this.$store.commit('clearUserRoom');
     clearTimeout(this.countDownFun);
     clearTimeout(this.countDownStart);
+
+    const whoIsLeave = { room: this.userRoom, id: this.selfPlayer };
+    this.socket.emit('readyLeave', whoIsLeave);
   },
 };
 </script>

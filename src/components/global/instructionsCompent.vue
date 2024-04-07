@@ -5,9 +5,14 @@
         <h2>{{ $store.state.instructions[game].title.ch }}</h2>
       </div>
       <div class="text_box">
+        <div class="text">
+          <p>{{ $store.state.instructions[game].content.ch.title }}</p>
+        </div>
+      </div>
+      <div class="text_box">
         <div
           class="text"
-          v-for="i in $store.state.instructions[game].content.ch"
+          v-for="i in $store.state.instructions[game].content.ch.content"
           :key="i"
         >
           <p>{{ i }}</p>

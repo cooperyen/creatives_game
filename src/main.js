@@ -10,7 +10,7 @@ import {
   popupAnnunce
 } from '@/../assets/componentsHandler.js';
 import { router, pageHandler } from '@/../assets/router.js';
-import { userStore, loopStore, gameData, playerIcon, style, instructions } from '@/../assets/storeHandler.js';
+import { userStore, loopStore, iconData, playerIcon, style, instructions } from '@/../assets/storeHandler.js';
 import FontAwesomeIcon from '@/../assets/fortawesomeHandler.js';
 ;
 
@@ -18,7 +18,7 @@ const store = createStore({
   modules: {
     userStore,
     loopStore,
-    gameData,
+    iconData,
     style,
     playerIcon,
     instructions,

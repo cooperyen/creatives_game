@@ -20,7 +20,7 @@
       <div class="roles_container">
         <div class="roles flex flex-wrap">
           <div
-            v-for="i in $store.state.gameData.playerIcon"
+            v-for="i in $store.state.iconData.playerIcon"
             :key="i"
             class="img_content"
             :class="{ focus: role.userSelectIcon === i }"

@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import { io } from "socket.io-client";
-import { userStore, gameData, playerIcon } from '@/../assets/store/userStore.js';
+import { playerIcon } from '@/../assets/store/userStore.js';
 
 
 export const state = reactive({
