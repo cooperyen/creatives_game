@@ -6,7 +6,7 @@
           <div class="flex">
             <div class="icon">
               <img
-                :src="this.$global_getImgUrl(props.userIcon, 'player_icon')"
+                :src="$global_getImgUrl(props.userIcon, 'player_icon')"
                 alt=""
               />
             </div>

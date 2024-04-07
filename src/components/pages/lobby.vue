@@ -42,7 +42,7 @@
                     <div class="right">
                       <img
                         :src="
-                          this.$global_getImgUrl(
+                          $global_getImgUrl(
                             `${room != 'soon' ? room : 'default_game'}`,
                             'game'
                           )
@@ -66,8 +66,8 @@
             @click="moveRoomPage(false)"
             :class="{ none: gameRoomSlide.currentPage === 0 }"
           >
-            <!-- <font-awesome-icon icon="fa-solid fa-arrow-left-long" /> -->
-            <img :src="$global_getImgUrl('arrow_left', 'ui')" />
+            <font-awesome-icon icon="fa-solid fa-arrow-left-long" />
+            <!-- <img :src="this.$global_getImgUrl('arrow_left', 'ui')" /> -->
           </button>
           <button
             @click="moveRoomPage(true)"
@@ -75,8 +75,8 @@
               none: gameRoomSlide.currentPage === gameRoomSlide.pageSum - 1,
             }"
           >
-            <!-- <font-awesome-icon icon="fa-solid fa-arrow-right-long" /> -->
-            <img :src="$global_getImgUrl('arrow_right', 'ui')" />
+            <font-awesome-icon icon="fa-solid fa-arrow-right-long" />
+            <!-- <img :src="this.$global_getImgUrl('arrow_right', 'ui')" /> -->
           </button>
         </div>
         <!-- end -->

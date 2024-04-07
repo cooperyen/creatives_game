@@ -193,7 +193,7 @@
   </div>
 
   <!-- dart vote UI -->
-  <div class="transition" v-if="drawVote.state">
+  <div class="transition" v-show="drawVote.state">
     <div id="dart">
       <div class="title">
         <h2>有人現在要使用飛鏢, 同意使用嗎?</h2>
