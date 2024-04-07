@@ -15,7 +15,8 @@ $text: rgb(198, 190, 149);
 
 .side_menu {
   // box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
-  border: 5px solid #d1b994;
+  // #d1b994
+  border: 5px solid #c3d1d0;
   border-radius: 18px;
   overflow: hidden;
   @include sm {
@@ -52,7 +53,7 @@ $text: rgb(198, 190, 149);
       width: 80px;
     }
     svg {
-      filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.4));
+      // filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.4));
     }
 
     .inner {
@@ -63,7 +64,7 @@ $text: rgb(198, 190, 149);
         position: relative;
       }
       .box {
-        color: #d1b994;
+        color: #94a9c5;
         text-align: center;
         @include min-L {
           left: 50%;
@@ -297,6 +298,9 @@ $text: rgb(198, 190, 149);
       margin: 0 10px;
       font-size: 1rem;
       background-color: unset;
+      img {
+        width: 50px;
+      }
       &:hover {
         cursor: pointer;
       }

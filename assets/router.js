@@ -60,6 +60,7 @@ const router = createRouter({
     },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
   ],
+
 });
 
 router.beforeEach((to, from, next) => {
@@ -68,6 +69,7 @@ router.beforeEach((to, from, next) => {
     window.location.reload();
     window.localStorage.setItem('reloaded', 'yes');
   }
+
   next();
 
 })

@@ -248,10 +248,8 @@ export default {
     'state.goUrl': {
       handler(el) {
         if (this.state.activeGameRoom != null) {
-          // this.$store.commit('updateUserRoom', el);
           this.$store.state.userStore.userRoom = el;
         }
-
         this.$router.replace(`/${el}`);
       },
       deep: true,
@@ -424,7 +422,6 @@ export default {
 
       function doCheck() {
         // make sure backEnd data same as frontEnd.
-
         if (that.otherPlayers != null) return true;
         if (that.otherPlayers === null) {
           that.socket.emit('id_check', {
@@ -438,6 +435,12 @@ export default {
     },
   },
   mounted() {
+    if (
+      !this.$store.state.instructions[this.$route.params.room] ||
+      !this.$store.state.instructions[this.$route.params.room].state
+    )
+      this.$router.replace('/lobby');
+
     if (this.selfPlayer === null || this.selfPlayer === undefined)
       this.$router.replace('/');
     if (

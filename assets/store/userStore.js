@@ -101,7 +101,7 @@ const loopStore = {
     connectHandlerDelete(state) {
       clearInterval(state.connectHandler);
       state.connectHandler = null;
-      state.tryTime = 0;
+      state.connectTryTime = 0;
     },
     loopHandler(state, el) {
       state.loopHandler = el;
@@ -121,6 +121,9 @@ const loopStore = {
     },
     loopTimePlus(state) {
       state.tryTime += 1;
+    },
+    connectTimePlus(state) {
+      state.connectTryTime += 1;
     },
     loopTimeMinus(state) {
       state.tryTime -= 1;

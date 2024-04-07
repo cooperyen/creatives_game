@@ -56,7 +56,7 @@ export const socket = io(URL, {
 
 
 function handleErrors(el) {
-  let time = 1;
+  let time = 5;
 
   if (state.isConnected) return;
   state.isConnected = true

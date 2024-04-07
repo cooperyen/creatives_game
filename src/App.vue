@@ -36,7 +36,7 @@
     v-slot="{ Component }"
   >
     <transition :name="$route.meta.transition || 'fade'">
-      <div :key="$route.name">
+      <div :key="$route.fullpath">
         <component :is="Component" />
       </div>
     </transition>
@@ -67,7 +67,7 @@ export default {
   components: { loadingLoop, transferPageCountDown, copyright },
   watch: {
     $route() {
-      this.$store.commit('loopHandlerDelete');
+      // this.$store.commit('loopHandlerDelete');
       this.$store.commit('loadRoomLoopDelete');
       this.$store.commit('updateLoading', false);
     },
