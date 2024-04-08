@@ -12,7 +12,6 @@
       "
     >
       connecting : {{ store.state.loopStore.connectTryTime }}
-      {{ store.state.loopStore.tryTime }}
     </div>
   </div>
 </template>

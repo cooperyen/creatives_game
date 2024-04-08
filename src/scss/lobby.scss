@@ -125,24 +125,24 @@ $text: rgb(198, 190, 149);
 
   @include sm {
     flex: unset;
-    // padding: 5px 10px 0 10px;
+  }
+
+  @include ss {
+    padding: 5px 10px 0 10px;
   }
 
   @include xs {
-    padding: 5px 10px 0 10px;
+    padding: 5px;
   }
 
   @include min-med {
     flex: 3;
   }
-  // @include L {
-  //   width: calc(100% - 10px);
-  // }
 
   .page-room {
     width: 100%;
     flex-wrap: wrap;
-    @include xs {
+    @include ss {
       &.flex {
         display: unset;
       }
@@ -180,7 +180,7 @@ $text: rgb(198, 190, 149);
     @include min-med {
       width: 50%;
     }
-    @include min-xs {
+    @include min-ss {
       width: 50%;
     }
     @include min-L {
@@ -191,11 +191,6 @@ $text: rgb(198, 190, 149);
       padding-left: 10px;
       margin-right: 10px;
       margin-bottom: 30px;
-      // @include L {
-      //   padding-left: 20px;
-      //   margin-right: 20px;
-      //   margin-bottom: 30px;
-      // }
 
       @include sm {
         padding-left: 7px;
@@ -204,8 +199,6 @@ $text: rgb(198, 190, 149);
       }
 
       @include xs {
-        padding-left: 0px;
-        margin-right: 0px;
         margin-bottom: 15px;
       }
       .room-content {
@@ -250,7 +243,7 @@ $text: rgb(198, 190, 149);
             letter-spacing: 5px;
             @include sm {
               margin-top: 1px;
-              font-size: 0.7rem;
+              font-size: 0.8rem;
             }
           }
           div {

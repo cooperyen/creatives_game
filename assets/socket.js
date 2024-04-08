@@ -26,7 +26,8 @@ export const state = reactive({
   gameOne: {
     readyList: null,
     gameOver: null,
-    readyToGo: false
+    readyToGo: false,
+    gameWin: null
   },
   blackJack: null,
   yellowCard: null,
@@ -100,6 +101,7 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
+
   switch (data.way) {
 
     case 'id_check':
@@ -185,7 +187,9 @@ function router(data) {
       state.loginError = 'fail';
       break;
 
-    case 'return':
+    case 'lunch_mind_pass':
+      console.log(data.data);
+      state.gameOne.gameWin = data.data;
       break;
   }
 }

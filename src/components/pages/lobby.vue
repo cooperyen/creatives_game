@@ -9,7 +9,7 @@
     <div class="lobby-container">
       <div
         class="room-container pd_side"
-        v-if="gameRoomsData.gameRooms != null"
+        v-show="gameRoomsData.gameRooms != null"
       >
         <!-- each room -->
         <template v-for="(x, y) in gameRoomsData.sliceRoom" :key="y">
@@ -161,7 +161,7 @@ const gameRoomSlide = reactive({
   pageSum: 1,
   currentPage: 0,
   breakpoints: {
-    400: {
+    350: {
       pageSum: 2,
     },
     1141: {

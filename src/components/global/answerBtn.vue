@@ -27,7 +27,7 @@ button {
       margin-bottom: 10px;
     }
   }
-  @include xs {
+  @include ss {
     margin: 0;
     width: 100%;
     padding: 8px 10px;

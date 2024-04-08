@@ -13,7 +13,7 @@
       </div>
 
       <!-- game -->
-      <template v-if="!leaveGameOpen">
+      <div v-show="!leaveGameOpen">
         <!-- current card tent -->
         <div class="dsdsa">
           <div class="current-card">
@@ -26,13 +26,13 @@
                 v-for="i in cardsPlayed"
                 :key="i"
               >
+                <div class="card-bg">
+                  <img src="./../../image/card/01.svg" />
+                </div>
                 <div class="card-num">
                   <p>
                     <span>{{ i }}</span>
                   </p>
-                </div>
-                <div class="card-bg">
-                  <img src="./../../image/card/01.svg" />
                 </div>
               </div>
               <div
@@ -72,10 +72,10 @@
                 :disabled="handCard.length === 0"
               >
                 <template v-if="handCard.length != 0">
-                  {{ lastPlayerTheRound() ? '就是我了' : '我覺得應該輪到我' }}
+                  {{ lastPlayerTheRound() ? '就是我了' : '應該輪到我?' }}
                 </template>
                 <template v-else>
-                  {{ lastPlayerTheRound() ? '已無手牌' : '我覺得應該輪到我' }}
+                  {{ lastPlayerTheRound() ? '已無手牌' : '應該輪到我?' }}
                 </template>
               </button>
 
@@ -109,7 +109,7 @@
             </div>
           </div>
         </div>
-      </template>
+      </div>
 
       <!-- bottom info -->
       <div class="option_content">
@@ -137,7 +137,9 @@
             <div class="img_box">
               <img :src="$global_getImgUrl(player.icon, 'player')" alt="" />
             </div>
-            <div class="name_box">{{ player.user_id }}</div>
+            <div class="name_box">
+              <p>{{ player.user_id }}</p>
+            </div>
             <div class="card_info">
               /
               <span :class="{ remind: playersCardLength[player.user_id] <= 0 }">
@@ -311,7 +313,10 @@
     <div id="gameover">
       <!-- title -->
       <div class="title">
-        <h2>game over</h2>
+        <h2>
+          <template v-if="gameOverHandler.gameWin">game over</template>
+          <template v-else>WIN</template>
+        </h2>
       </div>
       <div class="container">
         <!-- options -->
@@ -377,7 +382,7 @@ const store = useStore();
 
 // option.
 const gamePlayTime = 300;
-const backGameTime = 5;
+const backGameTime = 3;
 
 // user information.
 const userInfo = computed(() => {
@@ -422,7 +427,12 @@ const nextRoundHandler = reactive({
   time: '',
   countTimer: null,
 });
-const gameOverHandler = reactive({ state: false, countTimer: null, time: 10 });
+const gameOverHandler = reactive({
+  win: false,
+  state: false,
+  countTimer: null,
+  time: 1000,
+});
 
 // sticker.
 const sendStickerBtn = ref(false);
@@ -558,11 +568,10 @@ watch(
     handCard.value = el[userInfo.value.id];
     players.value = el['player_info'];
     store.commit('loopHandlerDelete');
-    store.commit('updateLoading', true);
     setTimeout(() => {
       store.commit('updateLoading', true);
       createCountTime(gamePlayTime);
-    }, 2000);
+    }, 3000);
 
     function figout(data) {
       const player = data['player'];
@@ -613,13 +622,35 @@ watch(
   () => props.state.gameOne.gameOver,
   (el) => {
     if (el.url === null && el.url != 'lobby') return;
+    store.commit('loopHandlerDelete');
     gameStateHandler['hp'] = el.hp;
     gameStateHandler['dart'] = el.dart;
     gameStateHandler['level'] = el.level;
     gameStateHandler['gameOver'] = el.player;
     gameOverHandler.state = true;
     store.state.loopStore.tryTime = gameOverHandler.time;
+    store.commit(
+      'loopHandler',
+      setInterval(() => {
+        store.commit('loopTimeMinus');
+        if (store.state.loopStore.tryTime <= 0) goLobby();
+      }, 1000)
+    );
+  },
+  { once: true }
+);
+
+watch(
+  () => props.state.gameOne.gameWin,
+  (el) => {
+    console.log(el);
     store.commit('loopHandlerDelete');
+    gameStateHandler['hp'] = el.hp;
+    gameStateHandler['dart'] = el.dart;
+    gameStateHandler['level'] = el.level;
+    gameStateHandler['gameOver'] = el.player;
+    gameOverHandler.state = true;
+    store.state.loopStore.tryTime = gameOverHandler.time;
     store.commit(
       'loopHandler',
       setInterval(() => {
