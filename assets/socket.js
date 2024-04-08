@@ -36,27 +36,16 @@ export const state = reactive({
   }
 });
 
-// const testURL = 'http://200.69.21.59:88'
-const testURL = 'https://user.creatives.ink'
-// const testURL = 'http://127.0.0.1:5000/'
-// const testURL = 'http://200.69.21.59:1144'
-// const testURL = 'https://bkgame.creatives.ink'
-// const testURL = 'https://6d09-60-251-61-249.ngrok-free.app'
-
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = testURL;
-
+const URL = 'https://user.creatives.ink';
 export const socket = io(URL, {
   withCredentials: true,
-  extraHeaders: {
-    "my-custom-header": "abcd"
-  }
 });
 
 
 
 function handleErrors(el) {
-  let time = 5;
+  let time = 1;
 
   if (state.isConnected) return;
   state.isConnected = true

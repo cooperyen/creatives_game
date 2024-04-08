@@ -1,11 +1,24 @@
 <template>
-  <div id="copyright">
+  <div id="copyright" v-if="showCopyright">
     <p>©{{ time }} CREATIVES TEAM&COOPER.</p>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { router } from '@/../assets/router.js';
 const time = new Date().getFullYear();
+
+const showCopyright = computed(() => {
+  let res = true;
+  switch (router.currentRoute.value.name) {
+    case 'yellowCard':
+    case 'game':
+      res = false;
+      break;
+  }
+  return res;
+});
 </script>
 
 <style lang="scss" scoped>

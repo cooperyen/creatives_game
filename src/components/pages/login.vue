@@ -84,7 +84,6 @@ export default {
         "[`~!@#$^&*()=|{}':;',\\[\\].<>《》/\?~！@#￥……&*（）——|{}【】‘；：”“'。，、？+-/ ]|[\\\\/]"
       );
       const string = this.toHalfwidth(this.userName);
-      console.log(string);
 
       // character should between 3-15
       if (string.search(searchString) != -1) this.annunceShow = true;
@@ -169,9 +168,21 @@ export default {
   },
   mounted() {
     this.$nextTick(() => this.titleAnimte());
-    setTimeout(() => {
-      this.$store.commit('updateLoading', true);
-    }, 1000);
+
+    this.$store.commit(
+      'loopHandler',
+      setInterval(() => {
+        this.$store.commit('loopTimePlus');
+
+        if (this.$store.state.loopStore.connected) {
+          this.$store.commit('loopHandlerDelete');
+          this.$store.commit('updateLoading', true);
+        }
+
+        if (this.$store.state.loopStore.tryTime >= 30)
+          this.$store.commit('loopHandlerDelete');
+      }, 1000)
+    );
   },
 };
 </script>

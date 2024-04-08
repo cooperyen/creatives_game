@@ -5,7 +5,9 @@
       <div id="in_play">
         <div class="level">
           <p>
-            Level:<span>{{ gameStateHandler.level }}</span>
+            Level:<span
+              >{{ gameStateHandler.level }}/{{ gameStateHandler.end }}</span
+            >
           </p>
         </div>
       </div>
@@ -390,7 +392,13 @@ const userInfo = computed(() => {
 // game data
 const handCard = ref([]);
 const cardsPlayed = ref([]);
-const gameStateHandler = reactive({ hp: 0, dart: 0, level: 1, gameOver: '' });
+const gameStateHandler = reactive({
+  hp: 0,
+  dart: 0,
+  level: 1,
+  end: 0,
+  gameOver: '',
+});
 const players = ref(false);
 const playersCardLength = ref({});
 
@@ -546,6 +554,7 @@ watch(
     gameStateHandler['hp'] = el.hp;
     gameStateHandler['dart'] = el.dart;
     gameStateHandler['level'] = el.level;
+    gameStateHandler['end'] = el.end;
     handCard.value = el[userInfo.value.id];
     players.value = el['player_info'];
     store.commit('loopHandlerDelete');
@@ -697,6 +706,7 @@ function playCard() {
 }
 
 function cardAnimate() {
+  console.log(window.innerWidth);
   const handCardBox = document.querySelectorAll('#hand-card .card-box');
   const handCardLength = handCardBox.length;
   let dx = 0;

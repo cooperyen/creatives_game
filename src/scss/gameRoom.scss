@@ -147,6 +147,11 @@
     }
   }
 }
+
+:deep(.copyright) {
+  left: 0;
+}
+
 #hand-card {
   overflow: hidden;
   max-width: 500px;
@@ -158,7 +163,7 @@
     margin: 20px auto 0 auto;
   }
   @media (max-height: 750px) {
-    margin: 30px auto 60px auto;
+    margin: 30px auto 160px auto;
   }
 
   .card-container {
@@ -168,7 +173,7 @@
     transform: translateX(-50%);
     height: 250px;
     @include sm {
-      height: 220px;
+      height: 205px;
       margin-top: 30px;
     }
     .card-box {

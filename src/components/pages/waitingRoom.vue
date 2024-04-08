@@ -415,7 +415,7 @@ export default {
             this.$store.commit('updateLoading', true);
           }
 
-          if (this.$store.state.loopStore.connectedTime >= 10)
+          if (this.$store.state.loopStore.tryTime >= 20)
             this.$router.replace('/lobby');
         }, 1000)
       );
