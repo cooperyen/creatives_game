@@ -4,5 +4,5 @@
 
 <script setup>
 import { router } from '@/../assets/router.js';
-router.replace('/');
+router.replace('/lobby');
 </script>
