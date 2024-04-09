@@ -33,8 +33,8 @@
       </div>
       <hr />
       <div class="btn">
-        <button class="agree" @click="setUserRole()">agree</button>
-        <button class="cencel" @click="close()">cancel</button>
+        <answerBtn :state="true" @click="setUserRole()">agree</answerBtn>
+        <answerBtn :state="false" @click="close()">cancel</answerBtn>
       </div>
     </div>
   </div>
@@ -42,7 +42,9 @@
 
 <script>
 import { socket } from '@/../assets/socket';
+import answerBtn from './answerBtn.vue';
 export default {
+  components: { answerBtn },
   data() {
     return {
       socket,

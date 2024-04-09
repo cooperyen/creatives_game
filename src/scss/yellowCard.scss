@@ -5,8 +5,8 @@ $yellowCardLight: #ffed9c;
 $true: rgb(117, 232, 154);
 
 #yellowCard {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   position: relative;
 }
 
@@ -41,9 +41,9 @@ $true: rgb(117, 232, 154);
   padding-bottom: 10px;
   color: rgb(183, 113, 32);
   border-bottom: 1px solid rgb(95, 95, 95);
-  margin: 0 auto 80px auto;
+  margin: 10px auto 80px auto;
   @include sm {
-    margin: 0 auto 40px auto;
+    margin: 5px auto 40px auto;
   }
   .title {
     margin: 0 10px;
@@ -145,7 +145,7 @@ h1 {
   .text {
     font-size: 1.4rem;
     margin-top: 5vh;
-    color: white;
+    color: rgb(29, 29, 29) 37;
     text-align: center;
 
     span {
@@ -163,6 +163,7 @@ h1 {
 
 .active {
   animation: upin 1s forwards;
+  text-align: center;
 }
 
 #vote {
@@ -173,6 +174,7 @@ h1 {
     color: rgb(215, 57, 49);
   }
   .item {
+    cursor: pointer;
     padding: 10px 15px;
     margin: 10px 10px;
     font-size: 1.2rem;
@@ -338,8 +340,8 @@ h1 {
 
     &.selected {
       animation: flips 1s forwards;
-      background-color: rgb(151 217 138);
-      border: rgb(216, 253, 208) 5px solid;
+      background-color: $yellowCard;
+      border: rgb(30, 30, 30) 5px solid;
     }
   }
 }

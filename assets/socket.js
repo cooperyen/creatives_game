@@ -2,7 +2,6 @@ import { reactive } from "vue";
 import { io } from "socket.io-client";
 import { playerIcon } from '@/../assets/store/userStore.js';
 
-
 export const state = reactive({
   isConnected: null,
   connected: null,
@@ -23,7 +22,7 @@ export const state = reactive({
   gameDataUpdate: null,
   currentCard: null,
   drawVote: null,
-  gameOne: {
+  lunchMind: {
     readyList: null,
     gameOver: null,
     readyToGo: false,
@@ -44,19 +43,21 @@ export const socket = io(URL, {
 });
 
 
-
+/**
+ * create countdown, if error then disconnect
+ */
 function handleErrors(el) {
-  let time = 1;
+  let time = 3;
 
   if (state.isConnected) return;
   state.isConnected = true
 
-  const xx = setInterval(() => {
+  const timer = setInterval(() => {
     time -= 1
     if (time <= 0) {
       state.connected = 'fail';
       socket.disconnect()
-      clearInterval(xx)
+      clearInterval(timer)
     }
   }, 5000);
 
@@ -64,11 +65,9 @@ function handleErrors(el) {
 
 }
 
-// export const conntect = () => {
 socket.on('connect_error', err => handleErrors(err))
 
 socket.on("connect", (el) => {
-  // alert(el);
   state.connected = true;
   state.socketId = socket.id;
 
@@ -76,19 +75,17 @@ socket.on("connect", (el) => {
 
 socket.on("disconnect", (el) => {
   console.log(el);
-
 });
 
-
-
-const int = () => {
+int();
+function int() {
   state.gameDataUpdate = null;
-  state.gameOne.readyList = null;
+  state.lunchMind.readyList = null;
   state.currentPlayers = null;
   state.eachPlayers = null;
   state.updateCurrentPlayers = null;
 }
-int();
+
 
 socket.on('re_act', function (datas) {
   state.drawVote = null;
@@ -101,7 +98,6 @@ socket.on('re_act', function (datas) {
 });
 
 function router(data) {
-
   switch (data.way) {
 
     case 'id_check':
@@ -118,7 +114,7 @@ function router(data) {
 
       // lobby escapes from load cycles.
       if (data.url === 'lobby') {
-        state.gameOne.gameOver = data;
+        state.lunchMind.gameOver = data;
       }
 
       if (data.go === 'lobby') state.goUrl = `lobby`;
@@ -189,35 +185,35 @@ function router(data) {
 
     case 'lunch_mind_pass':
       console.log(data.data);
-      state.gameOne.gameWin = data.data;
+      state.lunchMind.gameWin = data.data;
       break;
   }
 }
 
-socket.on('updateWaitRoomPlayers', function (data) {
-  state.updateCurrentPlayers = data
-  state.gameOne.readyToGo = false;
 
-})
-
+// lobby
 socket.on('update_lobby', function (data) {
   if (data.user_sids != null || data.user_sids != undefined)
     state.lobbyPlayerList = data.user_sids;
+})
 
+// watting room
+socket.on('updateWaitRoomPlayers', function (data) {
+  state.updateCurrentPlayers = data
+  state.lunchMind.readyToGo = false;
 })
 
 socket.on('updata_ready', function (data) {
-  state.gameOne.readyToGo = false;
-  state.gameOne.readyList = data.reduce((key, val, index) => {
+  state.lunchMind.readyToGo = false;
+  state.lunchMind.readyList = data.reduce((key, val, index) => {
     key[val] = val
     return key
   }, {})
 })
 
 /**
- *  lunch game.
+ *  game mind.
  */
-lunchGame()
 function lunchGame() {
 
   socket.on('lunch_sticker', function (data) {
@@ -246,18 +242,15 @@ function lunchGame() {
 
 
   socket.on('re_lunch', function (data) {
-    // state.gameOne.readyToGo = false;
+    // state.lunchMind.readyToGo = false;
     if (data.isReady != null || data.isReady != undefined)
-      state.gameOne.readyToGo = data.isReady;
+      state.lunchMind.readyToGo = data.isReady;
   })
 
 }
+lunchGame()
 
-
-
-/**
- * blackjack
- */
+// game blackjack.
 socket.on('re_bj', function (data) {
   if (data === null || data === undefined) return;
   state.blackJack = null;
@@ -265,7 +258,7 @@ socket.on('re_bj', function (data) {
   state.blackJack = data;
 })
 
-// yellow card
+// game yellow card.
 socket.on('re_yc', function (data) {
 
   if (data === null || data === undefined) return;
@@ -274,12 +267,11 @@ socket.on('re_yc', function (data) {
 
 })
 
+// player not in any game.
 socket.on('re_no_game', function (data) {
   state.goUrl = null;
   if (data.noRoom === null || data.noRoom === undefined) return;
   state.goUrl = 'lobby';
 })
 
-socket.on('update_wait_room', function (data) {
-})
 

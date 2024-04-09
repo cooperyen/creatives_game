@@ -438,7 +438,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  max-width: 600px;
+  max-width: 500px;
   width: calc(100% - 30px);
   text-align: center;
   @include sm {
@@ -454,7 +454,7 @@
     text-align: center;
     text-transform: uppercase;
     h2 {
-      font-size: 4rem;
+      font-size: 3rem;
       @include sm {
         font-size: 2.5rem;
       }
@@ -475,10 +475,7 @@
   .options {
     .item-box {
       &:first-child {
-        margin-top: 20px;
-        @include sm {
-          margin-top: 10px;
-        }
+        margin-top: 10px;
       }
       margin-bottom: 20px;
       @include sm {
@@ -507,16 +504,14 @@
   .click-btn button {
     margin-top: 30px;
     margin-bottom: 20px;
-    max-width: 300px;
+    max-width: 200px;
     min-width: 100px;
     width: 60%;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    font-size: 1.5rem;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 1.4rem;
     @include sm {
       margin-top: 15px;
-      padding-top: 10px;
-      padding-bottom: 10px;
       font-size: 1.2rem;
     }
   }

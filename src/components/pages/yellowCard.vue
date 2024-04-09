@@ -4,20 +4,21 @@
       <leaveGameHadnler :socket="socket" game="yc"></leaveGameHadnler>
     </userNameBox>
 
+    <!-- drop card annunce -->
     <popupAnnunce :show="annunceShow" @close="(n) => (annunceShow = n)"
       >至少選 1 個</popupAnnunce
     >
 
     <div v-show="playerMove.currentStep != 'end'">
       <div class="header">
-        <div class="title">
-          <p>Players</p>
-        </div>
+        <!-- each player content -->
         <div class="items">
           <div v-for="i in gameData.yellowCard" :key="i" class="item flex">
+            <!-- icon -->
             <div class="img_box">
               <img :src="$global_getImgUrl('apple', 'player_icon')" />
             </div>
+            <!-- content -->
             <div class="text">
               <p>
                 {{ Object.keys(i)[0] }} /
@@ -30,6 +31,7 @@
             </div>
           </div>
         </div>
+        <!-- countdown -->
         <div class="timer flex" v-if="playerMove.currentStep != 'end'">
           <div class="img_box" :class="{ stop: !timer.show }">
             <font-awesome-icon icon="fa-solid fa-clock" />
@@ -121,7 +123,7 @@
         <div>
           <router-link to="/lobby" replace>Leave</router-link>
           <p>
-            leave the game in <span>{{ timer.time }}</span> seconds
+            即將離開遊戲 <span>{{ timer.time }}</span> 秒
           </p>
         </div>
       </div>
@@ -161,18 +163,18 @@ const userInfo = computed(() => {
 
 const timer = reactive({
   countTimer: null,
-  time: 60,
-  long: 60,
+  time: 120,
+  long: 180,
   show: false,
   isWait: false,
-  default: 60,
+  default: 120,
 });
 const gameData = reactive({
   endGameSentence: {
-    end: 'The game exceed response time',
+    end: '超出響應時間啦!',
     win: 'You WIN!',
     lose: 'You LOSE',
-    close: 'The number of players in the game is less than 2',
+    close: '遊戲玩家少於2人，可能是有人烙跑了...',
     re: '',
   },
   selfHand: null,
@@ -428,7 +430,7 @@ function drop(auto = false) {
   let leng = playerMove.pickCard.length;
 
   if (auto === false) {
-    if (leng <= 0) annunceShow = true;
+    if (leng <= 0) annunceShow.value = true;
     if (leng > 0 && leng <= 3) {
       props.socket.emit('yc', {
         id: userInfo.value.id,

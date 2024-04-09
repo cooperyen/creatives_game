@@ -1,6 +1,6 @@
 <template>
   <div id="copyright" v-if="showCopyright">
-    <p>©{{ time }} CREATIVES TEAM&COOPER.</p>
+    <p>©{{ time }} CREATIVES TEAM.</p>
   </div>
 </template>
 

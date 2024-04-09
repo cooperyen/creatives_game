@@ -5,7 +5,7 @@
         <div
           class="item"
           :class="[playerMove.voteNumber === index ? 'check' : 'default']"
-          @click="updateVoteNumber(index)"
+          @click="updateVoteNumber(index, val)"
         >
           <p v-html="card(val)"></p>
         </div>
@@ -51,10 +51,56 @@ export default {
     },
 
     vote() {
+      speechSynthesis.cancel();
       this.$emit('vote');
     },
-    updateVoteNumber(val) {
-      this.$emit('updateVoteNumber', val);
+    updateVoteNumber(index, val) {
+      speechSynthesis.cancel();
+      // let utterance = new SpeechSynthesisUtterance(val);
+      this.voice(val);
+      this.$emit('updateVoteNumber', index);
+    },
+    voice(msg) {
+      const synth = window.speechSynthesis;
+
+      const speak = () => {
+        let u = new SpeechSynthesisUtterance();
+        u.text = msg;
+
+        let voices = synth.getVoices();
+
+        for (let index = 0; index < voices.length; index++) {
+          /*
+    "Google US English"
+    "Google 日本語"
+    "Google 普通话（中国大陆）"
+    "Google 粤語（香港）"
+    "Google 國語（臺灣）"
+    */
+
+          if (
+            voices[index].name ==
+            'Microsoft HsiaoChen Online (Natural) - Chinese (Taiwan)'
+          ) {
+            //HsiaoChen (Neural) - 曉臻 (MS Edge專用)
+            u.voice = voices[index];
+            break;
+          } else if (voices[index].name == 'Google 國語（臺灣）') {
+            //Chrome專用
+            u.voice = voices[index];
+            break;
+          }
+
+          //當最後一個都還沒找到時才設u.lang
+          if (index + 1 === voices.length) {
+            u.lang = 'zh-TW';
+          }
+        }
+
+        synth.speak(u);
+      };
+
+      speak();
     },
   },
 };

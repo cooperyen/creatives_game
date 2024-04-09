@@ -9,6 +9,7 @@
         >
           <div
             class="option"
+            :class="{ selected: playerMove.pickCard.includes(val) }"
             @click.stop="
               playerMove.pickCard.includes(val)
                 ? pickDropCardRemove(val)
@@ -29,7 +30,15 @@
       </div>
 
       <div class="btn-box flex">
-        <button class="btn" @click="drop">棄牌</button>
+        <button
+          class="btn"
+          @click="drop"
+          :class="{
+            selected: playerMove.pickCard.length >= 1,
+          }"
+        >
+          棄牌
+        </button>
         <button
           class="btn"
           @click="repickCard"

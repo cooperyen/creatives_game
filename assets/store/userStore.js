@@ -111,14 +111,14 @@ const loopStore = {
       state.loopHandler = null;
       state.tryTime = 0;
     },
-    loadRoomLoop(state, el) {
-      state.loadRoomLoop = el;
-    },
-    loadRoomLoopDelete(state) {
-      clearInterval(state.loadRoomLoop);
-      state.loadRoomLoop = null;
-      state.tryTime = 0;
-    },
+    // loadRoomLoop(state, el) {
+    //   state.loadRoomLoop = el;
+    // },
+    // loadRoomLoopDelete(state) {
+    //   clearInterval(state.loadRoomLoop);
+    //   state.loadRoomLoop = null;
+    //   state.tryTime = 0;
+    // },
     loopTimePlus(state) {
       state.tryTime += 1;
     },

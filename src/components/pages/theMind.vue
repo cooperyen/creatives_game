@@ -315,7 +315,7 @@
       <div class="title">
         <h2>
           <template v-if="gameOverHandler.gameWin">game over</template>
-          <template v-else>WIN</template>
+          <template v-else>太強了 恭喜通關!!</template>
         </h2>
       </div>
       <div class="container">
@@ -323,12 +323,12 @@
         <div class="options">
           <!-- level -->
           <div class="item-box">
-            <div class="item-title">Last level</div>
+            <div class="item-title">達到個關卡</div>
             <div class="item-content">{{ gameStateHandler.level }}</div>
           </div>
           <!-- dart -->
           <div class="item-box">
-            <div class="item-title">darts remaining</div>
+            <div class="item-title">剩餘的飛鏢</div>
             <div class="flex" v-if="gameStateHandler.dart != 0">
               <div v-for="i in gameStateHandler.dart" :key="i">
                 <img src="./../../image/ui/gem.png" />
@@ -340,7 +340,7 @@
           </div>
           <!-- plaeyr -->
           <div class="item-box">
-            <div class="item-title">game plaeyrs</div>
+            <div class="item-title">玩家</div>
             <div
               class="item-content"
               v-for="i in gameStateHandler.gameOver"
@@ -351,12 +351,12 @@
           </div>
         </div>
         <div class="click-btn">
-          <button @click="goLobby()">leave</button>
+          <button @click="goLobby()">離開</button>
         </div>
       </div>
     </div>
     <div class="t-countdown">
-      will return to LOBBY in {{ store.state.loopStore.tryTime }} s
+      即將回到大廳 {{ store.state.loopStore.tryTime }} 秒
     </div>
   </div>
 </template>
@@ -431,7 +431,7 @@ const gameOverHandler = reactive({
   win: false,
   state: false,
   countTimer: null,
-  time: 1000,
+  time: 60,
 });
 
 // sticker.
@@ -619,7 +619,7 @@ watch(
 
 // game leave.
 watch(
-  () => props.state.gameOne.gameOver,
+  () => props.state.lunchMind.gameOver,
   (el) => {
     if (el.url === null && el.url != 'lobby') return;
     store.commit('loopHandlerDelete');
@@ -641,7 +641,7 @@ watch(
 );
 
 watch(
-  () => props.state.gameOne.gameWin,
+  () => props.state.lunchMind.gameWin,
   (el) => {
     console.log(el);
     store.commit('loopHandlerDelete');
@@ -650,7 +650,7 @@ watch(
     gameStateHandler['level'] = el.level;
     gameStateHandler['gameOver'] = el.player;
     gameOverHandler.state = true;
-    store.state.loopStore.tryTime = gameOverHandler.time;
+    store.state.loopStore.tryTime = 300;
     store.commit(
       'loopHandler',
       setInterval(() => {
@@ -737,7 +737,6 @@ function playCard() {
 }
 
 function cardAnimate() {
-  console.log(window.innerWidth);
   const handCardBox = document.querySelectorAll('#hand-card .card-box');
   const handCardLength = handCardBox.length;
   let dx = 0;

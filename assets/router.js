@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import lobby from '@/components/pages/lobby.vue';
 import NotFound from '@/components/pages/404.vue';
-import game from '@/components/pages/game.vue';
+import theMind from '@/components/pages/theMind.vue';
 import blackJack from '@/components/pages/blackJack.vue';
 import yellowCard from '@/components/pages/yellowCard.vue';
 import login from '@/components/pages/login.vue';
@@ -43,8 +43,8 @@ const router = createRouter({
     },
     {
       path: '/mind/:room',
-      name: 'game',
-      component: game,
+      name: 'theMind',
+      component: theMind,
       meta: { style: { userName: 'light' } },
     },
     {

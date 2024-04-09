@@ -6,14 +6,14 @@
       </div>
       <div class="btn_box">
         <answerBtn state="true" class="agree" @click="this.$emit('agree', true)"
-          >agree</answerBtn
+          >同意</answerBtn
         >
         <answerBtn
           state="false"
           class="cancel"
           @click="this.$emit('close', false)"
         >
-          cancel
+          取消
         </answerBtn>
       </div>
     </div>

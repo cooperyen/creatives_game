@@ -1,6 +1,7 @@
 import App from '@/App.vue'
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
+import { createMetaManager } from 'vue-meta'
 import {
   readyIcon,
   backGroundAnimate,
@@ -26,9 +27,13 @@ const store = createStore({
   }
 });
 
+
+
 const app = createApp(App);
 app.use(store);
 app.use(router);
+app.use(createMetaManager())
+
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('readyIcon', readyIcon)
 app.component('backGroundAnimate', backGroundAnimate)

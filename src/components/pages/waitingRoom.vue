@@ -254,14 +254,14 @@ export default {
       },
       deep: true,
     },
-    'state.gameOne.readyToGo': {
+    'state.lunchMind.readyToGo': {
       handler(el) {
         if (typeof el != 'boolean') return;
         this.readyToGo = el;
       },
       deep: true,
     },
-    'state.gameOne.readyList': {
+    'state.lunchMind.readyList': {
       handler(el) {
         const selfPlayeReady =
           el[this.selfPlayer] != undefined || el[this.selfPlayer] != null;

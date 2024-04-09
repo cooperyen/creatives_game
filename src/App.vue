@@ -1,36 +1,15 @@
 <template>
-  <transition name="connect">
-    <div
-      id="connect"
-      v-if="!$store.state.userStore.loading && $route.name != 'not-found'"
-    >
-      <div class="loading-box active" v-if="!connectedCheck()">
-        <div class="flex">
-          <h2>Connecting</h2>
-          <span>......</span>
-        </div>
-        <div><p>shouldn't take too long.</p></div>
-        <div class="ani"></div>
-      </div>
-      <div class="loading-box" v-else>
-        <div class="flex">
-          <h2>Connecting to service FAIL</h2>
-        </div>
-        <div><p>please reload page and try again!</p></div>
-      </div>
+  <metainfo>
+    <template v-slot:title="{ content }">{{
+      content ? `${content} | CREATIVES` : `CREATIVES`
+    }}</template>
+  </metainfo>
 
-      <transferPageCountDown :state="state"></transferPageCountDown>
-    </div>
-  </transition>
-
-  <loadingLoop v-show="clickLoading"></loadingLoop>
-
-  <!-- {{ $store.state.loopStore.connected }}
-  {{ state.connected }} -->
+  <connectTransition></connectTransition>
 
   <!-- content -->
   <router-view
-    v-show="$store.state.loopStore.connected"
+    v-show="store.state.loopStore.connected"
     :socket="socket"
     :state="state"
     v-slot="{ Component }"
@@ -42,63 +21,54 @@
     </transition>
   </router-view>
 
+  <!-- copyright -->
   <copyright></copyright>
 </template>
 
 <script setup>
+import {
+  ref,
+  reactive,
+  onBeforeMount,
+  onMounted,
+  watch,
+  nextTick,
+  onBeforeUnmount,
+} from 'vue';
+import { useStore } from 'vuex';
+import { useMeta } from 'vue-meta';
 import { state, socket } from '@/../assets/socket';
-</script>
-
-<script>
-import loadingLoop from '@/../src/components/global/loadingLoop.vue';
-import transferPageCountDown from '@/../src/components/global/transferPageCountDown.vue';
+import { router } from '@/../assets/router.js';
+import connectTransition from '@/../src/components/layout/connectTransition.vue';
 import copyright from '@/../src/components/layout/copyright.vue';
-export default {
-  data() {
-    return {
-      dsds: false,
-      socket,
-      state,
-      loading: false,
-      clickLoading: false,
-      sockets: null,
-    };
-  },
-  components: { loadingLoop, transferPageCountDown, copyright },
-  watch: {
-    $route() {
-      // this.$store.commit('loopHandlerDelete');
-      this.$store.commit('loadRoomLoopDelete');
-      this.$store.commit('updateLoading', false);
-    },
-  },
-  computed: {
-    connected() {
-      return state.connected;
-    },
-  },
-  methods: {
-    loadingLoopFun(el) {
-      this.clickLoading = el;
-    },
-    connectedCheck() {
-      const connected = this.state.connected;
-      if (connected === undefined) return false;
-      if (connected === false && connected != null) return true;
-      if (connected === 'fail') return true;
-    },
-    async cookieCheck() {
-      const data = JSON.parse(localStorage.getItem('userData'));
+import { useRouter } from 'vue-router';
+const { currentRoute } = useRouter();
+const store = useStore();
 
-      if (data === null) this.$store.commit('createDefaultData');
-
-      const auth = await this.$store.commit('authCheck');
+// meta
+useMeta({
+  title: '',
+  meta: [
+    {
+      name: 'description',
+      content:
+        '我們是兩個喜歡桌遊的玩家，希望透過線上版本也可以同時讓不常見面的朋友也可以一同遊玩。',
     },
-  },
-  created() {
-    this.cookieCheck();
-  },
-};
+  ],
+  htmlAttrs: { lang: 'zh-tw' },
+});
+
+watch(currentRoute, () => {
+  store.commit('updateLoading', false);
+});
+
+// load with check cookie.
+cookieCheck();
+function cookieCheck() {
+  const data = JSON.parse(localStorage.getItem('userData'));
+  if (data === null) store.commit('createDefaultData');
+  store.commit('authCheck');
+}
 </script>
 
 <style lang="scss">
