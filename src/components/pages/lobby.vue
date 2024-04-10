@@ -130,6 +130,10 @@
   </div>
   <!-- end -->
 
+  <audio id="playesdr" autoplay loop>
+    <source src="./../../sound/dramatic.mp3" type="audio/mp3" />
+  </audio>
+
   <answerHandler
     :show="answer.open"
     @close="(n) => (answer.open = n)"
@@ -232,6 +236,7 @@ watch(
       if (vl.room != null && vl.room != 'lobby') return;
       return vl.user_id;
     });
+    document.querySelector('#playesdr').play();
   }
 );
 

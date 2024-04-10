@@ -27,6 +27,7 @@ onMounted(() => {
 });
 
 function socketConnectCheck() {
+  console.log('object');
   store.commit('connectHandlerDelete');
   store.commit('connected', false);
 
@@ -34,6 +35,7 @@ function socketConnectCheck() {
     'connectHandler',
     setInterval(() => {
       store.commit('connectTimePlus');
+
       if (props.state.connected === true) store.commit('connected', true);
       if (
         props.state.connected === 'fail' ||

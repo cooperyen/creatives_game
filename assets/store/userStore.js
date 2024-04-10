@@ -89,6 +89,7 @@ const loopStore = {
       connectTryTime: 0,
       loopHandler: null,
       tryTime: 0,
+      entrys: false,
     }
   },
   mutations: {

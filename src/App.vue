@@ -5,21 +5,25 @@
     }}</template>
   </metainfo>
 
-  <connectTransition></connectTransition>
+  <entry></entry>
 
-  <!-- content -->
-  <router-view
-    v-show="store.state.loopStore.connected"
-    :socket="socket"
-    :state="state"
-    v-slot="{ Component }"
-  >
-    <transition :name="$route.meta.transition || 'fade'">
-      <div :key="$route.fullpath">
-        <component :is="Component" />
-      </div>
-    </transition>
-  </router-view>
+  <template v-if="store.state.loopStore.entrys">
+    <connectTransition></connectTransition>
+
+    <!-- content -->
+    <router-view
+      v-show="store.state.loopStore.connected"
+      :socket="socket"
+      :state="state"
+      v-slot="{ Component }"
+    >
+      <transition :name="$route.meta.transition || 'fade'">
+        <div :key="$route.fullpath">
+          <component :is="Component" />
+        </div>
+      </transition>
+    </router-view>
+  </template>
 
   <!-- copyright -->
   <copyright></copyright>
@@ -41,6 +45,7 @@ import { state, socket } from '@/../assets/socket';
 import { router } from '@/../assets/router.js';
 import connectTransition from '@/../src/components/layout/connectTransition.vue';
 import copyright from '@/../src/components/layout/copyright.vue';
+import entry from '@/../src/components/layout/entry.vue';
 import { useRouter } from 'vue-router';
 const { currentRoute } = useRouter();
 const store = useStore();

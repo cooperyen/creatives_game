@@ -2,7 +2,11 @@
   <transition name="connect">
     <div
       id="connect"
-      v-if="!store.state.userStore.loading && router.name != 'not-found'"
+      v-if="
+        !store.state.userStore.loading &&
+        router.name != 'not-found' &&
+        store.state.loopStore.entrys
+      "
     >
       <div class="loading-box active" v-if="!connectedCheck()">
         <div class="flex">
