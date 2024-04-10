@@ -86,7 +86,13 @@
                 }"
                 :disabled="handCard.length === 0 || lastPlayerTheRound()"
               >
-                {{ lastPlayerTheRound() ? '一定不是我' : '應該不是我吧' }}
+                {{
+                  lastPlayerTheRound()
+                    ? handCard.length != 0
+                      ? '出牌吧別猶豫'
+                      : '一定不是我'
+                    : '應該不是我吧'
+                }}
               </button>
               <button
                 @click="
@@ -245,12 +251,25 @@
   </div>
 
   <!-- next round -->
-  <div class="transition" v-if="nextRound != false">
+  <div class="transition" v-show="nextRound != false">
     <div class="next-container">
       <div class="msg-box">
         <h2>
           {{ passNotice.msg }}
         </h2>
+      </div>
+      最後一張牌
+      <div class="card_content">
+        <div class="card-box card-style">
+          <div class="card-bg">
+            <img src="./../../image/card/01.svg" />
+          </div>
+          <div class="card-num">
+            <p>
+              <span>{{ gameStateHandler.lastCard }}</span>
+            </p>
+          </div>
+        </div>
       </div>
       <div class="countDown">
         <div class="title" v-show="!voteResult">即將進入下一關</div>
@@ -314,7 +333,7 @@
       <!-- title -->
       <div class="title">
         <h2>
-          <template v-if="gameOverHandler.gameWin">game over</template>
+          <template v-if="!gameOverHandler.win">game over</template>
           <template v-else>太強了 恭喜通關!!</template>
         </h2>
       </div>
@@ -323,7 +342,7 @@
         <div class="options">
           <!-- level -->
           <div class="item-box">
-            <div class="item-title">達到個關卡</div>
+            <div class="item-title">達到關卡</div>
             <div class="item-content">{{ gameStateHandler.level }}</div>
           </div>
           <!-- dart -->
@@ -359,6 +378,17 @@
       即將回到大廳 {{ store.state.loopStore.tryTime }} 秒
     </div>
   </div>
+
+  <audio
+    id="playesdr"
+    preload="auto"
+    autoplay
+    loop
+    controls
+    style="display: none"
+  >
+    <source src="./../../sound/dramatic.mp3" type="audio/mp3" />
+  </audio>
 </template>
 
 <script setup>
@@ -403,6 +433,7 @@ const gameStateHandler = reactive({
   level: 1,
   end: 0,
   gameOver: '',
+  lastCard: 0,
 });
 const players = ref(false);
 const playersCardLength = ref({});
@@ -526,6 +557,13 @@ onBeforeUnmount(() => {
   clearInterval(nextRoundHandler.countTimer);
 });
 
+watch(
+  () => props.state.lunchMind.lastCard,
+  (cur) => {
+    gameStateHandler.lastCard = cur.card;
+  }
+);
+
 // sticker
 watch(
   () => props.state.lunch.sticker,
@@ -588,7 +626,9 @@ watch(
 // monitor game data.
 watch(
   () => props.state.gameDataUpdate,
-  (el) => {
+  (el, pl) => {
+    console.log(el);
+    console.log(pl);
     if ('cardLength' in el) {
       playersCardLength.value = el['cardLength'];
     }
@@ -629,6 +669,7 @@ watch(
     gameStateHandler['gameOver'] = el.player;
     gameOverHandler.state = true;
     store.state.loopStore.tryTime = gameOverHandler.time;
+    document.querySelector('#playesdr').pause();
     store.commit(
       'loopHandler',
       setInterval(() => {
@@ -643,14 +684,15 @@ watch(
 watch(
   () => props.state.lunchMind.gameWin,
   (el) => {
-    console.log(el);
     store.commit('loopHandlerDelete');
     gameStateHandler['hp'] = el.hp;
     gameStateHandler['dart'] = el.dart;
     gameStateHandler['level'] = el.level;
     gameStateHandler['gameOver'] = el.player;
     gameOverHandler.state = true;
+    gameOverHandler.win = true;
     store.state.loopStore.tryTime = 300;
+    document.querySelector('#playesdr').pause();
     store.commit(
       'loopHandler',
       setInterval(() => {

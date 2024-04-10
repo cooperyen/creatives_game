@@ -62,15 +62,12 @@ export default {
     },
     voice(msg) {
       const synth = window.speechSynthesis;
+      let u = new SpeechSynthesisUtterance();
+      u.text = msg;
+      let voices = synth.getVoices();
 
-      const speak = () => {
-        let u = new SpeechSynthesisUtterance();
-        u.text = msg;
-
-        let voices = synth.getVoices();
-
-        for (let index = 0; index < voices.length; index++) {
-          /*
+      for (let index = 0; index < voices.length; index++) {
+        /*
     "Google US English"
     "Google 日本語"
     "Google 普通话（中国大陆）"
@@ -78,29 +75,26 @@ export default {
     "Google 國語（臺灣）"
     */
 
-          if (
-            voices[index].name ==
-            'Microsoft HsiaoChen Online (Natural) - Chinese (Taiwan)'
-          ) {
-            //HsiaoChen (Neural) - 曉臻 (MS Edge專用)
-            u.voice = voices[index];
-            break;
-          } else if (voices[index].name == 'Google 國語（臺灣）') {
-            //Chrome專用
-            u.voice = voices[index];
-            break;
-          }
-
-          //當最後一個都還沒找到時才設u.lang
-          if (index + 1 === voices.length) {
-            u.lang = 'zh-TW';
-          }
+        if (
+          voices[index].name ==
+          'Microsoft HsiaoChen Online (Natural) - Chinese (Taiwan)'
+        ) {
+          //HsiaoChen (Neural) - 曉臻 (MS Edge專用)
+          u.voice = voices[index];
+          break;
+        } else if (voices[index].name == 'Google 國語（臺灣）') {
+          //Chrome專用
+          u.voice = voices[index];
+          break;
         }
 
-        synth.speak(u);
-      };
+        //當最後一個都還沒找到時才設u.lang
+        if (index + 1 === voices.length) {
+          u.lang = 'zh-TW';
+        }
+      }
 
-      speak();
+      synth.speak(u);
     },
   },
 };

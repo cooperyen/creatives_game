@@ -26,7 +26,8 @@ export const state = reactive({
     readyList: null,
     gameOver: null,
     readyToGo: false,
-    gameWin: null
+    gameWin: null,
+    lastCard: 0,
   },
   blackJack: null,
   yellowCard: null,
@@ -221,13 +222,16 @@ function lunchGame() {
   })
 
   socket.on('lunch_leaveGame', function (data) {
-
     state.lunch.leaveGame = data;
   })
 
   socket.on('game_update_game', function (data) {
     state.gameDataUpdate = data;
     state.drawVote = null;
+  })
+
+  socket.on('game_last_card', function (data) {
+    state.lunchMind.lastCard = data;
   })
 
   socket.on('re_draw', function (data) {
