@@ -85,6 +85,7 @@ button {
 }
 button {
   border: unset;
+  background-color: unset;
 }
 a {
   text-decoration: none;
@@ -197,34 +198,6 @@ body {
       margin-top: 15px;
       text-align: center;
     }
-    .active {
-      .flex {
-        @include min-xs {
-          padding-left: 50px;
-        }
-      }
-      .ani {
-        margin-top: 50px;
-        position: relative;
-        height: 65px;
-        width: calc(371px / 5);
-        background-image: url('./../../ui/loading.png');
-        transform: perspective(500px);
-        animation: load-ani 0.4s steps(5) infinite;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-    }
-  }
-}
-
-@keyframes load-ani {
-  from {
-    background-position: 0;
-  }
-  to {
-    background-position: 371px;
   }
 }
 

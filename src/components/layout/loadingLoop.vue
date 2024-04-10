@@ -3,7 +3,7 @@
     <div class="loading">
       <div class="ani"></div>
     </div>
-    <div class="text">LOADING</div>
+    <div class="text">Play</div>
   </div>
 </template>
 
