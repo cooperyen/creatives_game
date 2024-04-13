@@ -39,11 +39,15 @@
     <div>connecting : {{ tryTime }}</div>
   </div>
   <backGroundAnimate></backGroundAnimate>
+
   <popupAnnunce :show="annunceShow" @close="(n) => (annunceShow = n)"
     >請輸入 3 - 15 字元
 
     <template v-slot:notice>不含特殊符號 : $#!@...</template>
   </popupAnnunce>
+
+  <!-- sound -->
+  <soundHandler id="bg_sound_effect" :bg="true" sound="bg"></soundHandler>
 </template>
 
 <script>
@@ -179,6 +183,7 @@ export default {
         if (this.$store.state.loopStore.connected) {
           this.$store.commit('loopHandlerDelete');
           this.$store.commit('updateLoading', true);
+          document.getElementById('bg_sound_effect').play();
         }
 
         if (this.$store.state.loopStore.tryTime >= 30)

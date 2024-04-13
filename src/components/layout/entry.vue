@@ -31,7 +31,10 @@ import {
 import { useStore } from 'vuex';
 import { router } from '@/../assets/router.js';
 const store = useStore();
+const props = defineProps(['keys']);
+
 const start = computed(() => {
+  if (props.keys === 'not-found') router.replace('/');
   return store.state.loopStore.entrys;
 });
 function turnOn() {

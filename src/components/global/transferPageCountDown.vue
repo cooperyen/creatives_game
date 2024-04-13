@@ -27,7 +27,6 @@ onMounted(() => {
 });
 
 function socketConnectCheck() {
-  console.log('object');
   store.commit('connectHandlerDelete');
   store.commit('connected', false);
 

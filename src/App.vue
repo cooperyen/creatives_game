@@ -5,7 +5,7 @@
     }}</template>
   </metainfo>
 
-  <entry></entry>
+  <entry :keys="$route.name"></entry>
 
   <template v-if="store.state.loopStore.entrys">
     <connectTransition></connectTransition>

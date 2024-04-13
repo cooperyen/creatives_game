@@ -130,9 +130,10 @@
   </div>
   <!-- end -->
 
-  <audio id="playesdr" autoplay loop>
-    <source src="./../../sound/dramatic.mp3" type="audio/mp3" />
-  </audio>
+  <soundHandler id="bg_sound_effect" :bg="true" sound="bg"></soundHandler>
+  <!-- <audio id="bg_sound_effect" autoplay loop>
+    <source src="./../../sound/lobby.mp3" type="audio/mp3" />
+  </audio> -->
 
   <answerHandler
     :show="answer.open"
@@ -237,7 +238,7 @@ watch(
       if (vl.room != null && vl.room != 'lobby') return;
       return vl.user_id;
     });
-    document.querySelector('#playesdr').play();
+    document.getElementById('bg_sound_effect').play();
   }
 );
 

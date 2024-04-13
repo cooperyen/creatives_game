@@ -8,7 +8,8 @@ import {
   answerHandler,
   instructionsCompent,
   closeBtn,
-  popupAnnunce
+  popupAnnunce,
+  soundHandler
 } from '@/../assets/componentsHandler.js';
 import { router, pageHandler } from '@/../assets/router.js';
 import { userStore, loopStore, iconData, playerIcon, style, instructions } from '@/../assets/storeHandler.js';
@@ -41,6 +42,8 @@ app.component('answerHandler', answerHandler)
 app.component('instructionsCompent', instructionsCompent)
 app.component('closeBtn', closeBtn)
 app.component('popupAnnunce', popupAnnunce)
+app.component('soundHandler', soundHandler)
+
 
 app.config.globalProperties.$global_getImgUrl = function (name, place) {
   if (name === null || place === null) return;

@@ -69,7 +69,6 @@ router.beforeEach((to, from, next) => {
   //   window.location.reload();
   //   window.localStorage.setItem('reloaded', 'yes');
   // }
-
   next();
 
 })
