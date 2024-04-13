@@ -23,5 +23,8 @@ export default defineConfig({
   server: {
     https: false
   },
+  rules: {
+    "vue/ no - multiple - template - root": "off"
+  }
 
 })

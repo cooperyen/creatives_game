@@ -64,11 +64,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const reloaded = window.localStorage.getItem('reloaded') || '';
-  if (reloaded === '' && to.name === 'login') {
-    window.location.reload();
-    window.localStorage.setItem('reloaded', 'yes');
-  }
+  // const reloaded = window.localStorage.getItem('reloaded') || '';
+  // if (reloaded === '' && to.name === 'login') {
+  //   window.location.reload();
+  //   window.localStorage.setItem('reloaded', 'yes');
+  // }
 
   next();
 

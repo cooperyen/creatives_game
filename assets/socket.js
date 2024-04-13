@@ -74,6 +74,15 @@ socket.on("connect", (el) => {
 
 });
 
+socket.on("connected", (el) => {
+  // console.log(el);
+  state.connected = true;
+  state.socketId = socket.id;
+
+});
+
+
+
 socket.on("disconnect", (el) => {
   console.log(el);
 });
@@ -95,6 +104,7 @@ socket.on('re_act', function (datas) {
   state.gameDataFirstLoad = null;
   state.loginError = null;
   state.activeGameRoom = null;
+  state.gameRooms.state = false;
   router(datas);
 });
 
@@ -185,7 +195,7 @@ function router(data) {
       break;
 
     case 'lunch_mind_pass':
-      console.log(data.data);
+      // console.log(data.data);
       state.lunchMind.gameWin = data.data;
       break;
   }

@@ -167,6 +167,8 @@ export default {
     localStorage.removeItem('reloaded');
   },
   mounted() {
+    this.socket.emit('logout');
+    this.socket.emit('connecting');
     this.$nextTick(() => this.titleAnimte());
 
     this.$store.commit(

@@ -232,6 +232,7 @@ watch(store.state.userStore, (news) => {
 watch(
   () => props.state.lobbyPlayerList,
   (el) => {
+    console.log(el);
     lobbyPlayerList.value = Object.values(el).filter((vl) => {
       if (vl.room != null && vl.room != 'lobby') return;
       return vl.user_id;

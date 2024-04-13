@@ -39,108 +39,106 @@ function turnOn() {
 }
 
 onMounted(() => {
-  ballA();
+  splitAnimation();
 });
 
-function ballA() {
+function splitAnimation() {
   const oBallContainer = document.getElementById('animation');
   let oBall = document.querySelector('.ani');
-  let children = null;
   let leftMax = document.documentElement.clientWidth - oBall.clientWidth;
   let topMax = document.documentElement.clientHeight - oBall.clientHeight;
-  let lastChilde;
-
-  window.addEventListener('resize', () => {
-    leftMax = document.documentElement.clientWidth - oBall.clientWidth;
-    topMax = document.documentElement.clientHeight - oBall.clientHeight;
-  });
-  let sss = true;
-  let xxx = true;
-  children = oBallContainer.children;
-  let length = children.length;
+  let children = oBallContainer.children;
   children[0].leftNum = 5;
   children[0].topNum = 5;
-  let leftMaxC = 0;
-  let topMaxC = 0;
+  let lastChilde;
+  let firstLoad = true;
+  let addTimeGap = true;
+  let length = children.length;
+  let leftMaxChild = 0;
+  let topMaxChild = 0;
+  let left = 0;
+  let top = 0;
+  const childNumHandler = {
+    large: 30,
+    small: 20,
+  };
+  let childNum =
+    window.innerWidth < 1200 ? childNumHandler.small : childNumHandler.large;
+
+  window.addEventListener('resize', () => {
+    childNum =
+      window.innerWidth < 1200 ? childNumHandler.small : childNumHandler.large;
+    const width = document.documentElement.clientWidth;
+    const Height = document.documentElement.clientHeight;
+    leftMax = width - oBall.clientWidth;
+    topMax = Height - oBall.clientHeight;
+    leftMaxChild = width - lastChilde.clientWidth;
+    topMaxChild = Height - lastChilde.clientHeight;
+    document.querySelectorAll('.anis').forEach((e) => e.remove());
+  });
 
   setInterval(() => {
     for (let i = 0; i < length; i++) {
-      let left = sss
-        ? Math.floor(Math.random(3) * 1000)
-        : children[i].offsetLeft + children[i].leftNum;
-      let top = sss
-        ? Math.floor(Math.random(3) * 1000)
-        : children[i].offsetTop + children[i].topNum;
+      let isMain = Array.from(children[i].classList).includes('anis');
 
-      let trs = Array.from(children[i].classList).includes('anis');
+      if (isMain) {
+        left = firstLoad
+          ? Math.floor(Math.random(3) * 1000 + 1)
+          : children[i].offsetLeft + children[i].leftNum;
+        top = firstLoad
+          ? Math.floor(Math.random(3) * 1000 + 1)
+          : children[i].offsetTop + children[i].topNum;
 
-      if (trs && left >= leftMaxC) {
-        left = leftMaxC;
-        children[i].leftNum = -children[i].leftNum;
-        bgRandom(children[i]);
-      }
-
-      if (!trs && left >= leftMaxC) {
-        left = leftMax;
-        children[i].leftNum = -children[i].leftNum;
-        if (length <= 8 && !xxx) {
-          xxx = true;
-          oBallContainer.insertAdjacentHTML(
-            'beforeend',
-            `<div class="anis"></div>`
-          );
-
-          children = oBallContainer.children;
-          length = children.length;
-          lastChilde = oBallContainer.lastChild;
-          lastChilde.style.left = `${left + Math.floor(Math.random() * 5)}px`;
-          lastChilde.style.top = `${top + Math.floor(Math.random() * 5)}px`;
-          lastChilde.leftNum = lastChilde.topNum = length * Math.random();
-
-          leftMaxC =
-            document.documentElement.clientWidth - lastChilde.clientWidth;
-          topMaxC =
-            document.documentElement.clientHeight - lastChilde.clientHeight;
+        if (left >= leftMaxChild) {
+          left = leftMaxChild;
+          children[i].leftNum = -children[i].leftNum;
+          bgRandom(children[i]);
         }
 
-        bgRandom(children[i]);
+        if (top >= topMaxChild) {
+          top = topMaxChild;
+          children[i].topNum = -children[i].topNum;
+          bgRandom(children[i]);
+        }
+      }
+
+      if (!isMain) {
+        left = firstLoad
+          ? Math.floor(Math.random(3) * 1000)
+          : children[i].offsetLeft + children[i].leftNum;
+        top = firstLoad
+          ? Math.floor(Math.random(3) * 1000)
+          : children[i].offsetTop + children[i].topNum;
+
+        if (top >= topMax) {
+          top = topMax;
+          children[i].topNum = -children[i].topNum;
+          if (length <= childNum && !addTimeGap) {
+            addTimeGap = true;
+            addChildVertical(true);
+          }
+          bgRandom(children[i]);
+        }
+
+        if (left >= leftMax) {
+          left = leftMax;
+          children[i].leftNum = -children[i].leftNum;
+          if (length <= childNum && !addTimeGap) {
+            addTimeGap = true;
+            addChildHorizontal(true);
+          }
+
+          bgRandom(children[i]);
+        }
       }
 
       if (left <= 0) {
         left = 0;
         children[i].leftNum = -children[i].leftNum;
-        if (!trs && length <= 8 && !xxx) {
-          xxx = true;
-          oBallContainer.insertAdjacentHTML(
-            'beforeend',
-            `<div class="anis"></div>`
-          );
-
-          children = oBallContainer.children;
-          length = children.length;
-          lastChilde = oBallContainer.lastChild;
-          lastChilde.style.left = `${left + Math.floor(Math.random() * 5)}px`;
-          lastChilde.style.top = `${top + Math.floor(Math.random() * 5)}px`;
-          lastChilde.leftNum = lastChilde.topNum =
-            length + Math.floor(Math.random() * 2);
-
-          leftMaxC =
-            document.documentElement.clientWidth - lastChilde.clientWidth;
-          topMaxC =
-            document.documentElement.clientHeight - lastChilde.clientHeight;
+        if (!isMain && length <= childNum && !addTimeGap) {
+          addTimeGap = true;
+          addChildHorizontal();
         }
-        bgRandom(children[i]);
-      }
-
-      if (trs && top >= topMaxC) {
-        top = topMaxC;
-        children[i].topNum = -children[i].topNum;
-        bgRandom(children[i]);
-      }
-
-      if (!trs && top >= topMax) {
-        top = topMax;
-        children[i].topNum = -children[i].topNum;
         bgRandom(children[i]);
       }
 
@@ -148,17 +146,68 @@ function ballA() {
         top = 0;
         children[i].topNum = -children[i].topNum;
         bgRandom(children[i]);
+        if (length <= childNum && !addTimeGap) {
+          addTimeGap = true;
+
+          addChildVertical(false);
+        }
       }
 
       children[i].style.left = `${left}px`;
       children[i].style.top = `${top}px`;
       children[i].style.opacity = 1;
+      addTimeGap = firstLoad = false;
+      children = oBallContainer.children;
+      length = children.length;
     }
-    xxx = sss = false;
+
+    function addChildHorizontal(position = false) {
+      oBallContainer.insertAdjacentHTML(
+        'beforeend',
+        `<div class="anis"></div>`
+      );
+
+      children = oBallContainer.children;
+      length = children.length;
+      lastChilde = oBallContainer.lastChild;
+      leftMaxChild =
+        document.documentElement.clientWidth - lastChilde.clientWidth;
+      topMaxChild =
+        document.documentElement.clientHeight - lastChilde.clientHeight;
+
+      lastChilde.style.left = `${position ? leftMaxChild : 0}px`;
+      lastChilde.style.top = `${top + Math.floor(Math.random() * 5) + 1}px`;
+      lastChilde.leftNum = lastChilde.topNum =
+        Math.floor(Math.random() * 5) + 1;
+
+      bgRandom(lastChilde);
+    }
+
+    function addChildVertical(position = false) {
+      oBallContainer.insertAdjacentHTML(
+        'beforeend',
+        `<div class="anis"></div>`
+      );
+
+      children = oBallContainer.children;
+      length = children.length;
+      lastChilde = oBallContainer.lastChild;
+      leftMaxChild =
+        document.documentElement.clientWidth - lastChilde.clientWidth;
+      topMaxChild =
+        document.documentElement.clientHeight - lastChilde.clientHeight;
+
+      lastChilde.style.left = `${left + Math.floor(Math.random() * 5) + 1}px`;
+      lastChilde.style.top = `${position ? topMaxChild : -top}px`;
+      lastChilde.leftNum = lastChilde.topNum =
+        Math.floor(Math.random() * 5) + 1;
+
+      bgRandom(lastChilde);
+    }
   }, 30);
 
   function bgRandom(obj) {
-    let r = Math.floor(Math.random() * 128),
+    let r = Math.floor(Math.random() * 255),
       g = Math.floor(Math.random() * 128),
       b = Math.floor(Math.random() * 128);
     obj.style.backgroundColor = `rgb(${r},${g},${b})`;
@@ -188,13 +237,15 @@ function ballA() {
     width: 100%;
     text-align: center;
     z-index: 6;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     @media (max-height: 750px) {
+      top: 50%;
     }
     .text {
       margin-bottom: 25px;
+      color: $titlColor;
       .title {
         font-size: clamp(1.2rem, 2.5rem, 5vw);
       }
@@ -211,12 +262,26 @@ function ballA() {
       box-shadow: 4px 6px 2px rgba(0, 0, 0, 0.2);
 
       svg {
-        color: #bd4f4f;
+        color: #d7b841;
+        filter: drop-shadow(2px 1px 0px rgba(0, 0, 0, 0.3));
+        animation: svgs 1.3s ease-in-out infinite;
       }
       span {
         margin-right: 10px;
       }
     }
+  }
+}
+
+@keyframes svgs {
+  0% {
+    transform: scale(0.9);
+  }
+  40% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.9);
   }
 }
 
