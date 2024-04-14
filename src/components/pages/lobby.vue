@@ -115,6 +115,13 @@
   <div class="side_menu flex">
     <div class="items setting">
       <div class="inner">
+        <div class="box" @click="soundClick()">
+          <font-awesome-icon icon="fa-solid fa-gear" />
+        </div>
+      </div>
+    </div>
+    <div class="items setting">
+      <div class="inner">
         <div class="box" @click="role.open = true">
           <font-awesome-icon icon="fa-solid fa-gear" />
         </div>
@@ -131,9 +138,6 @@
   <!-- end -->
 
   <soundHandler id="bg_sound_effect" :bg="true" sound="bg"></soundHandler>
-  <!-- <audio id="bg_sound_effect" autoplay loop>
-    <source src="./../../sound/lobby.mp3" type="audio/mp3" />
-  </audio> -->
 
   <answerHandler
     :show="answer.open"
@@ -159,6 +163,7 @@ import { useStore } from 'vuex';
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
 import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHandler.vue';
 import { router } from '@/../assets/router.js';
+
 const props = defineProps(['socket', 'state']);
 const store = useStore();
 
@@ -233,12 +238,11 @@ watch(store.state.userStore, (news) => {
 watch(
   () => props.state.lobbyPlayerList,
   (el) => {
-    console.log(el);
     lobbyPlayerList.value = Object.values(el).filter((vl) => {
       if (vl.room != null && vl.room != 'lobby') return;
       return vl.user_id;
     });
-    document.getElementById('bg_sound_effect').play();
+    if (isSatartSound()) document.getElementById('bg_sound_effect').play();
   }
 );
 
@@ -250,7 +254,46 @@ watch(
   }
 );
 
+watch(
+  () => store.state.userStore.userSound,
+  (el) => {
+    if (el === 0) document.getElementById('bg_sound_effect').pause();
+    if (el > 0) document.getElementById('bg_sound_effect').play();
+  }
+);
+
+function isSatartSound() {
+  const sound = store.state.userStore.userSound;
+  let res;
+  if (sound === 0) res = false;
+  if (sound > 0) res = true;
+  return res;
+}
+
 // functions
+function soundClick() {
+  const sound = store.state.userStore.userSound;
+  let res;
+
+  switch (sound) {
+    case 1:
+      console.log('object');
+      res = 0.5;
+      break;
+    case 0.5:
+      res = 0.1;
+      break;
+    case 0.1:
+      res = 0;
+      break;
+    case 0:
+      res = 1;
+      break;
+  }
+  console.log(res);
+  store.commit('updateUserSound', res);
+}
+
 function sliceGameRoom() {
   const xxxx = gameRoomsData.gameRooms;
   let sum = xxxx.length / gameRoomSlide.pageSum;

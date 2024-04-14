@@ -4,6 +4,7 @@ const playerIcon = ['apple', 'grape', 'orange', 'pineapple', 'watermelon', 'burg
 const userData = JSON.parse(localStorage.getItem('userData'));
 const userName = userData != null ? userData.userName : null;
 const userRoom = userData != null ? userData.userRoom : null;
+const userSound = userData != null ? userData.userSound : 0.3;
 // const userIcon = userData != null ? userData.icon : null;
 
 
@@ -29,15 +30,24 @@ const userStore = {
       userName,
       userRoom,
       icon: userData?.icon != null ? userData.icon : playerIcon[0],
-      loading: false,
+      userSound
     };
   },
   mutations: {
+    updateUserName(state, data) {
+      state.userName = data;
+      localStorage.setItem('userData', JSON.stringify(state))
+    },
+
     updateLoading(state, el) {
       state.loading = el;
     },
     updateUserRoom(state, data) {
       state.userRoom = data;
+      localStorage.setItem('userData', JSON.stringify(state))
+    },
+    updateUserSound(state, data) {
+      state.userSound = data;
       localStorage.setItem('userData', JSON.stringify(state))
     },
     updateUserIcon(state, data) {
@@ -64,14 +74,17 @@ const userStore = {
       if (isNotExist(userData.userName)) userData.userName = state.userName
       if (isNotExist(userData.userRoom)) userData.userRoom = state.userRoom
       if (isNotExist(userData.icon) || !isNotExist(userData.icon) && !playerIcon.includes(userData.icon)) userData.icon = state.icon
+      if (isNotExist(userData.userSound) || !isNotExist(userData.userSound) && !playerIcon.includes(userData.userSound)) userData.userSound = state.userSound
 
+      console.log(userData);
       // update cookie
       updateCookie('userData', userData)
 
     },
     createDefaultData(state) {
       // const cookie = getCookie('userData')
-      let data = { userName: null, userRoom: null, icon: state.icon }
+      let data = state;
+      console.log(data);
       // if (cookie != null && cookie?.icon != playerIcon[0]) data.icon = cookie.icon
 
 

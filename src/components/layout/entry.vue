@@ -243,8 +243,11 @@ function splitAnimation() {
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-    @media (max-height: 750px) {
+    @media (max-height: 500px) {
       top: 50%;
+    }
+    @include sm {
+      top: 40%;
     }
     .text {
       margin-bottom: 25px;
@@ -301,7 +304,7 @@ function splitAnimation() {
   position: absolute;
   height: 65px;
   width: calc(371px / 5);
-  --svg: url('./../../uis/loading.svg');
+  --svg: url('./../../image/loading.svg');
   // background-image: url('./../../uis/loading.svg');
   animation: load-ani 0.4s steps(5) infinite;
   background-size: cover;

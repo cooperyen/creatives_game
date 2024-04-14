@@ -154,7 +154,7 @@ function router(data) {
     case 'login':
       const cookie = JSON.parse(localStorage.getItem('userData'))
       const icon = playerIcon[0]
-      let cookieData = { userName: data.id, userRoom: null, icon };
+      let cookieData = { userName: data.id, userRoom: null, icon, userSound: cookie.userSound };
       if (cookie.icon != icon) cookieData.icon = icon;
       localStorage.setItem('userData', JSON.stringify(cookieData));
       state.loginError = null;

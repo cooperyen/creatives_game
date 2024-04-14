@@ -88,20 +88,17 @@ export default {
         "[`~!@#$^&*()=|{}':;',\\[\\].<>《》/\?~！@#￥……&*（）——|{}【】‘；：”“'。，、？+-/ ]|[\\\\/]"
       );
       const string = this.toHalfwidth(this.userName);
-
       // character should between 3-15
       if (string.search(searchString) != -1) this.annunceShow = true;
-
       if (string === '' || nameLength > 15 || nameLength < 3)
         this.annunceShow = true;
-
       if (
         string.search(searchString) === -1 &&
         string != '' &&
         nameLength <= 15 &&
         nameLength >= 3
       ) {
-        this.$store.state.userStore.userName = string;
+        this.$store.commit('updateUserName', this.userName);
         this.socket.emit('login', {
           id: string,
           icon: this.$store.state.userStore.icon,
@@ -168,7 +165,7 @@ export default {
     this.$store.commit('createDefaultData');
   },
   beforeUnmount() {
-    localStorage.removeItem('reloaded');
+    // localStorage.removeItem('reloaded');
   },
   mounted() {
     this.socket.emit('logout');

@@ -379,16 +379,7 @@
     </div>
   </div>
 
-  <audio
-    id="playesdr"
-    preload="auto"
-    autoplay
-    loop
-    controls
-    style="display: none"
-  >
-    <source src="./../../sound/dramatic.mp3" type="audio/mp3" />
-  </audio>
+  <soundHandler id="bg_sound_effect" sound="mind" max="0.2"></soundHandler>
 </template>
 
 <script setup>
@@ -409,6 +400,9 @@ import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
 
 const props = defineProps(['socket', 'state']);
 const store = useStore();
+
+// audio
+const bgAduio = ref('');
 
 // option.
 const gamePlayTime = 300;
@@ -547,6 +541,9 @@ onMounted(() => {
   cardAnimate();
   // exchange check bk end.
   exchange();
+
+  // DOM
+  bgAduio.value = document.getElementById('bg_sound_effect');
 });
 
 onBeforeUnmount(() => {
@@ -609,6 +606,7 @@ watch(
     setTimeout(() => {
       store.commit('updateLoading', true);
       createCountTime(gamePlayTime);
+      bgAduio.value.play();
     }, 3000);
 
     function figout(data) {
@@ -627,8 +625,6 @@ watch(
 watch(
   () => props.state.gameDataUpdate,
   (el, pl) => {
-    console.log(el);
-    console.log(pl);
     if ('cardLength' in el) {
       playersCardLength.value = el['cardLength'];
     }
@@ -669,7 +665,7 @@ watch(
     gameStateHandler['gameOver'] = el.player;
     gameOverHandler.state = true;
     store.state.loopStore.tryTime = gameOverHandler.time;
-    document.querySelector('#playesdr').pause();
+    bgAduio.value.pause();
     store.commit(
       'loopHandler',
       setInterval(() => {
@@ -692,7 +688,7 @@ watch(
     gameOverHandler.state = true;
     gameOverHandler.win = true;
     store.state.loopStore.tryTime = 300;
-    document.querySelector('#playesdr').pause();
+    bgAduio.value.pause();
     store.commit(
       'loopHandler',
       setInterval(() => {
