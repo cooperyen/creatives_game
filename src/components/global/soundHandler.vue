@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, onMounted, computed } from 'vue';
+import { ref, onBeforeUnmount, onMounted, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
 
@@ -37,25 +37,25 @@ let gainNode;
 onMounted(() => {
   if (!props.sound) return;
   audioHandler();
+  if (store.state.userStore.userSound > 0) audio.value.play();
   // audioSoundStart(500);
 });
 
+watch(
+  () => store.state.userStore.userSound,
+  (el) => {
+    if (el === 0) audio.value.pause();
+    if (el > 0) audio.value.play();
+  }
+);
+
 function audioSoundStart(time, maxs) {
   const max = maxs;
-  console.log(maxs);
-  set.value = setInterval(() => {
-    if (max != 0) {
-      num.value += 0.1;
-      gainNode.gain.value = num.value;
-      if (num.value >= max) {
-        clearInterval(set.value);
-        num.value = 0;
-      }
-    }
-    if (max === 0) {
-      console.log(object);
-      gainNode.gain.value = 0.0;
 
+  set.value = setInterval(() => {
+    num.value += 0.1;
+    gainNode.gain.value = num.value;
+    if (num.value >= max) {
       clearInterval(set.value);
       num.value = 0;
     }
@@ -67,6 +67,7 @@ function audioHandler(el) {
   track = audioContext.createMediaElementSource(audio.value);
   gainNode = audioContext.createGain();
   track.connect(gainNode).connect(audioContext.destination);
+  gainNode.gain.value = 0.1;
   audio.value.pause();
 }
 

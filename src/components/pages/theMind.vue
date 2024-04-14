@@ -379,7 +379,12 @@
     </div>
   </div>
 
-  <soundHandler id="bg_sound_effect" sound="mind" max="0.2"></soundHandler>
+  <soundHandler
+    v-if="store.state.userStore.userSound > 0"
+    id="bg_sound_effect"
+    sound="mind"
+    max="0.2"
+  ></soundHandler>
 </template>
 
 <script setup>
@@ -606,7 +611,7 @@ watch(
     setTimeout(() => {
       store.commit('updateLoading', true);
       createCountTime(gamePlayTime);
-      bgAduio.value.play();
+      // bgAduio.value.play();
     }, 3000);
 
     function figout(data) {

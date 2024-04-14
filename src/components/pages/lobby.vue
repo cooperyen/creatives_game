@@ -137,7 +137,12 @@
   </div>
   <!-- end -->
 
-  <soundHandler id="bg_sound_effect" :bg="true" sound="bg"></soundHandler>
+  <soundHandler
+    v-if="store.state.userStore.userSound > 0"
+    id="bg_sound_effect"
+    :bg="true"
+    sound="bg"
+  ></soundHandler>
 
   <answerHandler
     :show="answer.open"
@@ -242,7 +247,7 @@ watch(
       if (vl.room != null && vl.room != 'lobby') return;
       return vl.user_id;
     });
-    if (isSatartSound()) document.getElementById('bg_sound_effect').play();
+    // if (isSatartSound()) document.getElementById('bg_sound_effect').play();
   }
 );
 
@@ -254,13 +259,13 @@ watch(
   }
 );
 
-watch(
-  () => store.state.userStore.userSound,
-  (el) => {
-    if (el === 0) document.getElementById('bg_sound_effect').pause();
-    if (el > 0) document.getElementById('bg_sound_effect').play();
-  }
-);
+// watch(
+//   () => store.state.userStore.userSound,
+//   (el) => {
+//     if (el === 0) document.getElementById('bg_sound_effect').pause();
+//     if (el > 0) document.getElementById('bg_sound_effect').play();
+//   }
+// );
 
 function isSatartSound() {
   const sound = store.state.userStore.userSound;
