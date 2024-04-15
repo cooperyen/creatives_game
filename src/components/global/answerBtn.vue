@@ -38,7 +38,7 @@ button {
   }
   &.cancel {
     border-color: rgb(195 136 136);
-    color: rgb(195 136 136);
+    color: rgb(194, 97, 97);
   }
 }
 </style>

@@ -37,7 +37,7 @@
                   </div>
                   <!-- content end -->
                   <!-- game pic -->
-                  <div class="img-box">
+                  <div class="img-box" :data-room="room">
                     <div class="bg"></div>
                     <div class="right">
                       <img
@@ -116,7 +116,20 @@
     <div class="items setting">
       <div class="inner">
         <div class="box" @click="soundClick()">
-          <font-awesome-icon icon="fa-solid fa-gear" />
+          <font-awesome-icon
+            v-show="sound >= 1"
+            icon="fa-solid fa-volume-high"
+          />
+
+          <font-awesome-icon
+            v-show="sound === 0.4"
+            icon="fa-solid fa-volume-low"
+          />
+          <font-awesome-icon
+            class="sound_close"
+            v-show="sound <= 0"
+            icon="fa-solid fa-volume-xmark"
+          />
         </div>
       </div>
     </div>
@@ -138,7 +151,7 @@
   <!-- end -->
 
   <soundHandler
-    v-if="store.state.userStore.userSound > 0"
+    v-if="sound > 0"
     id="bg_sound_effect"
     :bg="true"
     sound="bg"
@@ -212,6 +225,10 @@ const role = ref({
   icon: null,
 });
 
+const sound = computed(() => {
+  return store.state.userStore.userSound;
+});
+
 onBeforeMount(() => {
   const userStore = store.state.userStore;
 
@@ -262,29 +279,17 @@ watch(
   }
 );
 
-// watch(
-//   () => store.state.userStore.userSound,
-//   (el) => {
-//     if (el === 0) document.getElementById('bg_sound_effect').pause();
-//     if (el > 0) document.getElementById('bg_sound_effect').play();
-//   }
-// );
-
 function isSatartSound() {
-  const sound = store.state.userStore.userSound;
   let res;
-  if (sound === 0) res = false;
-  if (sound > 0) res = true;
+  if (sound.value === 0) res = false;
+  if (sound.value > 0) res = true;
   return res;
 }
 
 // functions
 function soundClick() {
-  const sound = store.state.userStore.userSound;
-  console.log(sound);
   let res;
-
-  switch (sound) {
+  switch (sound.value) {
     case 1:
       res = 0.4;
       break;

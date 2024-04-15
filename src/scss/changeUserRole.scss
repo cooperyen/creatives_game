@@ -24,8 +24,9 @@ $bg_: rgb(255, 253, 251);
     flex-wrap: wrap;
     padding: 15px 0;
     border-radius: 10px;
-    border: 5px solid #bc6e6e;
+    border: 5px solid #c2a36d;
     overflow: hidden;
+    box-shadow: 4px 4px 8px rgba(63, 47, 18, 0.2);
 
     .role {
       margin-bottom: 30px;
@@ -133,12 +134,16 @@ $bg_: rgb(255, 253, 251);
         border-style: solid;
         min-width: 70px;
         cursor: pointer;
+        background-color: #f8f8f8;
+        font-weight: 600;
         &.agree {
           background-color: #7ad97a;
           border-color: #54af54;
+          color: #484848;
         }
-        &.cencel {
+        &.cancel {
           border-color: rgb(203, 91, 91);
+          background-color: rgb(246, 241, 241);
         }
         @include ss {
           padding: 0;

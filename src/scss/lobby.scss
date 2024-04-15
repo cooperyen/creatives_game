@@ -15,8 +15,7 @@ $text: rgb(198, 190, 149);
 
 .side_menu {
   // box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
-  // #d1b994
-  border: 5px solid #c3d1d0;
+  border: 4px solid #93b4cf;
   border-radius: 18px;
   overflow: hidden;
   @include sm {
@@ -30,11 +29,10 @@ $text: rgb(198, 190, 149);
     left: 50%;
     bottom: 10%;
     transform: translateX(-50%);
-
     animation: side_menu 3s ease-in-out forwards;
   }
   @include L {
-    width: 100px;
+    width: 150px;
     margin: 20px auto 0 auto;
   }
   .items {
@@ -47,13 +45,12 @@ $text: rgb(198, 190, 149);
     @include L {
       width: 50%;
       padding: 5px;
-      // font-size: 1.4rem;
     }
     @include xs {
       width: 80px;
     }
     svg {
-      // filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.4));
+      filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.12));
     }
 
     .inner {
@@ -64,7 +61,7 @@ $text: rgb(198, 190, 149);
         position: relative;
       }
       .box {
-        color: #94a9c5;
+        color: #7a99b3;
         text-align: center;
         @include min-L {
           left: 50%;
@@ -76,6 +73,9 @@ $text: rgb(198, 190, 149);
 
         @include L {
           font-size: 1.4rem;
+        }
+        .sound_close {
+          color: #c18080;
         }
       }
     }
@@ -165,7 +165,6 @@ $text: rgb(198, 190, 149);
             cursor: pointer;
             .img-box {
               .right {
-                // top: 45%;
                 transform: rotate(5deg) translateY(-60%);
               }
             }
@@ -209,6 +208,16 @@ $text: rgb(198, 190, 149);
           opacity: 1;
           .img-box {
             box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+            &[data-room='game03'] {
+              // border-color: rgb(207, 187, 84);
+              border-color: rgb(50 50 50);
+              background-color: rgb(245, 228, 107);
+            }
+            &[data-room='game01'] {
+              // border-color: rgb(212, 125, 125);
+              border-color: rgb(50 50 50);
+              background-color: rgb(248, 177, 207);
+            }
           }
         }
         .content {
@@ -216,13 +225,12 @@ $text: rgb(198, 190, 149);
           left: 20px;
           top: 50%;
           transform: translateY(-50%);
-          color: $text_default_title;
+          // color: $text_default_title;
           max-width: 50%;
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
           @include sm {
-            // margin-top: 1px;
             font-size: 1rem;
           }
           .title {
@@ -251,7 +259,7 @@ $text: rgb(198, 190, 149);
           }
         }
         .img-box {
-          background-color: #f7f7f7;
+          background-color: rgb(252, 252, 252);
           border: 4px solid rgb(110, 110, 110);
           height: 80px;
           width: 100%;
@@ -347,8 +355,10 @@ $text: rgb(198, 190, 149);
     margin-top: 10px;
     overflow-y: auto;
     border-radius: 10px;
-    background-color: rgb(245, 245, 245);
-    box-shadow: 0 0 0px 5px #c3d1d0;
+    // background-color: rgb(245, 245, 245);
+    // box-shadow: 0 0 0px 4px #c3d1d0;
+    background-color: #edeef6;
+    box-shadow: 0 0 0px 4px #9cafcb;
     padding: 5px 7px;
     min-height: 100px;
     max-height: 300px;
