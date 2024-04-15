@@ -21,23 +21,23 @@ const props = defineProps(['bg', 'sound', 'max']);
 const audio = ref(null);
 const set = ref(null);
 const num = ref(0);
+
 const soundMax = computed(() => {
   clearInterval(set.value);
   const sound = store.state.userStore.userSound;
   if (sound === undefined) store.commit('updateUserSound', 1);
-  if (sound != 0) audioSoundStart(500, sound);
+  if (sound != 0 && audio.value != null) audioSoundStart(500, sound);
   return sound;
 });
 
-let audioContext;
-let track;
+let audioCtx;
+let source;
 let gainNode;
 
 onMounted(() => {
   if (!props.sound) return;
   audioHandler();
   if (store.state.userStore.userSound > 0) audio.value.play();
-  // audioSoundStart(500);
 });
 
 watch(
@@ -51,23 +51,26 @@ watch(
 function audioSoundStart(time, maxs) {
   const max = maxs;
 
-  set.value = setInterval(() => {
-    num.value += 0.1;
-    gainNode.gain.value = num.value;
-    if (num.value >= max) {
-      clearInterval(set.value);
-      num.value = 0;
-    }
-  }, time);
+  gainNode.gain.setTargetAtTime(max, audioCtx.currentTime + 1, 0.5);
+
+  // set.value = setInterval(() => {
+  //   num.value += 0.1;
+  //   gainNode.gain.value = num.value;
+  //   if (num.value >= max) {
+  //     clearInterval(set.value);
+  //     num.value = 0;
+  //   }
+  // }, time);
 }
 
 function audioHandler(el) {
-  audioContext = new AudioContext();
-  track = audioContext.createMediaElementSource(audio.value);
-  gainNode = audioContext.createGain();
-  track.connect(gainNode).connect(audioContext.destination);
+  audioCtx = new AudioContext();
+  source = audioCtx.createMediaElementSource(audio.value);
+  gainNode = audioCtx.createGain();
   gainNode.gain.value = 0.1;
+  source.connect(gainNode).connect(audioCtx.destination);
   audio.value.pause();
+  audioSoundStart(500, 0.2);
 }
 
 onBeforeUnmount(() => {

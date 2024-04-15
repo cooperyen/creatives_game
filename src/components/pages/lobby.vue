@@ -286,12 +286,9 @@ function soundClick() {
 
   switch (sound) {
     case 1:
-      res = 0.5;
+      res = 0.4;
       break;
-    case 0.5:
-      res = 0.1;
-      break;
-    case 0.1:
+    case 0.4:
       res = 0;
       break;
     case 0:
