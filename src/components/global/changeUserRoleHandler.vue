@@ -33,8 +33,8 @@
       </div>
       <hr />
       <div class="btn">
-        <answerBtn :state="true" @click="setUserRole()">agree</answerBtn>
-        <answerBtn :state="false" @click="close()">cancel</answerBtn>
+        <answerBtn :state="true" @click="setUserRole()">確定</answerBtn>
+        <answerBtn :state="false" @click="close()">取消</answerBtn>
       </div>
     </div>
   </div>

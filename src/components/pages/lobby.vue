@@ -163,6 +163,7 @@ import {
   nextTick,
   onBeforeUnmount,
   computed,
+  defineAsyncComponent,
 } from 'vue';
 import { useStore } from 'vuex';
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
@@ -171,6 +172,8 @@ import { router } from '@/../assets/router.js';
 
 const props = defineProps(['socket', 'state']);
 const store = useStore();
+
+const audio = defineAsyncComponent(() => {});
 
 const answer = ref({ open: false, text: '即將返回首頁, 確定?' });
 const gameRoomSlide = reactive({
@@ -278,11 +281,11 @@ function isSatartSound() {
 // functions
 function soundClick() {
   const sound = store.state.userStore.userSound;
+  console.log(sound);
   let res;
 
   switch (sound) {
     case 1:
-      console.log('object');
       res = 0.5;
       break;
     case 0.5:
@@ -294,6 +297,8 @@ function soundClick() {
     case 0:
       res = 1;
       break;
+    default:
+      res = 1;
   }
   console.log(res);
   store.commit('updateUserSound', res);

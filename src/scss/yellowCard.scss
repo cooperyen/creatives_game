@@ -117,7 +117,11 @@ h1 {
     }
   }
 }
-#await {
+
+:deep(.insert) {
+  color: rgb(215, 57, 49);
+}
+:deep(#await) {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -131,9 +135,7 @@ h1 {
   @include xs {
     max-width: calc(100% - 15px);
   }
-  &::v-deep(.insert) {
-    color: rgb(215, 57, 49);
-  }
+
   .content {
     padding: 25px 0;
     border-radius: 8px;
@@ -212,6 +214,9 @@ h1 {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
+  h2 {
+    margin-bottom: 5px;
+  }
 }
 #hand-card,
 #drop {

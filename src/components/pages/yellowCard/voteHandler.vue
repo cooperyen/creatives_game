@@ -1,6 +1,7 @@
 <template>
   <div id="vote" v-if="playerMove.currentStep === 'vote'">
     <div v-if="playerMove.voteOpen">
+      <h2>誰最沒梗?</h2>
       <template v-for="(val, index) in gameData.tableCard" :key="index">
         <div
           class="item"
@@ -27,7 +28,7 @@
 
 <script>
 export default {
-  props: ['isShow', 'isOpen', 'gameData', 'playerMove'],
+  props: ['gameData', 'playerMove'],
   methods: {
     card(el) {
       let result = this.gameData.quest;

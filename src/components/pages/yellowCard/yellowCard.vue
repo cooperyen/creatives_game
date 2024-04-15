@@ -4,12 +4,7 @@
       <leaveGameHadnler :socket="socket" game="yc"></leaveGameHadnler>
     </userNameBox>
 
-    <!-- drop card annunce -->
-    <popupAnnunce :show="annunceShow" @close="(n) => (annunceShow = n)"
-      >至少選 1 個</popupAnnunce
-    >
-
-    <div v-show="playerMove.currentStep != 'end'">
+    <div v-show="currentStep != 'end'">
       <div class="header">
         <!-- each player content -->
         <div class="items">
@@ -32,7 +27,7 @@
           </div>
         </div>
         <!-- countdown -->
-        <div class="timer flex" v-if="playerMove.currentStep != 'end'">
+        <div class="timer flex" v-if="currentStep != 'end'">
           <div class="img_box" :class="{ stop: !timer.show }">
             <font-awesome-icon icon="fa-solid fa-clock" />
           </div>
@@ -44,25 +39,24 @@
       </div>
 
       <!-- hand card -->
-      <div>
-        <handCardHandler
-          :gameData="gameData"
-          :playerMove="playerMove"
-          :class="{ active: playerMove.usedOpen }"
-          @pickUsedCard="pickUsedCard"
-          @pickUsedCardRemove="pickUsedCardRemove"
-          @used="used"
-          @rePickUsedCard="rePickUsedCard"
-        ></handCardHandler>
-      </div>
+
+      <handCardHandler
+        :gameData="gameData"
+        :playerMove="playerMove"
+        :class="{ active: playerMove.usedOpen }"
+        @pickUsedCard="pickUsedCard"
+        @pickUsedCardRemove="pickUsedCardRemove"
+        @used="used"
+        @rePickUsedCard="rePickUsedCard"
+      ></handCardHandler>
 
       <!-- vote -->
       <voteHandler
         :class="{ active: playerMove.voteOpen }"
         :gameData="gameData"
         :playerMove="playerMove"
-        @vote="vote"
-        @updateVoteNumber="updateVoteNumber"
+        @vote="voteFunc"
+        @updateVoteNumber="updateVoteNumberFunc"
       ></voteHandler>
 
       <!-- drop -->
@@ -72,46 +66,33 @@
         :class="{ active: playerMove.dropOpen }"
         @pickDropCardRemove="pickDropCardRemove"
         @pickDropCard="pickDropCard"
-        @drop="drop"
+        @drop="dropFunc"
         @repickCard="repickCard"
       ></dropHandler>
 
-      <!-- game transitions -->
-      <div id="await" v-if="isShowAwait(playerMove.currentStep)">
-        <div
-          class="await"
-          :class="{ active: isShowAwait(playerMove.currentStep) }"
-        >
-          <div
-            v-if="playerMove.currentStep === 'vote'"
-            class="content"
-            v-html="wait.quest"
-          ></div>
-
-          <div class="text">
-            <p v-if="playerMove.currentStep === 'vote'">
-              等待其他人出牌<span></span>
-            </p>
-
-            <p v-if="playerMove.currentStep === 'drop'">
-              等待其他人投票<span></span>
-            </p>
-          </div>
-        </div>
-      </div>
+      <showAwaitHandler
+        :data="gameData.tableCard.length"
+        :wait="wait"
+        :playerMove="playerMove"
+        @show="
+          (n) => {
+            timer.show = n;
+          }
+        "
+      ></showAwaitHandler>
 
       <!-- new game await other player -->
       <div
-        v-if="playerMove.currentStep === 'statistic'"
-        :class="{ active: playerMove.currentStep === 'statistic' }"
+        v-if="currentStep === 'statistic'"
+        :class="{ active: currentStep === 'statistic' }"
       >
         <h1>回合計算中</h1>
       </div>
     </div>
 
     <div
-      v-if="playerMove.currentStep === 'end'"
-      :class="{ active: playerMove.currentStep === 'end' }"
+      v-if="currentStep === 'end'"
+      :class="{ active: currentStep === 'end' }"
       id="end_game"
     >
       <div class="container">
@@ -145,9 +126,10 @@ import {
 import { useStore } from 'vuex';
 import { router } from '@/../assets/router.js';
 import userNameBox from '@/../src/components/layout/userNameBox.vue';
-import handCardHandler from '@/../src/components/yellowCard/handCardHandler.vue';
-import voteHandler from '@/../src/components/yellowCard/voteHandler.vue';
-import dropHandler from '@/../src/components/yellowCard/dropHandler.vue';
+import handCardHandler from '@/../src/components/pages/yellowCard/handCardHandler.vue';
+import voteHandler from '@/../src/components/pages/yellowCard/voteHandler.vue';
+import dropHandler from '@/../src/components/pages/yellowCard/dropHandler.vue';
+import showAwaitHandler from '@/../src/components/pages/yellowCard/showAwaitHandler.vue';
 import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
 const props = defineProps(['socket', 'state']);
 const store = useStore();
@@ -199,12 +181,18 @@ const playerMove = reactive({
   dropOpen: false,
   usedOpen: false,
 });
+
+const currentStep = computed(() => {
+  const res = playerMove.currentStep;
+  if (res === 'statistic') checkToCreatTimer();
+  return playerMove.currentStep;
+});
+
 const wait = reactive({
   quest: null,
 });
 const gameFinal = ref(null);
 const backToLobbyTimer = ref(null);
-const annunceShow = ref(false);
 
 onMounted(() => {
   updateUserRoom();
@@ -320,7 +308,7 @@ function gameDataLayout(action = null, el) {
         break;
     }
 
-    currentStep();
+    currentStepHandler();
   }
 }
 function gameEnd(el) {
@@ -343,30 +331,34 @@ function isShowAwait(el) {
       break;
     case 'statistic':
       result = true;
+      break;
   }
 
   timer.show = !result;
   return result;
 }
-function currentStep() {
+function currentStepHandler() {
   switch (playerMove.currentStep) {
     case 'used':
       playerMove.usedOpen =
         gameData.tableCard.length <= gameData.player.length ? true : false;
-      checkToCreatTimer();
-
       break;
 
     case 'vote':
       playerMove.voteOpen =
         gameData.tableCard.length >= gameData.player.length ? true : false;
-
-      checkToCreatTimer();
       break;
 
     case 'drop':
       playerMove.dropOpen =
         gameData.vote.length >= gameData.player.length ? true : false;
+      break;
+  }
+
+  switch (playerMove.currentStep) {
+    case 'used':
+    case 'vote':
+    case 'drop':
       checkToCreatTimer();
       break;
   }
@@ -401,6 +393,11 @@ function checkToCreatTimer() {
       })
     : false;
 }
+
+/**
+ * create setinterval on time.countTimer.
+ * @return callback()
+ */
 function creatTimer(countTime = timer.default, callback) {
   timer.time = countTime;
   timer.countTimer = setInterval(() => {
@@ -410,6 +407,10 @@ function creatTimer(countTime = timer.default, callback) {
     }
   }, 1000);
 }
+/**
+ * clean interval on time.countTimer.
+ * @reture true
+ */
 function cleanTimer() {
   timer.time = 0;
   clearInterval(timer.countTimer);
@@ -421,17 +422,14 @@ function cleanTimer() {
  *  @return Boolean
  */
 function timeOutCheck() {
-  if (timer.time <= 0) {
-    return true;
-  }
+  return timer.time <= 0 ? true : false;
 }
-function drop(auto = false) {
+function dropFunc(auto = false) {
   if (timeOutCheck()) return;
   let leng = playerMove.pickCard.length;
 
   if (auto === false) {
-    if (leng <= 0) annunceShow.value = true;
-    if (leng > 0 && leng <= 3) {
+    if (leng <= 3) {
       props.socket.emit('yc', {
         id: userInfo.value.id,
         room: userInfo.value.room,
@@ -455,7 +453,7 @@ function drop(auto = false) {
     cleanTimer();
   }
 }
-function vote(auto = false) {
+function voteFunc(auto = false) {
   if (timeOutCheck()) return;
 
   props.socket.emit('yc', {
@@ -472,7 +470,7 @@ function vote(auto = false) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
-function updateVoteNumber(val) {
+function updateVoteNumberFunc(val) {
   playerMove.voteNumber = val;
 }
 function checkQuestLength(el) {

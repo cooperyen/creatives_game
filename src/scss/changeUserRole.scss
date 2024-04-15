@@ -140,6 +140,11 @@ $bg_: rgb(255, 253, 251);
         &.cencel {
           border-color: rgb(203, 91, 91);
         }
+        @include ss {
+          padding: 0;
+          width: calc(100% - 10px);
+          margin: 0 auto;
+        }
       }
     }
   }

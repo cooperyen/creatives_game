@@ -11,7 +11,7 @@
       <div class="back-btn">
         <router-link to="/lobby" replace class="flex">
           <font-awesome-icon icon="fa-solid fa-chevron-left" />
-          <p>LOBBY</p>
+          <p>大廳</p>
         </router-link>
       </div>
 
@@ -136,7 +136,7 @@
                   ready(readyList[selfPlayer] ? 'unready' : 'ready', selfPlayer)
                 "
               >
-                {{ readyList[selfPlayer] ? 'cancel' : 'ready' }}
+                {{ readyList[selfPlayer] ? '取消' : '準備' }}
               </p>
             </div>
           </div>
@@ -178,6 +178,7 @@
 <script>
 import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHandler.vue';
 import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
+import readyIcon from '@/../src/components/pages/waitingRoom/ready.vue';
 export default {
   data() {
     return {
@@ -205,7 +206,7 @@ export default {
       openInstruction: false,
     };
   },
-  components: { changeUserRoleHandler, leaveGameHadnler },
+  components: { changeUserRoleHandler, leaveGameHadnler, readyIcon },
   computed: {
     game() {
       return this.$store.state.userStore.userRoom;

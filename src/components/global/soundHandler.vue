@@ -26,7 +26,6 @@ const soundMax = computed(() => {
   const sound = store.state.userStore.userSound;
   if (sound === undefined) store.commit('updateUserSound', 1);
   if (sound != 0) audioSoundStart(500, sound);
-  console.log(audio.value);
   return sound;
 });
 

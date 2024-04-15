@@ -76,7 +76,6 @@ const userStore = {
       if (isNotExist(userData.icon) || !isNotExist(userData.icon) && !playerIcon.includes(userData.icon)) userData.icon = state.icon
       if (isNotExist(userData.userSound) || !isNotExist(userData.userSound) && !playerIcon.includes(userData.userSound)) userData.userSound = state.userSound
 
-      console.log(userData);
       // update cookie
       updateCookie('userData', userData)
 

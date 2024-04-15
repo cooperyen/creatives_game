@@ -47,7 +47,12 @@
   </popupAnnunce>
 
   <!-- sound -->
-  <soundHandler id="bg_sound_effect" :bg="true" sound="bg"></soundHandler>
+  <!-- <soundHandler
+    v-if="true"
+    id="bg_sound_effect"
+    :bg="true"
+    sound="bg"
+  ></soundHandler> -->
 </template>
 
 <script>

@@ -3,9 +3,9 @@ import lobby from '@/components/pages/lobby.vue';
 import NotFound from '@/components/pages/404.vue';
 import theMind from '@/components/pages/theMind.vue';
 import blackJack from '@/components/pages/blackJack.vue';
-import yellowCard from '@/components/pages/yellowCard.vue';
+import yellowCard from '@/components/pages/yellowCard/yellowCard.vue';
 import login from '@/components/pages/login.vue';
-import waitingRoom from '@/components/pages/waitingRoom.vue';
+import waitingRoom from '@/components/pages/waitingRoom/waitingRoom.vue';
 import { bg_style } from '@/../assets/store/style.js';
 
 

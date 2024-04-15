@@ -1,9 +1,8 @@
 import App from '@/App.vue'
-import { createApp } from 'vue'
+import { createApp, defineAsyncComponent } from 'vue'
 import { createStore } from 'vuex'
 import { createMetaManager } from 'vue-meta'
 import {
-  readyIcon,
   backGroundAnimate,
   answerHandler,
   instructionsCompent,
@@ -36,13 +35,13 @@ app.use(router);
 app.use(createMetaManager())
 
 app.component('font-awesome-icon', FontAwesomeIcon)
-app.component('readyIcon', readyIcon)
 app.component('backGroundAnimate', backGroundAnimate)
 app.component('answerHandler', answerHandler)
 app.component('instructionsCompent', instructionsCompent)
 app.component('closeBtn', closeBtn)
 app.component('popupAnnunce', popupAnnunce)
 app.component('soundHandler', soundHandler)
+
 
 
 app.config.globalProperties.$global_getImgUrl = function (name, place) {

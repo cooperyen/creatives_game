@@ -1,6 +1,7 @@
 <template>
   <div id="drop" v-if="playerMove.currentStep === 'drop'">
     <div v-if="playerMove.dropOpen">
+      <h2>選擇0-3張牌棄掉</h2>
       <div class="conetnt flex">
         <div
           class="card item"
