@@ -68,7 +68,7 @@ $text: rgb(198, 190, 149);
           top: 50%;
           transform: translate(-50%, -50%);
           position: absolute;
-          font-size: 1.8rem;
+          font-size: 1.5rem;
         }
 
         @include L {
@@ -82,7 +82,7 @@ $text: rgb(198, 190, 149);
   }
   .user_edit {
     .inner .box {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       @include L {
         font-size: 1.3rem;
       }
@@ -210,12 +210,12 @@ $text: rgb(198, 190, 149);
             box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
             &[data-room='game03'] {
               // border-color: rgb(207, 187, 84);
-              border-color: rgb(50 50 50);
+              border-color: rgba(50, 50, 50, 0.3);
               background-color: rgb(245, 228, 107);
             }
             &[data-room='game01'] {
               // border-color: rgb(212, 125, 125);
-              border-color: rgb(50 50 50);
+              border-color: rgba(50, 50, 50, 0.3);
               background-color: rgb(248, 177, 207);
             }
           }
