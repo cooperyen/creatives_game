@@ -3,6 +3,6 @@
 </template>
 
 <script setup>
-import { router } from '@/../assets/router.js';
+import { router } from '@/assets/router.js';
 router.replace('/lobby');
 </script>

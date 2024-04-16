@@ -6,7 +6,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { router } from '@/../assets/router.js';
+import { router } from '@/assets/router.js';
 const time = new Date().getFullYear();
 
 const showCopyright = computed(() => {

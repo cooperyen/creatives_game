@@ -179,9 +179,9 @@ import {
   defineAsyncComponent,
 } from 'vue';
 import { useStore } from 'vuex';
-import userNameBox from '@/../src/components/layout/userNameBox.vue';
-import changeUserRoleHandler from '@/../src/components/global/changeUserRoleHandler.vue';
-import { router } from '@/../assets/router.js';
+import userNameBox from '@/components/layout/userNameBox.vue';
+import changeUserRoleHandler from '@/components/global/changeUserRoleHandler.vue';
+import { router } from '@/assets/router.js';
 
 const props = defineProps(['socket', 'state']);
 const store = useStore();

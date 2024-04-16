@@ -9,10 +9,10 @@ import {
   closeBtn,
   popupAnnunce,
   soundHandler
-} from '@/../assets/componentsHandler.js';
-import { router, pageHandler } from '@/../assets/router.js';
-import { userStore, loopStore, iconData, playerIcon, style, instructions } from '@/../assets/storeHandler.js';
-import FontAwesomeIcon from '@/../assets/fortawesomeHandler.js';
+} from '@/assets/componentsHandler.js';
+import { router, pageHandler } from '@/assets/router.js';
+import { userStore, loopStore, iconData, playerIcon, style, instructions } from '@/assets/storeHandler.js';
+import FontAwesomeIcon from '@/assets/fortawesomeHandler.js';
 ;
 
 const store = createStore({

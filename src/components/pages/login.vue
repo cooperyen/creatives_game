@@ -185,7 +185,7 @@ export default {
         if (this.$store.state.loopStore.connected) {
           this.$store.commit('loopHandlerDelete');
           this.$store.commit('updateLoading', true);
-          document.getElementById('bg_sound_effect').play();
+          // document.getElementById('bg_sound_effect').play();
         }
 
         if (this.$store.state.loopStore.tryTime >= 30)

@@ -1,6 +1,5 @@
 <template>
-  <audio ref="audio" autoplay loop v-if="sound">
-    {{ soundMax }}
+  <audio ref="audio" autoplay loop v-if="sound" :data-sound="soundMax">
     <source
       :src="soundUrl(soundList[sound].name, soundList[sound].type)"
       type="audio/mp3"
@@ -21,12 +20,14 @@ const props = defineProps(['bg', 'sound', 'max']);
 const audio = ref(null);
 const set = ref(null);
 const num = ref(0);
+const list = [0, 0.4, 1];
 
 const soundMax = computed(() => {
   clearInterval(set.value);
   const sound = store.state.userStore.userSound;
-  if (sound === undefined) store.commit('updateUserSound', 1);
-  if (sound != 0 && audio.value != null) audioSoundStart(500, sound);
+  if (sound === undefined || !list.includes(sound))
+    store.commit('updateUserSound', 1);
+  if (list.includes(sound) && audio.value != null) audioSoundStart(500, sound);
   return sound;
 });
 
@@ -37,30 +38,20 @@ let gainNode;
 onMounted(() => {
   if (!props.sound) return;
   audioHandler();
-  if (store.state.userStore.userSound > 0) audio.value.play();
+  if (list.includes(store.state.userStore.userSound)) audio.value.play();
 });
 
 watch(
   () => store.state.userStore.userSound,
   (el) => {
     if (el === 0) audio.value.pause();
-    if (el > 0) audio.value.play();
+    if (list.includes(el)) audio.value.play();
   }
 );
 
 function audioSoundStart(time, maxs) {
   const max = maxs;
-
   gainNode.gain.setTargetAtTime(max, audioCtx.currentTime + 1, 0.5);
-
-  // set.value = setInterval(() => {
-  //   num.value += 0.1;
-  //   gainNode.gain.value = num.value;
-  //   if (num.value >= max) {
-  //     clearInterval(set.value);
-  //     num.value = 0;
-  //   }
-  // }, time);
 }
 
 function audioHandler(el) {

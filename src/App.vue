@@ -41,11 +41,11 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import { useMeta } from 'vue-meta';
-import { state, socket } from '@/../assets/socket';
-import { router } from '@/../assets/router.js';
-import connectTransition from '@/../src/components/layout/connectTransition.vue';
-import copyright from '@/../src/components/layout/copyright.vue';
-import entry from '@/../src/components/layout/entry.vue';
+import { state, socket } from '@/assets/socket';
+import { router } from '@/assets/router.js';
+import connectTransition from '@/components/layout/connectTransition.vue';
+import copyright from '@/components/layout/copyright.vue';
+import entry from '@/components/layout/entry.vue';
 import { useRouter } from 'vue-router';
 const { currentRoute } = useRouter();
 const store = useStore();

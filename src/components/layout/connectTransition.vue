@@ -29,10 +29,10 @@
 </template>
 
 <script setup>
-import transferPageCountDown from '@/../src/components/global/transferPageCountDown.vue';
+import transferPageCountDown from '@/components/global/transferPageCountDown.vue';
 import { useStore } from 'vuex';
-import { router } from '@/../assets/router.js';
-import { state, socket } from '@/../assets/socket';
+import { router } from '@/assets/router.js';
+import { state, socket } from '@/assets/socket';
 // const props = defineProps(['state']);
 const store = useStore();
 

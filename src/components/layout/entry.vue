@@ -29,7 +29,7 @@ import {
   computed,
 } from 'vue';
 import { useStore } from 'vuex';
-import { router } from '@/../assets/router.js';
+import { router } from '@/assets/router.js';
 const store = useStore();
 const props = defineProps(['keys']);
 

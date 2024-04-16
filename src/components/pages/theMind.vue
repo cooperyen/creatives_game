@@ -399,9 +399,9 @@ import {
   computed,
 } from 'vue';
 import { useStore } from 'vuex';
-import { router } from '@/../assets/router.js';
-import userNameBox from '@/../src/components/layout/userNameBox.vue';
-import leaveGameHadnler from '@/../src/components/global/leaveGameHadnler.vue';
+import { router } from '@/assets/router.js';
+import userNameBox from '@/components/layout/userNameBox.vue';
+import leaveGameHadnler from '@/components/global/leaveGameHadnler.vue';
 
 const props = defineProps(['socket', 'state']);
 const store = useStore();

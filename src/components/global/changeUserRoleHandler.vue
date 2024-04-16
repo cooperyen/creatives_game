@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { socket } from '@/../assets/socket';
+import { socket } from '@/assets/socket';
 import answerBtn from './answerBtn.vue';
 export default {
   components: { answerBtn },
